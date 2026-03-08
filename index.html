@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Arcipelago delle realtà, Andrea Colamedici</title>
-<meta name="description" content="Configurazione temporaneamente concretizzata a partire da un campo di possibilità. Per secoli creduta continente, si è rivelata isola. Alfabeto UTET, marzo 2026.">
+<meta name="description" content="Per secoli creduta continente, si è rivelata isola. Alfabeto UTET, marzo 2026.">
 <meta property="og:title" content="Arcipelago delle realtà, Andrea Colamedici">
 <meta property="og:description" content="Per secoli creduta continente, si è rivelata isola.">
 <meta property="og:image" content="cover.jpg">
@@ -12,55 +12,55 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
-:root{--chi:#3a7a9a;--sup:#5aaaca;--luc:#8acada;--bia:#f0ece6;--nero:#050a10}
+:root{--chi:#3a7a9a;--sup:#5aaaca;--luc:#8acada;--bia:#f0ece6;--nero:#050a10;--warm:rgba(200,180,160,.8)}
 *{margin:0;padding:0;box-sizing:border-box}
 html{overflow-x:hidden;scroll-behavior:smooth}
-body{font-family:'Cormorant Garamond',Georgia,serif;color:var(--bia);background:var(--nero);overflow-x:hidden;cursor:none}
-@media(max-width:768px){body{cursor:auto}}
-.cur{position:fixed;width:8px;height:8px;background:rgba(138,202,218,.6);border-radius:50%;pointer-events:none;z-index:9999;mix-blend-mode:screen;transition:width .3s,height .3s,background .3s;transform:translate(-50%,-50%)}
-.cur.ex{width:40px;height:40px;background:rgba(138,202,218,.15);border:1px solid rgba(138,202,218,.3)}
-@media(max-width:768px){.cur{display:none}}
-.mglow{position:fixed;width:350px;height:350px;border-radius:50%;background:radial-gradient(circle,rgba(58,122,154,.07) 0%,transparent 70%);pointer-events:none;z-index:1;transform:translate(-50%,-50%)}
-@media(max-width:768px){.mglow{display:none}}
-canvas#mare{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
-canvas#onde{position:fixed;bottom:0;left:0;width:100%;height:180px;z-index:1;pointer-events:none;opacity:.35}
-.z{position:relative;z-index:2}
-.glo{position:fixed;inset:0;pointer-events:none;z-index:9998;opacity:0}
-.glo.flash{animation:gF .12s ease}
-@keyframes gF{0%{opacity:0}30%{opacity:1;background:rgba(90,170,202,.06)}60%{opacity:0}80%{opacity:.5;background:rgba(200,100,100,.03)}100%{opacity:0}}
-.scl{position:fixed;inset:0;pointer-events:none;z-index:9997;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.015) 2px,rgba(0,0,0,.015) 4px);opacity:0;transition:opacity 2s}
-.scl.vis{opacity:1}
-.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:clamp(3rem,8vw,5rem) 2rem}
-.hero-grid{display:grid;grid-template-columns:auto 1fr;gap:clamp(2.5rem,5vw,5rem);align-items:center;max-width:900px}
-@media(max-width:700px){.hero-grid{grid-template-columns:1fr;text-align:center;justify-items:center}}
-.hero-cover{opacity:0;animation:emC 1.5s ease .3s forwards}
-.hero-cover img{width:clamp(200px,25vw,300px);box-shadow:0 25px 70px rgba(0,0,0,.5);display:block}
-@keyframes emC{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
-.hero-text{max-width:480px}
-.hero-text .au{font-family:'DM Sans',sans-serif;font-size:clamp(.7rem,1vw,.85rem);font-weight:300;color:var(--luc);letter-spacing:.3em;text-transform:uppercase;margin-bottom:1rem;opacity:0;animation:em 1.5s ease .6s forwards}
-.hero-text h1{font-size:clamp(2.2rem,5vw,3.8rem);font-weight:300;color:#fff;line-height:1.1;letter-spacing:-.02em;margin-bottom:1.2rem;opacity:0;animation:em 1.5s ease .8s forwards}
-.hero-text .def{font-size:clamp(.9rem,1.3vw,1.05rem);font-weight:300;font-style:italic;color:rgba(240,236,230,.75);line-height:1.7;margin-bottom:1.8rem;opacity:0;animation:em 1.5s ease 1.1s forwards}
-.hero-text .meta{font-family:'DM Sans',sans-serif;font-size:.75rem;color:var(--chi);letter-spacing:.08em;margin-bottom:1.5rem;opacity:0;animation:em 1.5s ease 1.3s forwards}
-.hero-text .po-btn{display:inline-block;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:400;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;padding:.9rem 2.5rem;color:var(--nero);background:#fff;transition:all .3s ease;opacity:0;animation:em 1.5s ease 1.5s forwards}
-.hero-text .po-btn:hover{background:transparent;color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.3)}
-@keyframes em{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
-.hero .cue{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);font-family:'DM Sans',sans-serif;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--chi);opacity:0;animation:em 2s ease 3s forwards}
+body{font-family:'Cormorant Garamond',Georgia,serif;color:var(--bia);background:var(--nero);overflow-x:hidden}
+canvas#latent{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:.35}
+canvas#onde{position:fixed;bottom:0;left:0;width:100%;height:160px;z-index:1;pointer-events:none;opacity:.3}
+.vignette{position:fixed;inset:0;background:radial-gradient(ellipse at center,transparent 0%,var(--nero) 75%);z-index:1;pointer-events:none;transition:all 3s ease}
+.noise{position:fixed;inset:0;pointer-events:none;z-index:2;opacity:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");mix-blend-mode:overlay;transition:opacity 2s}
+.scl{position:fixed;inset:0;pointer-events:none;z-index:3;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.02) 2px,rgba(0,0,0,.02) 4px);opacity:0;transition:opacity 2s}
+.z{position:relative;z-index:10}
+
+/* GANCIO */
+.gancio{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;position:relative}
+.gancio .mono{font-family:'IBM Plex Mono',monospace;font-size:.75rem;font-weight:300;color:rgba(200,180,160,.5);letter-spacing:.04em;line-height:2.4;opacity:0;transform:translateY(8px);max-width:500px}
+.gancio .mono .dato{color:var(--bia);border-bottom:1px solid rgba(200,180,160,.25)}
+.gancio .mono .warn{color:rgba(200,140,120,.7)}
+.gancio .frase{font-size:clamp(1.2rem,2.3vw,1.6rem);font-weight:300;font-style:italic;color:rgba(240,236,230,.65);max-width:480px;line-height:1.6;margin-top:2.5rem;opacity:0;transform:translateY(8px)}
+.gancio .cue{position:absolute;bottom:2.5rem;font-family:'DM Sans',sans-serif;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--chi);opacity:0}
 .cue::after{content:'';display:block;width:1px;height:25px;background:linear-gradient(to bottom,var(--chi),transparent);margin:.6rem auto 0;animation:drip 2s ease-in-out infinite}
 @keyframes drip{0%,100%{opacity:.3;height:25px}50%{opacity:.8;height:40px}}
-.provoc{padding:clamp(5rem,12vw,9rem) clamp(1.5rem,5vw,3rem);max-width:660px;margin:0 auto}
-.provoc p{font-size:clamp(1.05rem,1.5vw,1.2rem);line-height:1.85;color:rgba(240,236,230,.85);margin-bottom:1.5rem;opacity:0;transform:translateY(25px);transition:all 1.2s cubic-bezier(.4,0,.2,1)}
-.provoc p.acc{color:#fff;font-size:clamp(1.15rem,1.8vw,1.35rem);font-weight:400}
-.provoc.vis p{opacity:1;transform:translateY(0)}
-.provoc.vis p:nth-child(1){transition-delay:.1s}
-.provoc.vis p:nth-child(2){transition-delay:.5s}
-.provoc.vis p:nth-child(3){transition-delay:.9s}
-.rw{display:inline;transition:color .2s,text-shadow .2s}
-.rw:hover{color:var(--sup);text-shadow:0 0 20px rgba(90,170,202,.3)}
+
+/* HERO */
+.hero{padding:clamp(5rem,12vw,8rem) 2rem;display:flex;justify-content:center}
+.hero-grid{display:grid;grid-template-columns:auto 1fr;gap:clamp(2.5rem,5vw,5rem);align-items:center;max-width:900px}
+@media(max-width:700px){.hero-grid{grid-template-columns:1fr;text-align:center;justify-items:center}}
+.hero-cover img{width:clamp(200px,25vw,300px);box-shadow:0 25px 70px rgba(0,0,0,.5);display:block;opacity:0;transform:translateY(15px);transition:all 1.2s ease}
+.hero-cover img:hover{transform:translateY(-4px) rotate(.3deg);box-shadow:0 35px 90px rgba(0,0,0,.6),0 0 50px rgba(90,170,202,.06)}
+.hero-text{max-width:480px}
+.hero-text .au{font-family:'DM Sans',sans-serif;font-size:clamp(.7rem,1vw,.85rem);font-weight:300;color:var(--luc);letter-spacing:.3em;text-transform:uppercase;margin-bottom:1rem;opacity:0;transform:translateY(12px);transition:all 1s ease .1s}
+.hero-text h1{font-size:clamp(2.2rem,5vw,3.8rem);font-weight:300;color:#fff;line-height:1.1;letter-spacing:-.02em;margin-bottom:1.2rem;opacity:0;transform:translateY(12px);transition:all 1s ease .2s}
+.hero-text .def-label{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--chi);letter-spacing:.08em;font-style:italic;margin-bottom:.3rem;opacity:0;transform:translateY(12px);transition:all 1s ease .3s}
+.hero-text .def{font-size:clamp(.9rem,1.3vw,1.05rem);font-weight:300;font-style:italic;color:rgba(240,236,230,.7);line-height:1.7;margin-bottom:1.5rem;opacity:0;transform:translateY(12px);transition:all 1s ease .35s}
+.hero-text .meta{font-family:'DM Sans',sans-serif;font-size:.75rem;color:var(--chi);letter-spacing:.08em;margin-bottom:1.5rem;opacity:0;transform:translateY(12px);transition:all 1s ease .45s}
+.po-btn{display:inline-block;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:400;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;padding:.9rem 2.5rem;color:var(--nero);background:#fff;opacity:0;transform:translateY(12px);transition:all 1s ease .55s}
+.hero.vis .hero-cover img,.hero.vis .au,.hero.vis h1,.hero.vis .def-label,.hero.vis .def,.hero.vis .meta,.hero.vis .po-btn{opacity:1;transform:translateY(0)}
+.po-btn:hover{background:transparent;color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.3)}
+
+/* SEZIONI */
 .sez{padding:clamp(4rem,10vw,7rem) clamp(1.5rem,5vw,3rem);max-width:700px;margin:0 auto}
 .st{font-family:'DM Sans',sans-serif;font-size:.65rem;font-weight:400;letter-spacing:.3em;text-transform:uppercase;color:var(--chi);margin-bottom:1.5rem;opacity:0;transform:translateY(20px);transition:all 1s ease}
 .sez h2{font-size:clamp(1.7rem,3.5vw,2.5rem);font-weight:300;line-height:1.25;margin-bottom:1.8rem;color:#fff;opacity:0;transform:translateY(20px);transition:all 1s ease .15s}
 .sez p{font-size:clamp(1rem,1.4vw,1.15rem);line-height:1.8;color:rgba(240,236,230,.85);margin-bottom:1.4rem;opacity:0;transform:translateY(20px);transition:all 1s ease .3s}
 .sez.vis .st,.sez.vis h2,.sez.vis p{opacity:1;transform:translateY(0)}
+.rw{display:inline;transition:color .2s,text-shadow .2s;cursor:default}
+.rw:hover{color:var(--sup);text-shadow:0 0 20px rgba(90,170,202,.3)}
+.corrupt{animation:textCorrupt .3s ease}
+@keyframes textCorrupt{0%{filter:blur(0)}25%{filter:blur(1.5px);transform:translateX(-1px)}50%{filter:blur(0);transform:translateX(1px)}75%{filter:blur(.5px)}100%{filter:blur(0);transform:translateX(0)}}
+
+/* CITAZIONE */
 .cit{padding:clamp(4rem,10vw,6rem) clamp(1.5rem,5vw,3rem);text-align:center}
 .cit blockquote{font-size:clamp(1.3rem,2.8vw,2rem);font-weight:300;font-style:italic;line-height:1.55;color:#fff;max-width:640px;margin:0 auto;opacity:0;transform:translateY(20px);transition:all 1.2s ease;position:relative;padding:0 2rem}
 .cit blockquote::before,.cit blockquote::after{content:'';position:absolute;width:40px;height:1px;background:linear-gradient(90deg,transparent,var(--chi));top:50%;transition:all 1.2s ease .3s;opacity:0}
@@ -70,30 +70,21 @@ canvas#onde{position:fixed;bottom:0;left:0;width:100%;height:180px;z-index:1;poi
 .cit.vis blockquote::before,.cit.vis blockquote::after{opacity:.5;transform:translateX(0)}
 .sep{height:1px;max-width:200px;margin:0 auto;background:linear-gradient(90deg,transparent,var(--chi),transparent);opacity:0;transform:scaleX(0);transition:all 1.5s ease}
 .sep.vis{opacity:.4;transform:scaleX(1)}
+
+/* PROMESSA */
 .promessa{text-align:center;padding:clamp(4rem,10vw,6rem) 2rem;max-width:600px;margin:0 auto}
 .promessa p{font-size:clamp(1.15rem,2vw,1.4rem);font-weight:300;color:#fff;line-height:1.6;opacity:0;transform:translateY(20px);transition:all 1s ease;margin-bottom:1rem}
-.promessa p.piccolo{font-size:clamp(.85rem,1.2vw,1rem);color:rgba(240,236,230,.55)}
+.promessa p.piccolo{font-size:clamp(.85rem,1.2vw,1rem);color:rgba(240,236,230,.5)}
 .promessa.vis p{opacity:1;transform:translateY(0)}
 .promessa.vis p:nth-child(2){transition-delay:.3s}
+
+/* AUTORE */
 .autore-strip{padding:2rem clamp(1.5rem,5vw,3rem);max-width:700px;margin:0 auto;border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);opacity:0;transform:translateY(15px);transition:all 1s ease}
 .autore-strip.vis{opacity:1;transform:translateY(0)}
-.autore-strip p{font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:300;color:rgba(240,236,230,.6);line-height:1.8;text-align:center}
+.autore-strip p{font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:300;color:rgba(240,236,230,.55);line-height:1.8;text-align:center}
 .autore-strip a{color:var(--sup);text-decoration:none}
-.ds{margin:clamp(2rem,5vw,3rem) auto;max-width:500px;padding:0 clamp(1.5rem,5vw,3rem);display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;opacity:0;transform:translateY(20px);transition:all 1s ease}
-.ds.vis{opacity:1;transform:translateY(0)}
-.dc{text-align:center;flex:1;min-width:120px;padding:1.2rem .8rem;border:1px solid rgba(90,170,202,.1);background:rgba(10,26,42,.4);backdrop-filter:blur(8px);position:relative;overflow:hidden}
-.dc::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--sup),transparent);animation:scanD 4s linear infinite}
-@keyframes scanD{0%{left:-100%}100%{left:200%}}
-.dc .lab{font-family:'IBM Plex Mono',monospace;font-size:.45rem;letter-spacing:.25em;text-transform:uppercase;color:var(--chi);margin-bottom:.3rem}
-.dc .val{font-family:'IBM Plex Mono',monospace;font-size:.85rem;color:#fff}
-.inv{text-align:center;padding:clamp(4rem,10vw,6rem) 2rem}
-.inv p{font-size:clamp(1.1rem,2.2vw,1.5rem);font-weight:300;color:#fff;line-height:1.5;max-width:500px;margin:0 auto 2rem;opacity:0;transform:translateY(20px);transition:all 1s ease}
-.inv.vis p{opacity:1;transform:translateY(0)}
-.eb{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--sup);padding:1rem 3rem;border:1px solid rgba(90,170,202,.3);text-decoration:none;position:relative;overflow:hidden;opacity:0;transition:all 1s ease .3s}
-.inv.vis .eb{opacity:1}
-.eb::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(90,170,202,.08),transparent);transition:left .6s ease}
-.eb:hover::before{left:200%}
-.eb:hover{border-color:var(--sup);box-shadow:0 0 40px rgba(90,170,202,.15),inset 0 0 40px rgba(90,170,202,.05)}
+
+/* CAPITOLI */
 .cl{padding:clamp(3rem,6vw,4rem) clamp(1.5rem,5vw,3rem);max-width:700px;margin:0 auto}
 .ci{padding:1.3rem 0;border-bottom:1px solid rgba(255,255,255,.06);opacity:0;transform:translateY(12px);transition:all .8s ease;position:relative}
 .ci::after{content:'';position:absolute;bottom:-1px;left:0;width:0;height:1px;background:var(--sup);transition:width .6s ease}
@@ -103,6 +94,18 @@ canvas#onde{position:fixed;bottom:0;left:0;width:100%;height:180px;z-index:1;poi
 .cn{font-family:'IBM Plex Mono',monospace;font-size:.55rem;letter-spacing:.15em;color:var(--chi);margin-bottom:.2rem}
 .ct{font-size:1.1rem;font-weight:400;color:#fff;transition:color .3s,letter-spacing .3s}
 .ci:hover .ct{color:var(--sup);letter-spacing:.02em}
+
+/* INVITO */
+.inv{text-align:center;padding:clamp(4rem,10vw,6rem) 2rem}
+.inv p{font-size:clamp(1.1rem,2.2vw,1.5rem);font-weight:300;color:#fff;line-height:1.5;max-width:500px;margin:0 auto 2rem;opacity:0;transform:translateY(20px);transition:all 1s ease}
+.inv.vis p{opacity:1;transform:translateY(0)}
+.eb{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--sup);padding:1rem 3rem;border:1px solid rgba(90,170,202,.3);text-decoration:none;position:relative;overflow:hidden;opacity:0;transition:all 1s ease .3s}
+.inv.vis .eb{opacity:1}
+.eb::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(90,170,202,.08),transparent);transition:left .6s ease}
+.eb:hover::before{left:200%}
+.eb:hover{border-color:var(--sup);box-shadow:0 0 40px rgba(90,170,202,.15),inset 0 0 40px rgba(90,170,202,.05)}
+
+/* INNESTI */
 .arci{padding:clamp(4rem,10vw,7rem) 1.5rem}
 .ah{text-align:center;margin-bottom:1rem}
 .ah h2{font-size:clamp(1.5rem,2.8vw,2rem);font-weight:300;color:#fff;opacity:0;transform:translateY(20px);transition:all 1s ease}
@@ -132,14 +135,14 @@ canvas#onde{position:fixed;bottom:0;left:0;width:100%;height:180px;z-index:1;poi
 .isola.locked{cursor:default;opacity:.35!important}
 .isola.locked::before,.isola.locked::after{display:none}
 .isola.locked:hover{background:rgba(10,26,42,.6);border-color:rgba(255,255,255,.04)}
-.isola.locked .ist{color:rgba(240,236,230,.3)}
-.isola.locked .isd{color:rgba(240,236,230,.2)}
-.isola.locked .isa{display:none}
+.isola.locked .ist{color:rgba(240,236,230,.3)}.isola.locked .isd{color:rgba(240,236,230,.2)}.isola.locked .isa{display:none}
 .isl{font-family:'IBM Plex Mono',monospace;font-size:.45rem;letter-spacing:.12em;color:rgba(90,170,202,.4);margin-top:.7rem;display:none}
 .isola.locked .isl{display:block}
 .isola.new{border-color:rgba(90,170,202,.2);animation:nP 3s ease-in-out infinite}
 @keyframes nP{0%,100%{box-shadow:none}50%{box-shadow:0 0 20px rgba(90,170,202,.08)}}
 .isola.new .isn::after{content:' · NUOVO';color:var(--sup)}
+
+/* PREORDER */
 .po-final{text-align:center;padding:clamp(4rem,10vw,6rem) 2rem}
 .po-final h2{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:300;color:#fff;margin-bottom:.5rem;opacity:0;transform:translateY(15px);transition:all 1s ease}
 .po-final .ed{font-family:'DM Sans',sans-serif;font-size:.78rem;color:var(--chi);margin-bottom:2rem;opacity:0;transition:all 1s ease .15s}
@@ -154,47 +157,64 @@ canvas#onde{position:fixed;bottom:0;left:0;width:100%;height:180px;z-index:1;poi
 footer{text-align:center;padding:2rem;border-top:1px solid rgba(255,255,255,.04)}
 footer p{font-family:'DM Sans',sans-serif;font-size:.65rem;color:rgba(240,236,230,.2)}
 footer a{color:rgba(240,236,230,.3);text-decoration:none}
-@media(max-width:600px){.isole{grid-template-columns:1fr}.pb{flex-direction:column;align-items:center}.pb a{width:100%;max-width:240px;text-align:center}.ds{flex-direction:column;gap:.8rem}}
+@media(max-width:600px){.isole{grid-template-columns:1fr}.pb{flex-direction:column;align-items:center}.pb a{width:100%;max-width:240px;text-align:center}}
 </style>
 </head>
 <body>
-<div class="cur" id="cur"></div>
-<div class="mglow" id="glow"></div>
-<div class="glo" id="glo"></div>
-<div class="scl" id="scl"></div>
-<canvas id="mare"></canvas>
+<canvas id="latent"></canvas>
 <canvas id="onde"></canvas>
+<div class="vignette" id="vignette"></div>
+<div class="noise" id="noise"></div>
+<div class="scl" id="scl"></div>
 <div class="z">
-<div class="hero">
+
+<!-- GANCIO -->
+<div class="gancio" id="gancio">
+  <p class="mono" id="g1"></p>
+  <p class="mono" id="g2"></p>
+  <p class="mono" id="g3"></p>
+  <p class="mono" id="g4"></p>
+  <p class="frase" id="g5"></p>
+  <p class="cue" id="gcue">Naviga</p>
+</div>
+
+<!-- HERO -->
+<div class="hero obs">
   <div class="hero-grid">
     <div class="hero-cover"><img src="cover.jpg" alt="Arcipelago delle realtà"></div>
     <div class="hero-text">
       <p class="au">Andrea Colamedici</p>
       <h1>Arcipelago<br>delle realtà</h1>
+      <p class="def-label">Realtà, s.f.</p>
       <p class="def">Configurazione temporaneamente concretizzata a partire da un campo di possibilità. Per secoli creduta continente, si è rivelata isola.</p>
       <p class="meta">Alfabeto UTET · 208 pagine · In libreria dal 25 marzo 2026</p>
       <a class="po-btn" href="#preorder">Preordina ora</a>
     </div>
   </div>
-  <p class="cue">Naviga</p>
 </div>
-<div class="provoc obs">
-  <p class="acc">In questo momento <span class="rw">qualcuno</span> sta decidendo cosa vedrai domani.</p>
+
+<!-- PROVOCAZIONE -->
+<div class="sez obs">
   <p>Un processo statistico estrae regolarità da miliardi di dati e le usa per <span class="rw">preformare</span> il campo di ciò che ti si presenterà come reale. Lo schermo che stai guardando adesso ne è parte.</p>
   <p>La realtà si è rotta perché il meccanismo che l'ha sempre <span class="rw">prodotta</span> è diventato <span class="rw">visibile</span>. Ciò che diventa visibile smette di funzionare nello stesso modo.</p>
 </div>
-<div class="cit obs z"><blockquote>Ognuno di noi ha un fiammifero in mano ed è convinto di essere al centro, ma il centro è in nessun luogo.</blockquote></div>
-<div class="promessa obs z">
+
+<div class="cit obs"><blockquote>Ognuno di noi ha un fiammifero in mano ed è convinto di essere al centro, ma il centro è in nessun luogo.</blockquote></div>
+
+<div class="promessa obs">
   <p>Dopo aver letto questo libro vedrai come viene prodotto ciò che chiami realtà. E non potrai più smettere di vederlo.</p>
   <p class="piccolo">Con Flusser, Castaneda, Garfinkel, Glissant, Deleuze. E con una bambina che non esiste e che non puoi smettere di vedere.</p>
 </div>
-<div class="sep obs z"></div>
-<div class="sez obs z">
+
+<div class="sep obs"></div>
+
+<div class="sez obs">
   <p class="st">Il libro</p>
   <h2>Perché la terraferma è diventata arcipelago?</h2>
-  <p>Per secoli la realtà era ciò che resisteva: ciò che rimaneva identico abbastanza a lungo da poter essere nominato, condiviso, messo in discussione. Quella resistenza si è dissolta. Gli strumenti con cui guardiamo il mondo sono diventati così potenti, così personalizzati, così generativi, che ciascuno vede configurazioni diverse. "Arcipelago delle realtà" attraversa sette isole per mappare la condizione in cui ci troviamo, e propone un nuovo vocabolario per orientarsi: schematismo di secondo ordine, diritti generativi, giustizia del latente.</p>
+  <p>Per secoli la realtà era ciò che resisteva: ciò che rimaneva identico abbastanza a lungo da poter essere nominato, condiviso, messo in discussione. Quella resistenza si è dissolta. "Arcipelago delle realtà" attraversa sette isole per mappare la condizione in cui ci troviamo, e propone un nuovo vocabolario per orientarsi: schematismo di secondo ordine, diritti generativi, giustizia del latente.</p>
 </div>
-<div class="cl obs z">
+
+<div class="cl obs">
   <div class="ci" style="--i:.05"><p class="cn">01</p><p class="ct">La fine dello spazio pubblico</p></div>
   <div class="ci" style="--i:.1"><p class="cn">02</p><p class="ct">La materia del possibile</p></div>
   <div class="ci" style="--i:.15"><p class="cn">03</p><p class="ct">Il punto d'unione</p></div>
@@ -203,26 +223,27 @@ footer a{color:rgba(240,236,230,.3);text-decoration:none}
   <div class="ci" style="--i:.3"><p class="cn">06</p><p class="ct">Tre rifiuti della realtà</p></div>
   <div class="ci" style="--i:.35"><p class="cn">07</p><p class="ct">Diritti generativi</p></div>
 </div>
-<div class="autore-strip obs z">
-  <p>Andrea Colamedici è filosofo, autore e cofondatore di <a href="https://tlon.it">Tlon</a>. Insegna Filosofia dell'Intelligenza Artificiale allo IED Roma e alla 24ORE Business School. Con Maura Gancitano ha scritto "La società della performance" e "Prendila con filosofia." Come Jianwei Xun ha pubblicato "Ipnocrazia" e "Prompt Thinking" (Polity Press, 2026).</p>
+
+<div class="autore-strip obs">
+  <p>Andrea Colamedici è filosofo, autore e cofondatore di <a href="https://tlon.it">Tlon</a>. Insegna Filosofia dell'Intelligenza Artificiale allo IED Roma e alla 24ORE Business School. Come Jianwei Xun ha pubblicato "Ipnocrazia" e "Prompt Thinking" (Polity Press, 2026).</p>
 </div>
-<div class="sep obs z"></div>
-<div class="cit obs z"><blockquote>C'è una parte di ogni persona che non è ancora accaduta, e che smette di poter accadere nel momento in cui viene trattata come se fosse già nota.</blockquote></div>
-<div class="ds obs z">
-  <div class="dc"><p class="lab">Ora locale</p><p class="val" id="ora">--:--</p></div>
-  <div class="dc"><p class="lab">Dispositivo</p><p class="val" id="device">--</p></div>
-  <div class="dc"><p class="lab">Tempo qui</p><p class="val" id="tempo">0s</p></div>
-</div>
-<div class="inv obs z">
+
+<div class="sep obs"></div>
+
+<div class="cit obs"><blockquote>C'è una parte di ogni persona che non è ancora accaduta, e che smette di poter accadere nel momento in cui viene trattata come se fosse già nota.</blockquote></div>
+
+<div class="inv obs">
   <p>La bambina generata ti sta guardando.<br>Vuoi sapere come?</p>
   <a class="eb" href="innesti/01.html" id="enterBtn">Entra nel primo innesto</a>
 </div>
-<div class="arci obs z">
+
+<div class="arci obs">
   <div class="ah"><h2>Gli innesti</h2><p>Dieci esperienze digitali che attraversano il libro. Un'isola nuova ogni giorno, dall'11 al 20 marzo.</p></div>
   <div class="cb"><p class="cbl" id="cdLabel"></p><div class="cbt"><div class="cbf" id="cdFill" style="width:0%"></div></div><div class="cbd"><span>11 mar</span><span>15 mar</span><span>20 mar</span></div></div>
   <div class="isole" id="isoleGrid"></div>
 </div>
-<div class="po-final obs z" id="preorder">
+
+<div class="po-final obs" id="preorder">
   <h2>In libreria dal 25 marzo</h2>
   <p class="ed">Alfabeto UTET · 208 pagine</p>
   <div class="pb">
@@ -232,10 +253,63 @@ footer a{color:rgba(240,236,230,.3);text-decoration:none}
     <a href="#" class="al">Feltrinelli</a>
   </div>
 </div>
-<footer class="z"><p>Andrea Colamedici · <a href="https://tlon.it">Tlon</a> · 2026</p></footer>
+
+<footer><p>Andrea Colamedici · <a href="https://tlon.it">Tlon</a> · 2026</p></footer>
 </div>
+
 <script>
-const innesti=[
+// ═══ GANCIO: TI VEDO ═══
+var now=new Date();
+var h=now.getHours(),m=now.getMinutes();
+var ora=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+var ua=navigator.userAgent,dev='un dispositivo';
+if(/iPhone|iPad|iPod/.test(ua))dev='un iPhone';
+else if(/Android/.test(ua))dev='un Android';
+else if(/Mac/.test(ua))dev='un Mac';
+else if(/Windows/.test(ua))dev='un PC Windows';
+var lang=navigator.language||'sconosciuta';
+var schermo=screen.width+'×'+screen.height;
+var periodo='notte';
+if(h>=6&&h<12)periodo='mattina';else if(h>=12&&h<18)periodo='pomeriggio';else if(h>=18&&h<23)periodo='sera';
+
+function showG(id,html,delay){
+  setTimeout(function(){
+    var el=document.getElementById(id);
+    el.innerHTML=html;
+    el.style.transition='opacity 1.4s ease, transform 1.4s ease';
+    el.style.opacity='1';
+    el.style.transform='translateY(0)';
+  },delay);
+}
+
+showG('g1','Sono le <span class="dato">'+ora+'</span>. '+periodo.charAt(0).toUpperCase()+periodo.slice(1)+'. Stai usando <span class="dato">'+dev+'</span>.',600);
+showG('g2','Schermo <span class="dato">'+schermo+'</span> pixel. Lingua: <span class="dato">'+lang+'</span>.',3000);
+showG('g3','Tutto questo lo so da quando hai aperto la pagina. Ci ho messo <span class="dato">0 millisecondi</span>.',5500);
+
+// Batteria (se disponibile)
+if('getBattery' in navigator){
+  navigator.getBattery().then(function(bat){
+    var lvl=Math.round(bat.level*100);
+    var charging=bat.charging;
+    var battMsg='La tua batteria è al <span class="dato">'+lvl+'%</span>.';
+    if(lvl<20)battMsg+=' <span class="warn">Stai finendo.</span>';
+    else if(charging)battMsg+=' In carica.';
+    showG('g4',battMsg,8500);
+    showG('g5','Questo libro parla di come tutto questo è diventato normale.',12000);
+    setTimeout(function(){var cue=document.getElementById('gcue');cue.style.transition='opacity 1.5s ease';cue.style.opacity='1'},14500);
+  }).catch(function(){
+    showG('g4','Non riesco ad accedere alla tua batteria. Il browser ti protegge. <span class="warn">Da me.</span>',8500);
+    showG('g5','Questo libro parla di come tutto questo è diventato normale.',12000);
+    setTimeout(function(){var cue=document.getElementById('gcue');cue.style.transition='opacity 1.5s ease';cue.style.opacity='1'},14500);
+  });
+}else{
+  showG('g4','Il tuo browser nasconde la batteria. <span class="warn">Intelligente.</span>',8500);
+  showG('g5','Questo libro parla di come tutto questo è diventato normale.',12000);
+  setTimeout(function(){var cue=document.getElementById('gcue');cue.style.transition='opacity 1.5s ease';cue.style.opacity='1'},14500);
+}
+
+// ═══ INNESTI ═══
+var innesti=[
   {n:'01',t:'La bambina continua a giocare',d:'Profilazione. Il tuo nome. La prima traccia.',u:'2026-03-11'},
   {n:'02',t:'Come leggi',d:'Behavioral tracking. Una parola. La carta che trema.',u:'2026-03-12'},
   {n:'03',t:'Quarantotto',d:'Il conteggio. I template. Lo spazio delle bambine possibili.',u:'2026-03-13'},
@@ -247,16 +321,16 @@ const innesti=[
   {n:'09',t:'Nono innesto',d:'Attraversa.',u:'2026-03-19'},
   {n:'10',t:'Decimo innesto',d:'Attraversa.',u:'2026-03-20'}
 ];
-const now=new Date(),today=now.toISOString().slice(0,10),grid=document.getElementById('isoleGrid');
-let uc=0;
-innesti.forEach((inn,i)=>{
-  const ud=new Date(inn.u+'T00:00:00'),ok=now>=ud,isT=today===inn.u;
+var today=now.toISOString().slice(0,10),grid=document.getElementById('isoleGrid');
+var uc=0;
+innesti.forEach(function(inn,i){
+  var ud=new Date(inn.u+'T00:00:00'),ok=now>=ud,isT=today===inn.u;
   if(ok)uc++;
-  const el=document.createElement('a');
+  var el=document.createElement('a');
   el.style.setProperty('--i',(0.1+i*0.07).toFixed(2));
   if(ok){
     el.className='isola'+(isT?' new':'');el.href='innesti/'+inn.n+'.html';
-    el.innerHTML='<p class="isn">'+inn.n+'</p><p class="ist">'+inn.t+'</p><p class="isd">'+inn.d+'</p><p class="isa">entra →</p>';
+    el.innerHTML='<p class="isn">'+inn.n+'</p><p class="ist">'+inn.t+'</p><p class="isd">'+inn.d+'</p><p class="isa">entra \u2192</p>';
   }else{
     el.className='isola locked';el.href='#';el.onclick=function(e){e.preventDefault()};
     var ds=ud.toLocaleDateString('it-IT',{day:'numeric',month:'short'});
@@ -267,61 +341,75 @@ innesti.forEach((inn,i)=>{
 document.getElementById('cdFill').style.width=Math.min(100,uc/10*100)+'%';
 document.getElementById('cdLabel').textContent=uc===0?'Gli innesti si sbloccano dall\'11 marzo':uc===10?'Tutti gli innesti sono sbloccati':uc+' innesti sbloccati su 10';
 if(uc===0){var b=document.getElementById('enterBtn');b.style.opacity='.3';b.style.pointerEvents='none';b.textContent='disponibile dall\'11 marzo'}
-var h=now.getHours(),m=now.getMinutes();
-document.getElementById('ora').textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
-var ua=navigator.userAgent,dev='--';
-if(/iPhone|iPad|iPod/.test(ua))dev='iPhone';else if(/Android/.test(ua))dev='Android';else if(/Mac/.test(ua))dev='Mac';else if(/Windows/.test(ua))dev='Windows';
-document.getElementById('device').textContent=dev;
-var sT=Date.now();setInterval(function(){document.getElementById('tempo').textContent=Math.floor((Date.now()-sT)/1000)+'s'},1000);
-var cur=document.getElementById('cur'),glow=document.getElementById('glow');
-var mx=0,my=0,cx=0,cy=0,gx=0,gy=0;
-document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY});
-function ac(){cx+=(mx-cx)*.15;cy+=(my-cy)*.15;gx+=(mx-gx)*.06;gy+=(my-gy)*.06;cur.style.left=cx+'px';cur.style.top=cy+'px';glow.style.left=gx+'px';glow.style.top=gy+'px';requestAnimationFrame(ac)}ac();
-document.querySelectorAll('a,.isola:not(.locked),.ci,.eb,.rw,.po-btn').forEach(function(el){el.addEventListener('mouseenter',function(){cur.classList.add('ex')});el.addEventListener('mouseleave',function(){cur.classList.remove('ex')})});
-document.querySelectorAll('.isola:not(.locked)').forEach(function(el){el.addEventListener('mousemove',function(e){var r=el.getBoundingClientRect();el.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');el.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%')})});
-var gl=document.getElementById('glo');
-function glitch(){gl.classList.remove('flash');void gl.offsetWidth;gl.classList.add('flash')}
-setInterval(function(){if(Math.random()<.12)glitch()},9000);
-var fs=true;addEventListener('scroll',function(){if(fs){fs=false;glitch();document.getElementById('scl').classList.add('vis')}});
-var wc=document.getElementById('onde'),wx=wc.getContext('2d');
-function rwz(){wc.width=innerWidth;wc.height=180}rwz();addEventListener('resize',rwz);
-var wt=0;
-function drawW(){
-  wt+=.012;wx.clearRect(0,0,wc.width,wc.height);
-  for(var l=0;l<3;l++){
-    var a=7+l*4,sp=.003-l*.0005,off=l*1.2,al=.025+l*.012;
-    wx.beginPath();wx.moveTo(0,wc.height);
-    for(var x=0;x<=wc.width;x+=3){var y=wc.height-25-l*12+Math.sin(x*sp+wt+off)*a+Math.sin(x*sp*2.5+wt*1.5+off)*a*.4;wx.lineTo(x,y)}
-    wx.lineTo(wc.width,wc.height);wx.closePath();wx.fillStyle='rgba(58,122,154,'+al+')';wx.fill();
-  }
-  for(var x=0;x<wc.width;x+=25){var y=wc.height-50+Math.sin(x*.003+wt)*7;if(Math.random()<.02){wx.beginPath();wx.arc(x,y-2,1+Math.random(),0,Math.PI*2);wx.fillStyle='rgba(138,202,218,'+(0.08+Math.random()*.1)+')';wx.fill()}}
-  requestAnimationFrame(drawW);
-}drawW();
-var c=document.getElementById('mare'),ctx=c.getContext('2d'),W,H;
+
+// ═══ LATENT SPACE ═══
+var c=document.getElementById('latent'),ctx=c.getContext('2d'),W,H;
 function rz(){W=c.width=innerWidth;H=c.height=innerHeight}rz();addEventListener('resize',rz);
 var N=innerWidth<600?25:55,dots=[];
-for(var i=0;i<N;i++)dots.push({x:Math.random()*2e3,y:Math.random()*1.5e4,r:Math.random()*1.8+.3,vx:(Math.random()-.5)*.1,vy:(Math.random()-.5)*.07,a:Math.random()*.16+.03,ph:Math.random()*Math.PI*2});
-var sY=0;addEventListener('scroll',function(){sY=pageYOffset});
+for(var i=0;i<N;i++)dots.push({x:Math.random()*W*1.5,y:Math.random()*15000,r:Math.random()*2+.3,vx:(Math.random()-.5)*.08,vy:(Math.random()-.5)*.06,a:Math.random()*.15+.02,ph:Math.random()*Math.PI*2});
+var sY=0,mx=W/2,my=H/2;
+addEventListener('scroll',function(){sY=pageYOffset});
+addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY});
 var t=0;
 function draw(){
-  t+=.005;ctx.fillStyle='rgba(5,10,16,.1)';ctx.fillRect(0,0,W,H);
-  var oY=sY*.035;
+  t+=.004;ctx.fillStyle='rgba(5,10,16,.08)';ctx.fillRect(0,0,W,H);
+  var oY=sY*.03;
   for(var i=0;i<N;i++){var d=dots[i];
-    d.x+=d.vx+Math.sin(t+d.ph)*.02;d.y+=d.vy+Math.cos(t*1.3+d.ph)*.015;
-    if(d.x<-10)d.x=W+10;if(d.x>W+10)d.x=-10;if(d.y<-10)d.y=1.5e4;if(d.y>1.5e4)d.y=-10;
+    d.x+=d.vx+Math.sin(t+d.ph)*.015;d.y+=d.vy+Math.cos(t*1.3+d.ph)*.012;
+    if(d.x<-10)d.x=W+10;if(d.x>W+10)d.x=-10;if(d.y<-10)d.y=15000;if(d.y>15000)d.y=-10;
     var sy=d.y-oY;if(sy<-20||sy>H+20)continue;
-    var p=1+Math.sin(t*2+d.ph)*.3;
-    ctx.beginPath();ctx.arc(d.x,sy,d.r*p,0,Math.PI*2);ctx.fillStyle='rgba(90,170,202,'+(d.a*p)+')';ctx.fill();
+    var p=1+Math.sin(t*2+d.ph)*.25;
+    ctx.beginPath();ctx.arc(d.x,sy,d.r*p,0,Math.PI*2);
+    ctx.fillStyle='rgba(90,170,202,'+(d.a*p)+')';ctx.fill();
     for(var j=i+1;j<N;j++){var e=dots[j];var ey=e.y-oY;if(ey<-20||ey>H+20)continue;
       var dx=d.x-e.x,dy=sy-ey,dd=dx*dx+dy*dy;
-      if(dd<1.2e4){ctx.beginPath();ctx.moveTo(d.x,sy);ctx.lineTo(e.x,ey);ctx.strokeStyle='rgba(58,122,154,'+(0.025*(1-dd/1.2e4))+')';ctx.stroke()}}
+      if(dd<15000){ctx.beginPath();ctx.moveTo(d.x,sy);ctx.lineTo(e.x,ey);ctx.strokeStyle='rgba(58,122,154,'+(0.02*(1-dd/15000))+')';ctx.stroke()}}
   }
   for(var i=0;i<N;i++){var d=dots[i];var sy=d.y-oY;
     var dmx=mx-d.x,dmy=my-sy,dm=dmx*dmx+dmy*dmy;
-    if(dm<4e4&&dm>100){var f=.12*(1-dm/4e4);d.vx+=dmx/Math.sqrt(dm)*f*.01;d.vy+=dmy/Math.sqrt(dm)*f*.01}
-    d.vx*=.999;d.vy*=.999}
+    if(dm<50000&&dm>100){var f=.1*(1-dm/50000);d.vx+=dmx/Math.sqrt(dm)*f*.008;d.vy+=dmy/Math.sqrt(dm)*f*.008}
+    d.vx*=.998;d.vy*=.998}
   requestAnimationFrame(draw)}draw();
-var obs=new IntersectionObserver(function(e){e.forEach(function(en){if(en.isIntersecting){en.target.classList.add('vis');if(en.target.classList.contains('ds'))glitch()}})},{threshold:.1});
+
+// ═══ ONDE ═══
+var wc=document.getElementById('onde'),wx=wc.getContext('2d');
+function rwz(){wc.width=innerWidth;wc.height=160}rwz();addEventListener('resize',rwz);
+var wt=0;
+function drawW(){
+  wt+=.01;wx.clearRect(0,0,wc.width,wc.height);
+  for(var l=0;l<3;l++){
+    var a=6+l*3.5,sp=.0025-l*.0004,off=l*1.1,al=.02+l*.01;
+    wx.beginPath();wx.moveTo(0,wc.height);
+    for(var x=0;x<=wc.width;x+=3){var y=wc.height-20-l*10+Math.sin(x*sp+wt+off)*a+Math.sin(x*sp*2.5+wt*1.5+off)*a*.35;wx.lineTo(x,y)}
+    wx.lineTo(wc.width,wc.height);wx.closePath();wx.fillStyle='rgba(58,122,154,'+al+')';wx.fill();}
+  requestAnimationFrame(drawW);}drawW();
+
+// ═══ ATMOSFERA ═══
+addEventListener('scroll',function(){
+  var p=Math.min(1,sY/800);
+  document.getElementById('noise').style.opacity=p*.04;
+  document.getElementById('scl').style.opacity=p*.8;
+  var v=75-p*10;
+  document.getElementById('vignette').style.background='radial-gradient(ellipse at center,transparent 0%,#050a10 '+v+'%)';
+});
+
+// ═══ CORRUZIONE TESTO ═══
+setInterval(function(){
+  if(Math.random()>.85)return;
+  var ps=document.querySelectorAll('.sez p, .promessa p, .autore-strip p');
+  if(!ps.length)return;
+  var p=ps[Math.floor(Math.random()*ps.length)];
+  var r=p.getBoundingClientRect();
+  if(r.top>0&&r.bottom<innerHeight){p.classList.add('corrupt');setTimeout(function(){p.classList.remove('corrupt')},300)}
+},11000);
+
+// ═══ ISOLA LIGHT ═══
+document.querySelectorAll('.isola:not(.locked)').forEach(function(el){
+  el.addEventListener('mousemove',function(e){var r=el.getBoundingClientRect();el.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');el.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%')});
+});
+
+// ═══ OBSERVER ═══
+var obs=new IntersectionObserver(function(entries){entries.forEach(function(en){if(en.isIntersecting)en.target.classList.add('vis')})},{threshold:.1});
 document.querySelectorAll('.obs').forEach(function(el){obs.observe(el)});
 </script>
 </body>
