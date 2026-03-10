@@ -34,7 +34,7 @@
 <div class="credibilita obs"><p class="autore">Andrea Colamedici è filosofo, editore e scrittore. Insegna Prompt Thinking allo IED di Roma e alla 24ORE Business School, è presidente di <a href="https://tlon.it">GenIALab</a> e direttore filosofico del Festival del Pensare Contemporaneo di Piacenza. Nel 2025 ha ideato l'esperimento filosofico di Jianwei Xun, autore di Hypnocracy (Sutherland House) e Prompt Thinking (Polity Press), scritti con sistemi di intelligenza artificiale.</p><p class="press-label">Rassegna</p><div class="press-quotes"><div class="press-quote"><p class="pq-text">"Hipnocracia, el libro del año"</p><p class="pq-source">El Clarín</p></div><div class="press-quote"><p class="pq-text">"A.I. Can Trick You, Warns Book That Hid A.I.'s Help Writing It"</p><p class="pq-source">The New York Times</p></div><div class="press-quote"><p class="pq-text">"Son concept d'hypnocratie entre dans notre réalité"</p><p class="pq-source">Le Monde</p></div></div></div>
 <div class="sep obs"></div>
 <div class="cit obs"><blockquote>C'è una parte di ogni persona che non è ancora accaduta, e che smette di poter accadere nel momento in cui viene trattata come se fosse già nota.</blockquote></div>
-<div class="inv obs"><p>La bambina generata ti sta già guardando.<br>Gli innesti cominciano qui.</p><a class="eb" href="innesti/01.html" id="enterBtn">Entra nel primo innesto</a></div>
+<div class="inv obs"><p>La bambina generata ti sta già guardando.<br>Gli innesti cominciano qui.</p><a class="eb" href="innesti/vr7kq3.html" id="enterBtn">Entra nel primo innesto</a></div>
 <div class="arci obs"><div class="ah"><h2>Gli innesti</h2><p>Dieci innesti digitali verso il libro. Dall'11 al 24 marzo, un'isola alla volta.</p></div><div class="cb"><p class="cbl" id="cdLabel"></p><div class="cbt"><div class="cbf" id="cdFill" style="width:0%"></div></div><div class="cbd"><span>11 mar</span><span>17 mar</span><span>24 mar</span></div></div><div class="isole" id="isoleGrid"></div><p class="innesti-more" id="moreLabel"></p></div>
 <div class="po-final obs" id="preorder"><h2>In libreria dal 24 marzo</h2><p class="ed">Alfabeto UTET</p><p class="po-hook" style="font-size:clamp(.85rem,1.3vw,1rem);font-weight:300;font-style:italic;color:rgba(240,236,230,.6);max-width:440px;margin:0 auto 1.8rem;line-height:1.7;opacity:0;transform:translateY(12px);transition:all 1s ease .2s">Quello che hai visto negli innesti è un assaggio. Il libro contiene la mappa: come funziona la macchina che costruisce la tua realtà, e come tornare a vedere quello che ha deciso di nasconderti.</p><div class="pb"><a href="https://amzn.eu/d/0hk9fjlx" class="pr" id="amazonBtn" target="_blank" rel="noopener">Preordina</a></div></div>
 <footer><p>Andrea Colamedici · <a href="https://tlon.it">Tlon</a> · 2026</p><p class="gdpr">Questo sito utilizza cookie tecnici. Nessun dato personale viene ceduto a terzi. Per informazioni sulla privacy: <a href="mailto:info@tlon.it">info@tlon.it</a></p></footer>
@@ -45,10 +45,9 @@ function showG(id,html,delay){setTimeout(function(){var el=document.getElementBy
 if(isReturn){var lastTs=0;try{lastTs=parseInt(prevVisit)}catch(e){}var lastD=new Date(lastTs);var lastOra=String(lastD.getHours()).padStart(2,'0')+':'+String(lastD.getMinutes()).padStart(2,'0');var lastData=lastD.toLocaleDateString('it-IT',{day:'numeric',month:'long'});showG('g1','<span class="dato">Ti ricordo.</span>',500);showG('g2','L\u2019ultima volta eri qui il <span class="dato">'+lastData+'</span>. Alle <span class="dato">'+lastOra+'</span>.',2500);showG('g3','Nessuno te l\u2019ha chiesto di tornare. Eppure sei qui.',5000);showG('g4','Arcipelago delle realtà parla di come è diventato normale.',7500)}else{showG('g1','Sono le <span class="dato">'+ora+'</span>, a <span class="dato">'+tzCity+'</span>. Stai usando <span class="dato">'+dev+'</span>.',500);showG('g2','Tutto questo lo sapevo già prima che iniziassi a leggere.',3500);showG('g3','Ogni pagina che apri lascia una traccia. Questa compresa.',5500);showG('g4','Arcipelago delle realtà parla di come è diventato normale.',8000)}
 setTimeout(function(){var te=document.getElementById('gtimer');te.style.transition='opacity 1s ease';te.style.opacity='1';setInterval(function(){te.textContent='Sei qui da '+Math.floor((Date.now()-gStart)/1000)+' secondi. Anche questo è un dato.'},1000)},10000);
 setTimeout(function(){document.getElementById('gcue').style.transition='opacity 1.5s ease';document.getElementById('gcue').style.opacity='1'},11500);
-
-var innesti=[{n:'01',t:'La bambina continua a giocare',d:'Profilazione. Il tuo nome. La prima traccia.',u:'2026-03-11'},{n:'02',t:'Come leggi',d:'Behavioral tracking. Una parola. La carta che trema.',u:'2026-03-12'},{n:'03',t:'Quarantotto',d:'Il conteggio. I template.',u:'2026-03-14'},{n:'04',t:'Attrattori',d:'Resta fermo. Il corpo tradisce sempre.',u:'2026-03-15'},{n:'05',t:'Impronta vocale',d:'Parla. La tua traccia si dissolverà.',u:'2026-03-17'},{n:'06',t:'Oggetti docili',d:'Un volto sintetico. Nessuno è reale. Qualcuno obbedisce.',u:'2026-03-18'},{n:'07',t:'Cosa cerchi',d:'Tre rifiuti. La ricerca precede chi cerca.',u:'2026-03-20'},{n:'08',t:'Spazio latente',d:'I tuoi dati compongono un dossier. Non ciò che hai fatto: lo spazio preparato perché pensassi.',u:'2026-03-21'},{n:'09',t:'Immortalità',d:'Scrivi una frase. Le sue sorelle generate. L\u2019immortalità era un patto.',u:'2026-03-23'},{n:'10',t:'Corpo',d:'Il battito del tuo dispositivo. Il tuo vettore contro il mio.',u:'2026-03-24'}];
+var innesti=[{n:'01',f:'vr7kq3',t:'La bambina continua a giocare',d:'Profilazione. Il tuo nome. La prima traccia.',u:'2026-03-11'},{n:'02',f:'m4xp8w',t:'Come leggi',d:'Behavioral tracking. Una parola. La carta che trema.',u:'2026-03-12'},{n:'03',f:'j9tn2f',t:'Quarantotto',d:'Il conteggio. I template.',u:'2026-03-14'},{n:'04',f:'b6hs5c',t:'Attrattori',d:'Resta fermo. Il corpo tradisce sempre.',u:'2026-03-15'},{n:'05',f:'w2gm7y',t:'Impronta vocale',d:'Parla. La tua traccia si dissolverà.',u:'2026-03-17'},{n:'06',f:'p8fd4k',t:'Oggetti docili',d:'Un volto sintetico. Nessuno è reale. Qualcuno obbedisce.',u:'2026-03-18'},{n:'07',f:'n3qx9v',t:'Cosa cerchi',d:'Tre rifiuti. La ricerca precede chi cerca.',u:'2026-03-20'},{n:'08',f:'t5rb1z',t:'Spazio latente',d:'I tuoi dati compongono un dossier. Non ciò che hai fatto: lo spazio preparato perché pensassi.',u:'2026-03-21'},{n:'09',f:'c7wj6e',t:'Immortalità',d:'Scrivi una frase. Le sue sorelle generate. L\u2019immortalità era un patto.',u:'2026-03-23'},{n:'10',f:'g1yk8d',t:'Corpo',d:'Il battito del tuo dispositivo. Il tuo vettore contro il mio.',u:'2026-03-24'}];
 var today=now.toISOString().slice(0,10),grid=document.getElementById('isoleGrid'),uc=0,shown=0,hidden=0;
-innesti.forEach(function(inn,i){var ud=new Date(inn.u+'T00:00:00'),ok=now>=ud,isT=today===inn.u;if(ok)uc++;var show=ok||(shown===0&&!ok);if(!ok&&show)shown++;if(!ok&&!show){hidden++;return}var el=document.createElement('a');el.style.setProperty('--i',(0.1+i*0.07).toFixed(2));if(ok){el.className='isola'+(isT?' new':'');el.href='innesti/'+inn.n+'.html';el.innerHTML='<p class="isn">'+inn.n+'</p><p class="ist">'+inn.t+'</p><p class="isd">'+inn.d+'</p><p class="isa">entra \u2192</p>'}else{el.className='isola locked';el.href='#';el.onclick=function(e){e.preventDefault()};var ds=ud.toLocaleDateString('it-IT',{day:'numeric',month:'short'});var daysLeft=Math.ceil((ud-now)/(1000*60*60*24));var prox=Math.max(.25,Math.min(.65,1-daysLeft/14));el.style.opacity=prox;el.innerHTML='<p class="isn">'+inn.n+'</p><p class="ist">'+inn.t+'</p><p class="isd">'+inn.d+'</p><p class="isl">si sblocca il '+ds+'</p>'}grid.appendChild(el)});
+innesti.forEach(function(inn,i){var ud=new Date(inn.u+'T00:00:00'),ok=now>=ud,isT=today===inn.u;if(ok)uc++;var show=ok||(shown===0&&!ok);if(!ok&&show)shown++;if(!ok&&!show){hidden++;return}var el=document.createElement('a');el.style.setProperty('--i',(0.1+i*0.07).toFixed(2));if(ok){el.className='isola'+(isT?' new':'');el.href='innesti/'+inn.f+'.html';el.innerHTML='<p class="isn">'+inn.n+'</p><p class="ist">'+inn.t+'</p><p class="isd">'+inn.d+'</p><p class="isa">entra \u2192</p>'}else{el.className='isola locked';el.href='#';el.onclick=function(e){e.preventDefault()};var ds=ud.toLocaleDateString('it-IT',{day:'numeric',month:'short'});var daysLeft=Math.ceil((ud-now)/(1000*60*60*24));var prox=Math.max(.25,Math.min(.65,1-daysLeft/14));el.style.opacity=prox;el.innerHTML='<p class="isn">'+inn.n+'</p><p class="ist">'+inn.t+'</p><p class="isd">'+inn.d+'</p><p class="isl">si sblocca il '+ds+'</p>'}grid.appendChild(el)});
 document.getElementById('cdFill').style.width=Math.min(100,uc/10*100)+'%';document.getElementById('cdLabel').textContent=uc===0?'Gli innesti si sbloccano dall\'11 marzo':uc===10?'Tutti gli innesti sono sbloccati':uc+' innesti sbloccati su 10';if(hidden>0)document.getElementById('moreLabel').textContent='Altri '+hidden+' innesti si sbloccheranno nei prossimi giorni.';if(uc===0){var b=document.getElementById('enterBtn');b.style.opacity='.3';b.style.pointerEvents='none';b.textContent='disponibile dall\'11 marzo'}
 var ec=document.getElementById('ellissi'),ex=ec.getContext('2d'),eW,eH;
 function erz(){eW=ec.width=innerWidth;eH=ec.height=innerHeight}erz();addEventListener('resize',erz);
@@ -130,36 +129,28 @@ function drawE(){
   ex.clearRect(0,0,eW,eH);
   ex.fillStyle='#050a10';
   ex.fillRect(0,0,eW,eH);
-
   for(var i=0;i<ellissi.length;i++){
     var e=ellissi[i];
-
     // Breathing
     var br=1+Math.sin(et*e.bsp*12+e.bph)*e.bam;
-
     // Drift sinusoidale
     var driftNx=Math.sin(et*1.2+e.dph)*.04;
     var driftNy=Math.cos(et*.9+e.dph*.7)*.03;
-
     // Aggiorna posizione normalizzata
     e.nx+=e.vnx+Math.sin(et*.8+e.dph)*.000015;
     e.ny+=e.vny+Math.cos(et*.6+e.dph)*.00001;
-
     // Wrap morbido: quando esce da un lato, rientra dall'altro
     if(e.nx<-.15)e.nx=1.15;
     if(e.nx>1.15)e.nx=-.15;
     if(e.ny<-.15)e.ny=1.15;
     if(e.ny>1.15)e.ny=-.15;
-
     // Rotazione
     e.rot+=e.vrot+Math.sin(et*.25+e.dph)*.00008;
-
     // Posizione pixel = posizione normalizzata * dimensione viewport + drift + parallasse scroll
     var px=(e.nx+driftNx)*eW;
     var py=(e.ny+driftNy)*eH - eScrollY*e.parallax;
     // Riporta py dentro il viewport dopo la parallasse
     py=((py%eH)+eH)%eH;
-
     // Mouse: leggera attrazione
     var mdx=eMx-e.nx,mdy=eMy-e.ny;
     var md=Math.sqrt(mdx*mdx+mdy*mdy);
@@ -167,17 +158,14 @@ function drawE(){
       e.nx+=mdx*.0001;
       e.ny+=mdy*.0001;
     }
-
     // Alpha con breathing
     var al=e.ba*br;
-
     ex.save();
     ex.translate(px,py);
     ex.rotate(e.rot);
     var scaleX=br;
     var scaleY=br*(1+Math.sin(et*1.8+e.bph)*.025);
     ex.scale(scaleX,scaleY);
-
     // Gradiente radiale morbido
     var maxR=Math.max(e.rx,e.ry);
     var g=ex.createRadialGradient(0,0,0,0,0,maxR);
@@ -189,7 +177,6 @@ function drawE(){
     ex.beginPath();
     ex.ellipse(0,0,e.rx,e.ry,0,0,Math.PI*2);
     ex.fill();
-
     // Layer interno più luminoso
     var g2=ex.createRadialGradient(0,0,0,0,0,maxR*.6);
     g2.addColorStop(0,'rgba('+Math.min(255,e.col.r+40)+','+Math.min(255,e.col.g+40)+','+Math.min(255,e.col.b+40)+','+(al*.25)+')');
@@ -198,10 +185,8 @@ function drawE(){
     ex.beginPath();
     ex.ellipse(0,0,e.rx*.6,e.ry*.6,0,0,Math.PI*2);
     ex.fill();
-
     ex.restore();
   }
-
   // Isole flottanti
   for(var i=0;i<isoleF.length;i++){
     var f=isoleF[i];
@@ -237,7 +222,6 @@ function drawE(){
     ex.stroke();
     ex.restore();
   }
-
   requestAnimationFrame(drawE);
 }
 drawE();
@@ -249,3 +233,6 @@ var obs=new IntersectionObserver(function(entries){entries.forEach(function(en){
 </script>
 </body>
 </html>
+
+
+correggi e riscrivimelo qui, incollo io
