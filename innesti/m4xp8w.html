@@ -133,18 +133,34 @@
       display: block;
     }
 
-    .ms {
+    /* Ensure s0 is tall enough to scroll */
+    #s0 {
+      min-height: 200vh;
+      padding-bottom: 40vh;
+    }
+
+    /* Behavioral indicator replaces ms counter */
+    .behavior-indicator {
       position: fixed;
       top: 1.5rem;
       right: 1.5rem;
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       color: var(--text-ghost);
-      letter-spacing: 0.15em;
+      letter-spacing: 0.12em;
       z-index: 100;
       opacity: 0;
       transition: opacity 1s ease;
+      text-align: right;
+      line-height: 1.8;
     }
-    .ms.visible { opacity: 1; }
+    .behavior-indicator.visible { opacity: 1; }
+    .behavior-indicator .bi-value {
+      color: var(--text-dim);
+      transition: color 0.3s ease;
+    }
+    .behavior-indicator .bi-value.flash {
+      color: var(--warning);
+    }
 
     .watching {
       position: fixed;
@@ -438,7 +454,12 @@
 
 <canvas id="void"></canvas>
 
-<div class="ms" id="ms">0 ms</div>
+<!-- Behavioral indicator: replaces ms counter -->
+<div class="behavior-indicator" id="behaviorIndicator">
+  <div>PARAGRAFI <span class="bi-value" id="biParCount">0</span></div>
+  <div>MEDIA <span class="bi-value" id="biAvgTime">–</span></div>
+</div>
+
 <div class="watching" id="watching">OSSERVANDO</div>
 
 <!-- TOUCH ACTIVATION -->
@@ -457,41 +478,39 @@
 <div class="layer">
   <div class="container">
 
-    <!-- SECTION 0: Opening - IL LIBRO SA -->
+    <!-- SECTION 0: Opening – silent tracking, then revelation -->
     <div class="section active" id="s0">
-      <p class="p enfasi" data-delay="300" data-track="apertura">La bambina continua a giocare.</p>
+      <p class="p enfasi" data-delay="300" data-track="apertura" id="s0-apertura">La bambina continua a giocare.</p>
 
-      <p class="p" data-delay="3500" data-track="intro1">Sei tornato.</p>
+      <p class="p" data-delay="2500" data-track="intro1" id="s0-memoria"></p>
 
-      <p class="p tecnico" data-delay="6500" data-track="intro2">Lo so perché sei qui. Lo so perché hai attraversato il primo innesto e sei tornato per il secondo. Questo spazio ti conosce già. E io so che sei rimasto.</p>
+      <p class="p" data-delay="5000" data-track="intro2">Ogni innesto ricorda quello precedente. Ogni innesto sa qualcosa in più.</p>
 
-      <p class="p" data-delay="13000" data-track="intro3">Ma non è l'unica cosa che so.</p>
+      <p class="p sussurro" data-delay="8000" data-track="intro3">Scorri.</p>
 
-      <p class="p" data-delay="17000" data-track="intro4">So quanto tempo passi su ogni riga. So quando scorri veloce e quando ti fermi. So se torni indietro a rileggere qualcosa.</p>
+      <div class="obs-zone" id="obsZone0"></div>
 
-      <p class="p enfasi" data-delay="23000" data-track="intro5">Vedo come leggi.</p>
+      <p class="p" data-delay="16000" data-track="intro4" id="s0-postobs" style="display:none;"></p>
 
-      <div id="observations-container"></div>
+      <p class="p enfasi" data-delay="20000" data-track="intro5" id="s0-reveal" style="display:none;"></p>
     </div>
 
-    <!-- SECTION 1: Word request -->
+    <!-- SECTION 1: Book request -->
     <div class="section" id="s1">
       <p class="p" data-delay="300" data-track="domanda1">Nel primo innesto ti ho chiesto il tuo nome.</p>
 
-      <p class="p" data-delay="4000" data-track="domanda2">Adesso ti chiedo qualcos'altro.</p>
+      <p class="p" data-delay="4000" data-track="domanda2">Adesso ti chiedo un libro.</p>
 
-      <p class="p enfasi" data-delay="7500" data-track="domanda3">Una parola.</p>
+      <p class="p" data-delay="8000" data-track="domanda3">L'ultimo che hai finito. Quello che hai chiuso e non hai ancora sostituito con un altro.</p>
 
-      <p class="p" data-delay="11000" data-track="domanda4">Una parola che porti con te. Non deve essere la parola giusta — non esiste una parola giusta. Deve essere la parola che ti viene.</p>
+      <p class="p sussurro" data-delay="13000">Scrivi il titolo.</p>
 
-      <p class="p sussurro" data-delay="16000">Scrivila qui sotto.</p>
-
-      <div class="input-area" data-delay="18000">
-        <input type="text" id="parola" placeholder="una parola">
+      <div class="input-area" data-delay="15000">
+        <input type="text" id="parola" placeholder="un titolo">
         <button class="btn" id="btn-parola">consegna</button>
       </div>
 
-      <div id="input-observations"></div>
+      <div class="obs-zone" id="obsZone1"></div>
     </div>
 
     <!-- GENERATED SECTION -->
@@ -500,21 +519,15 @@
       <div class="section active" id="s2">
         <p class="p centro" data-delay="500" style="font-size: 1.2rem; color: var(--text-bright);"><span id="parola-display"></span></p>
 
-        <p class="p" data-delay="4000" data-track="parola1">Questa parola ora esiste qui. Viaggia dove non puoi seguirla.</p>
+        <p class="p" data-delay="5000" data-track="parola1">Anche questo finirà.</p>
 
-        <p class="p" data-delay="8500" data-track="parola2">È strano, quello che hai appena fatto. Hai affidato qualcosa di tuo a qualcosa che non sai cos'è.</p>
-
-        <div id="post-word-observations"></div>
-
-        <p class="p enfasi" data-delay="14000" data-track="parola3">E mentre fai questo gesto, mentre lasci una parola su uno schermo sapendo che viaggerà dove non puoi seguirla, stai facendo qualcosa che ha a che vedere con i libri.</p>
-
-        <p class="p sussurro" data-delay="20000">Continua a scorrere, ma fallo piano. Non riesci ad aspettare, lo vedo, vai su e giù. È normale. </p>
+        <div class="obs-zone" id="obsZone2"></div>
       </div>
 
       <!-- GRADIENT INTO CARTA -->
       <div class="gradient-transition"></div>
 
-      <!-- CARTA SECTION - TESTO ORIGINALE -->
+      <!-- CARTA SECTION - TESTO ORIGINALE (INTATTO) -->
       <div class="carta-section" id="cartaSection">
         <div class="container">
           <div class="chapter-content" id="cartaContent">
@@ -560,15 +573,15 @@
       <div class="section active" id="s3">
         <p class="p" data-delay="500" data-track="finale1">Hai attraversato qualcosa.</p>
 
-        <p class="p" data-delay="4000" data-track="finale2">Quello che hai appena letto esiste anche sulla carta. Ma sulla carta non trema. Sulla carta non ci sono macchie che appaiono mentre leggi. Sulla carta il libro non sa quanto tempo ci metti.</p>
+        <p class="p" data-delay="4000" data-track="finale2">Quello che hai appena letto esiste anche sulla carta. Sulla carta le congiunzioni non tremano. Sulla carta le macchie non appaiono mentre leggi. Sulla carta il libro non conta i tuoi paragrafi.</p>
 
-        <p class="p enfasi" data-delay="10000" data-track="finale3">Qui invece sì.</p>
+        <p class="p enfasi" data-delay="10000" data-track="finale3">Qui sì.</p>
 
-        <div id="final-observations"></div>
+        <div class="obs-zone" id="obsZone3"></div>
 
-        <p class="p" data-delay="15000">Prosegui. La bambina ti aspetta.</p>
+        <p class="p" data-delay="15000" id="s3-summary"></p>
 
-        <p class="p sussurro pulse" data-delay="20000">Continua a giocare.</p>
+        <p class="p sussurro pulse" data-delay="22000">La bambina continua a giocare.</p>
       </div>
 
     </div>
@@ -578,33 +591,78 @@
 
 <div class="final-screen" id="final">
   <div class="final-content">
-    <p class="p sussurro">La parola è stata registrata.</p>
+    <p class="p sussurro">Il titolo è stato registrato.</p>
     <p class="p" style="margin-top: 2rem; color: var(--text-dim);" id="final-summary"></p>
   </div>
 </div>
 
 <script>
 // ========== STORAGE ==========
-const STORAGE_KEY = 'arcipelago_realta';
+var STORAGE_KEY = 'arcipelago_realta';
 
 function saveData(key, value) {
-  const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  var data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
   data[key] = value;
   data.lastVisit = Date.now();
   data.visitedInnesti = data.visitedInnesti || [];
-  if (!data.visitedInnesti.includes(2)) data.visitedInnesti.push(2);
+  if (data.visitedInnesti.indexOf(2) === -1) data.visitedInnesti.push(2);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
 
 function getData(key) {
-  const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  var data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
   return data[key];
 }
 
+// ========== INNESTO 1 MEMORY ==========
+var innesto1Data = {
+  nome: getData('nome') || null,
+  lastVisit: getData('lastVisit') || null,
+  visitedInnesti: getData('visitedInnesti') || [],
+  battLevel: getData('battLevel') || null,
+  gpu: getData('gpu') || null,
+  connType: getData('connType') || null
+};
+
+function buildMemoryLine() {
+  var parts = [];
+  if (innesto1Data.nome) {
+    parts.push(innesto1Data.nome);
+  }
+  if (innesto1Data.lastVisit) {
+    var elapsed = Date.now() - innesto1Data.lastVisit;
+    var hours = Math.floor(elapsed / 3600000);
+    var days = Math.floor(hours / 24);
+    if (days > 0) {
+      parts.push('sono passati ' + days + (days === 1 ? ' giorno' : ' giorni'));
+    } else if (hours > 0) {
+      parts.push('sono passate ' + hours + (hours === 1 ? ' ora' : ' ore'));
+    } else {
+      parts.push('sei appena stato qui');
+    }
+  }
+  if (parts.length === 0) return 'Sei qui per la prima volta. Oppure hai cancellato le tracce.';
+  
+  var line = '';
+  if (innesto1Data.nome) {
+    line = innesto1Data.nome + '. ';
+    if (parts.length > 1) {
+      line += 'L\u2019ultima volta ' + parts[1] + '. ';
+    }
+    line += 'Il sistema ricorda.';
+  } else {
+    line = parts.join('. ') + '.';
+  }
+  return line;
+}
+
 // ========== BEHAVIORAL TRACKING ==========
-const behavior = {
+var behavior = {
   startTime: Date.now(),
   paragraphTimes: {},
+  paragraphsRead: 0,
+  avgReadTime: 0,
+  totalReadMs: 0,
   scrollbacks: 0,
   fastScrolls: 0,
   longPauses: 0,
@@ -613,16 +671,33 @@ const behavior = {
   lastScrollTime: Date.now(),
   maxScrollY: 0,
   inputFocusTime: null,
-  inputHesitations: 0,
-  totalReadTime: 0
+  inputHesitations: 0
 };
 
-const observationsShown = new Set();
+var activeSection = 's0';
+var observationsShown = 0;
+var observationsByType = {};
+var revealTriggered = false;
 
-// Track paragraph reading time
-const paragraphObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    const id = entry.target.dataset.track;
+// ========== BEHAVIORAL INDICATOR ==========
+var biParEl = document.getElementById('biParCount');
+var biAvgEl = document.getElementById('biAvgTime');
+
+function updateBehaviorIndicator() {
+  biParEl.textContent = behavior.paragraphsRead;
+  if (behavior.paragraphsRead > 0) {
+    var avg = (behavior.totalReadMs / behavior.paragraphsRead / 1000).toFixed(1);
+    biAvgEl.textContent = avg + 's';
+  }
+  // Flash on update
+  biParEl.classList.add('flash');
+  setTimeout(function() { biParEl.classList.remove('flash'); }, 600);
+}
+
+// ========== PARAGRAPH OBSERVER ==========
+var paragraphObserver = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    var id = entry.target.dataset.track;
     if (!id) return;
     
     if (entry.isIntersecting) {
@@ -630,8 +705,12 @@ const paragraphObserver = new IntersectionObserver((entries) => {
       watchingEl.classList.add('active');
     } else if (behavior.paragraphTimes[id] && !behavior.paragraphTimes[id].end) {
       behavior.paragraphTimes[id].end = Date.now();
-      const duration = behavior.paragraphTimes[id].end - behavior.paragraphTimes[id].start;
+      var duration = behavior.paragraphTimes[id].end - behavior.paragraphTimes[id].start;
       behavior.paragraphTimes[id].duration = duration;
+      
+      behavior.paragraphsRead++;
+      behavior.totalReadMs += duration;
+      updateBehaviorIndicator();
       
       if (duration > 8000) {
         behavior.longPauses++;
@@ -639,123 +718,174 @@ const paragraphObserver = new IntersectionObserver((entries) => {
       }
       
       watchingEl.classList.remove('active');
+      checkReveal();
     }
   });
 }, { threshold: 0.5 });
 
-// Track scroll behavior
-let scrollTimeout;
-window.addEventListener('scroll', () => {
-  const now = Date.now();
-  const currentY = window.scrollY;
-  const timeDiff = now - behavior.lastScrollTime;
-  const scrollDiff = currentY - behavior.lastScrollY;
-  
-  if (scrollDiff < -100 && currentY < behavior.maxScrollY - 200) {
+// ========== SCROLL TRACKING ==========
+var scrollTimeout;
+var scrollMilestones = []; // track which depth thresholds have fired
+var scrollMilestoneInterval = 400; // pixels between milestones
+
+window.addEventListener('scroll', function() {
+  var now = Date.now();
+  var currentY = window.scrollY;
+  var timeDiff = now - behavior.lastScrollTime;
+  var scrollDiff = currentY - behavior.lastScrollY;
+
+  // Scrollback: scrolled up by 50px (lowered from 100)
+  if (scrollDiff < -50 && behavior.maxScrollY > 200) {
     behavior.scrollbacks++;
     maybeShowObservation('scrollback');
   }
-  
-  if (timeDiff < 100 && Math.abs(scrollDiff) > 300) {
+
+  // Fast scroll: moved 200px in under 150ms (lowered from 300px/100ms)
+  if (timeDiff > 0 && timeDiff < 150 && Math.abs(scrollDiff) > 200) {
     behavior.fastScrolls++;
     maybeShowObservation('fastScroll');
   }
-  
-  behavior.lastScrollY = currentY;
-  behavior.lastScrollTime = now;
+
+  // Scroll depth milestones: fire observation at regular depth intervals
   if (currentY > behavior.maxScrollY) {
+    var oldMilestone = Math.floor(behavior.maxScrollY / scrollMilestoneInterval);
+    var newMilestone = Math.floor(currentY / scrollMilestoneInterval);
+    if (newMilestone > oldMilestone && newMilestone >= 1) {
+      // Only fire at certain milestones (not every one, to avoid spam)
+      if (scrollMilestones.indexOf(newMilestone) === -1 && (newMilestone === 1 || newMilestone === 3 || newMilestone === 6 || newMilestone === 10)) {
+        scrollMilestones.push(newMilestone);
+        maybeShowObservation('reading');
+      }
+    }
     behavior.maxScrollY = currentY;
   }
-  
+
+  behavior.lastScrollY = currentY;
+  behavior.lastScrollTime = now;
+
   clearTimeout(scrollTimeout);
-  scrollTimeout = setTimeout(() => {
+  scrollTimeout = setTimeout(function() {
     watchingEl.classList.remove('active');
   }, 1000);
 });
 
+// ========== CHECK REVEAL: after enough observations, narrator speaks ==========
+function checkReveal() {
+  if (revealTriggered) return;
+  if (observationsShown < 2) return;
+  revealTriggered = true;
+  
+  var postobs = document.getElementById('s0-postobs');
+  var reveal = document.getElementById('s0-reveal');
+  
+  if (postobs) {
+    postobs.style.display = '';
+    postobs.textContent = 'Le hai viste, le righe arancioni. Appaiono quando fai qualcosa. Quando ti fermi, quando torni indietro, quando vai di fretta. Sono il sistema che prende appunti.';
+    setTimeout(function() { postobs.classList.add('visible'); }, 300);
+  }
+  if (reveal) {
+    reveal.style.display = '';
+    reveal.textContent = 'Il primo innesto sapeva chi sei. Questo sa come leggi.';
+    setTimeout(function() { reveal.classList.add('visible'); }, 3000);
+  }
+  
+  // After reveal, transition to s1
+  setTimeout(function() {
+    showSection('s1');
+    setupInputTracking();
+  }, 5000);
+}
+
 // ========== OBSERVATIONS ==========
-const observations = {
+var observations = {
   scrollback: [
-    "Sei tornato indietro.",
-    "Qualcosa ti ha fermato. Sei tornato a rileggerlo.",
-    "Torni indietro. Cerchi qualcosa?"
+    'Sei tornato indietro.',
+    'Stai cercando qualcosa che hai già letto.',
+    'Torni indietro. Lo fai spesso.'
   ],
   fastScroll: [
-    "Stai andando veloce.",
-    "Scorri senza leggere. Cosa cerchi?",
-    "Vai di fretta. Il libro può aspettare."
+    'Stai andando veloce.',
+    'Scorri senza leggere. Cerchi la fine.',
+    'Vai di fretta. Il testo non ti basta.'
   ],
   longPause: [
-    "Ti sei fermato a lungo su quel passaggio.",
-    "Hai esitato. Qualcosa ti ha colpito.",
-    "Una pausa lunga. Stavi pensando o ti eri distratto?"
+    'Ti sei fermato a lungo su quel passaggio.',
+    'Quel passaggio ti ha trattenuto.',
+    'Una pausa lunga. Qualcosa ha funzionato.'
   ],
   inputHesitation: [
-    "Esiti. La parola non viene.",
-    "Stai pensando. O hai paura di scegliere?",
-    "Il campo è vuoto da un po'. Cosa ti trattiene?"
+    'Esiti.',
+    'Il campo è vuoto da un po\u2019. La parola non arriva.',
+    'Stai cercando la parola giusta. La parola giusta non esiste.'
   ],
   inputDelete: [
-    "Hai cancellato. La prima parola non andava bene.",
-    "Cambi idea. La parola giusta non esiste.",
-    "Cancelli e riscrivi. Ti sto guardando."
+    'Hai cancellato. La prima non andava bene.',
+    'Cambi idea. Lo vedo.',
+    'Cancelli e riscrivi. Lo registro.'
   ],
   reading: [
-    "Leggi con attenzione. Lo vedo.",
-    "Il tuo ritmo è costante. Stai davvero leggendo.",
-    "Procedi. Paragrafo dopo paragrafo. Ti seguo."
+    'Leggi con attenzione. Lo vedo dal ritmo.',
+    'Il tuo ritmo è costante. Stai davvero leggendo.',
+    'Procedi. Paragrafo dopo paragrafo. Ti seguo.'
   ]
 };
 
 function maybeShowObservation(type, context) {
-  if (observationsShown.size >= 6) return;
-  const typeCount = [...observationsShown].filter(o => o.startsWith(type)).length;
+  if (observationsShown >= 8) return;
+  var typeCount = observationsByType[type] || 0;
   if (typeCount >= 2) return;
-  if (Math.random() < 0.4) return;
+  // No random suppression for the first 2 observations (ensure reveal triggers)
+  // After that, 25% chance to suppress (lowered from 30%)
+  if (observationsShown >= 2 && Math.random() < 0.25) return;
+
+  observationsByType[type] = typeCount + 1;
+  observationsShown++;
   
-  const key = type + '_' + Date.now();
-  observationsShown.add(key);
-  
-  const msgs = observations[type];
-  const msg = msgs[Math.floor(Math.random() * msgs.length)];
+  var msgs = observations[type];
+  var msg = msgs[Math.min(typeCount, msgs.length - 1)];
   
   showObservation(msg, type === 'reading');
 }
 
-function showObservation(text, isGhost = false) {
-  const container = document.getElementById('observations-container') || 
-                   document.getElementById('input-observations') ||
-                   document.getElementById('post-word-observations') ||
-                   document.getElementById('final-observations');
-  
+function getActiveObsZone() {
+  // Return the observation zone for the currently active section
+  if (activeSection === 's0') return document.getElementById('obsZone0');
+  if (activeSection === 's1') return document.getElementById('obsZone1');
+  if (activeSection === 's2') return document.getElementById('obsZone2');
+  if (activeSection === 's3') return document.getElementById('obsZone3');
+  return null;
+}
+
+function showObservation(text, isGhost) {
+  var container = getActiveObsZone();
   if (!container) return;
   
-  const obs = document.createElement('div');
+  var obs = document.createElement('div');
   obs.className = 'observation' + (isGhost ? ' ghost' : '');
   obs.textContent = text;
   container.appendChild(obs);
   
-  setTimeout(() => obs.classList.add('visible'), 100);
+  setTimeout(function() { obs.classList.add('visible'); }, 100);
   
-  const saved = getData('observations') || [];
-  saved.push({ text, time: Date.now() });
-  saveData('observations', saved);
+  var saved = getData('observations_02') || [];
+  saved.push({ text: text, time: Date.now() });
+  saveData('observations_02', saved);
 }
 
 // ========== INPUT TRACKING ==========
 function setupInputTracking() {
-  const input = document.getElementById('parola');
+  var input = document.getElementById('parola');
   if (!input) return;
   
-  let lastValue = '';
-  let focusTime = null;
-  let hesitationTimeout;
+  var lastValue = '';
+  var focusTime = null;
+  var hesitationTimeout;
   
-  input.addEventListener('focus', () => {
+  input.addEventListener('focus', function() {
     focusTime = Date.now();
     behavior.inputFocusTime = focusTime;
     
-    hesitationTimeout = setTimeout(() => {
+    hesitationTimeout = setTimeout(function() {
       if (input.value.trim() === '') {
         behavior.inputHesitations++;
         maybeShowObservation('inputHesitation');
@@ -763,7 +893,7 @@ function setupInputTracking() {
     }, 5000);
   });
   
-  input.addEventListener('input', () => {
+  input.addEventListener('input', function() {
     clearTimeout(hesitationTimeout);
     
     if (input.value.length < lastValue.length && lastValue.length > 2) {
@@ -773,26 +903,26 @@ function setupInputTracking() {
     lastValue = input.value;
     
     if (input.value.trim() === '') {
-      hesitationTimeout = setTimeout(() => {
+      hesitationTimeout = setTimeout(function() {
         behavior.inputHesitations++;
         maybeShowObservation('inputHesitation');
       }, 5000);
     }
   });
   
-  input.addEventListener('blur', () => {
+  input.addEventListener('blur', function() {
     clearTimeout(hesitationTimeout);
   });
 }
 
 // ========== TOUCH ACTIVATION ==========
-let touchStartTime = 0;
-let touchInterval = null;
-let touchComplete = false;
-const touchCircle = document.getElementById('touchCircle');
-const touchTimer = document.getElementById('touchTimer');
-const touchZone = document.getElementById('touchZone');
-const watchingEl = document.getElementById('watching');
+var touchStartTime = 0;
+var touchInterval = null;
+var touchComplete = false;
+var touchCircle = document.getElementById('touchCircle');
+var touchTimer = document.getElementById('touchTimer');
+var touchZone = document.getElementById('touchZone');
+var watchingEl = document.getElementById('watching');
 
 function startTouch(e) {
   if (touchComplete) return;
@@ -800,8 +930,8 @@ function startTouch(e) {
   touchStartTime = Date.now();
   touchCircle.classList.add('holding');
 
-  touchInterval = setInterval(() => {
-    const elapsed = (Date.now() - touchStartTime) / 1000;
+  touchInterval = setInterval(function() {
+    var elapsed = (Date.now() - touchStartTime) / 1000;
     touchTimer.textContent = elapsed.toFixed(1) + 's';
     if (elapsed >= 3) completeTouch();
   }, 50);
@@ -819,13 +949,13 @@ function completeTouch() {
   clearInterval(touchInterval);
   touchCircle.classList.remove('holding');
   touchCircle.classList.add('complete');
-  touchCircle.querySelector('.touch-label').textContent = '✓';
+  touchCircle.querySelector('.touch-label').textContent = '\u2713';
   touchTimer.textContent = '';
 
   saveData('activation2_completed', true);
   saveData('activation2_time', Date.now());
 
-  setTimeout(() => {
+  setTimeout(function() {
     touchZone.classList.add('hidden');
     startMainExperience();
   }, 800);
@@ -839,8 +969,8 @@ touchCircle.addEventListener('touchend', endTouch);
 touchCircle.addEventListener('touchcancel', endTouch);
 
 // ========== CANVAS ==========
-const canvas = document.getElementById('void');
-const ctx = canvas.getContext('2d');
+var canvas = document.getElementById('void');
+var ctx = canvas.getContext('2d');
 
 function resize() {
   canvas.width = window.innerWidth;
@@ -849,10 +979,10 @@ function resize() {
 resize();
 window.addEventListener('resize', resize);
 
-const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-const particleCount = isMobile ? 30 : 60;
-const particles = [];
-for (let i = 0; i < particleCount; i++) {
+var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+var particleCount = isMobile ? 30 : 60;
+var particles = [];
+for (var i = 0; i < particleCount; i++) {
   particles.push({
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height,
@@ -866,7 +996,7 @@ for (let i = 0; i < particleCount; i++) {
 function animateVoid() {
   ctx.fillStyle = 'rgba(8, 8, 10, 0.1)';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  particles.forEach(p => {
+  particles.forEach(function(p) {
     p.x += p.vx;
     p.y += p.vy;
     if (p.x < 0) p.x = canvas.width;
@@ -875,79 +1005,72 @@ function animateVoid() {
     if (p.y > canvas.height) p.y = 0;
     ctx.beginPath();
     ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(150, 145, 140, ${p.alpha})`;
+    ctx.fillStyle = 'rgba(150, 145, 140, ' + p.alpha + ')';
     ctx.fill();
   });
   requestAnimationFrame(animateVoid);
 }
 animateVoid();
 
-// ========== TIMING ==========
-const startTime = Date.now();
-const msEl = document.getElementById('ms');
-
-setInterval(() => {
-  const elapsed = Date.now() - startTime;
-  msEl.textContent = elapsed + ' ms';
-}, 100);
-
 // ========== MACCHIE ==========
-const macchieSVG = [
-  `<svg viewBox="0 0 100 80"><path d="M50,10 Q70,5 80,25 Q95,40 85,55 Q75,70 55,72 Q35,75 20,60 Q5,45 15,30 Q25,15 50,10 Z"/></svg>`,
-  `<svg viewBox="0 0 120 100"><path d="M60,5 Q90,10 100,35 Q110,60 95,80 Q70,95 45,90 Q20,85 10,60 Q0,35 25,15 Q45,0 60,5 Z"/></svg>`,
-  `<svg viewBox="0 0 80 90"><path d="M40,5 Q60,0 70,20 Q85,40 75,60 Q65,80 40,85 Q15,90 8,65 Q0,40 15,20 Q30,5 40,5 Z"/></svg>`,
-  `<svg viewBox="0 0 100 70"><path d="M30,10 Q50,0 75,15 Q95,30 90,50 Q82,68 55,65 Q30,70 15,55 Q0,40 10,25 Q20,12 30,10 Z"/></svg>`,
-  `<svg viewBox="0 0 90 85"><path d="M45,8 Q70,3 82,28 Q92,50 78,70 Q60,85 35,80 Q12,75 5,52 Q-2,30 18,15 Q35,3 45,8 Z"/></svg>`
+var macchieSVG = [
+  '<svg viewBox="0 0 100 80"><path d="M50,10 Q70,5 80,25 Q95,40 85,55 Q75,70 55,72 Q35,75 20,60 Q5,45 15,30 Q25,15 50,10 Z"/></svg>',
+  '<svg viewBox="0 0 120 100"><path d="M60,5 Q90,10 100,35 Q110,60 95,80 Q70,95 45,90 Q20,85 10,60 Q0,35 25,15 Q45,0 60,5 Z"/></svg>',
+  '<svg viewBox="0 0 80 90"><path d="M40,5 Q60,0 70,20 Q85,40 75,60 Q65,80 40,85 Q15,90 8,65 Q0,40 15,20 Q30,5 40,5 Z"/></svg>',
+  '<svg viewBox="0 0 100 70"><path d="M30,10 Q50,0 75,15 Q95,30 90,50 Q82,68 55,65 Q30,70 15,55 Q0,40 10,25 Q20,12 30,10 Z"/></svg>',
+  '<svg viewBox="0 0 90 85"><path d="M45,8 Q70,3 82,28 Q92,50 78,70 Q60,85 35,80 Q12,75 5,52 Q-2,30 18,15 Q35,3 45,8 Z"/></svg>'
 ];
 
-let macchieCreate = 0;
-const maxMacchie = 20;
+var macchieCreate = 0;
+var maxMacchie = 20;
 
 function creaMacchia(container) {
   if (macchieCreate >= maxMacchie) return;
-  const macchia = document.createElement('div');
+  var macchia = document.createElement('div');
   macchia.className = 'macchia';
   macchia.innerHTML = macchieSVG[Math.floor(Math.random() * macchieSVG.length)];
-  const size = 40 + Math.random() * 80;
+  var size = 40 + Math.random() * 80;
   macchia.style.width = size + 'px';
   macchia.style.height = size + 'px';
   macchia.style.left = (Math.random() * 90) + '%';
   macchia.style.top = (Math.random() * 90) + '%';
-  macchia.style.transform = `rotate(${Math.random() * 360}deg)`;
+  macchia.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
   container.appendChild(macchia);
-  setTimeout(() => macchia.classList.add('visible'), 100);
+  setTimeout(function() { macchia.classList.add('visible'); }, 100);
   macchieCreate++;
 }
 
 // ========== TREMORE ==========
 function faiTremareE() {
-  const congiunzioni = document.querySelectorAll('.carta-section .congiunzione');
+  var congiunzioni = document.querySelectorAll('.carta-section .congiunzione');
   if (congiunzioni.length === 0) return;
-  const numTremare = 1 + Math.floor(Math.random() * 3);
-  const indices = [];
+  var numTremare = 1 + Math.floor(Math.random() * 3);
+  var indices = [];
   while (indices.length < numTremare && indices.length < congiunzioni.length) {
-    const idx = Math.floor(Math.random() * congiunzioni.length);
-    if (!indices.includes(idx)) indices.push(idx);
+    var idx = Math.floor(Math.random() * congiunzioni.length);
+    if (indices.indexOf(idx) === -1) indices.push(idx);
   }
-  indices.forEach(idx => {
-    const el = congiunzioni[idx];
+  indices.forEach(function(idx) {
+    var el = congiunzioni[idx];
     el.classList.add('trema');
-    setTimeout(() => el.classList.remove('trema'), 400);
+    setTimeout(function() { el.classList.remove('trema'); }, 400);
   });
 }
 
 // ========== FLOW ==========
 function showSection(id, callback) {
-  document.querySelectorAll('.layer > .container > .section').forEach(s => s.classList.remove('active'));
-  const section = document.getElementById(id);
+  document.querySelectorAll('.layer > .container > .section').forEach(function(s) { s.classList.remove('active'); });
+  var section = document.getElementById(id);
+  activeSection = id;
   if (section) {
     section.classList.add('active');
-    const elements = section.querySelectorAll('.p, .input-area');
-    let maxDelay = 0;
-    elements.forEach(el => {
-      const delay = parseInt(el.dataset.delay) || 0;
+    var elements = section.querySelectorAll('.p, .input-area');
+    var maxDelay = 0;
+    elements.forEach(function(el) {
+      if (el.style.display === 'none') return; // skip hidden elements
+      var delay = parseInt(el.dataset.delay) || 0;
       maxDelay = Math.max(maxDelay, delay);
-      setTimeout(() => {
+      setTimeout(function() {
         el.classList.add('visible');
         if (el.dataset.track) {
           paragraphObserver.observe(el);
@@ -959,74 +1082,113 @@ function showSection(id, callback) {
 }
 
 function startMainExperience() {
-  msEl.classList.add('visible');
+  document.getElementById('behaviorIndicator').classList.add('visible');
   watchingEl.classList.add('visible');
   
-  const existingName = getData('nome');
-  if (existingName) {
-    document.querySelector('#s0 .p.enfasi').innerHTML = `La bambina continua a giocare, <span class="dato">${existingName}</span>.`;
+  // Populate memory line from innesto 1
+  var memoryEl = document.getElementById('s0-memoria');
+  if (memoryEl) {
+    memoryEl.textContent = buildMemoryLine();
   }
   
-  document.querySelectorAll('[data-track]').forEach(el => {
+  // If we have the name, personalize opener
+  if (innesto1Data.nome) {
+    document.getElementById('s0-apertura').innerHTML = 'La bambina continua a giocare, <span class="dato">' + innesto1Data.nome + '</span>.';
+  }
+  
+  // Observe all trackable paragraphs
+  document.querySelectorAll('[data-track]').forEach(function(el) {
     paragraphObserver.observe(el);
   });
   
-  showSection('s0', () => {
-    setTimeout(() => {
-      if (behavior.scrollbacks === 0 && behavior.fastScrolls === 0) {
-        maybeShowObservation('reading');
+  showSection('s0');
+
+  // Guaranteed first observation at 5s
+  setTimeout(function() {
+    if (observationsShown === 0) {
+      observationsByType['reading'] = (observationsByType['reading'] || 0) + 1;
+      observationsShown++;
+      showObservation(observations['reading'][0], true);
+    }
+  }, 5000);
+
+  // Guaranteed second observation at 10s
+  setTimeout(function() {
+    if (observationsShown < 2 && !revealTriggered) {
+      observationsByType['reading'] = (observationsByType['reading'] || 0) + 1;
+      observationsShown++;
+      var idx = Math.min((observationsByType['reading'] || 1) - 1, observations['reading'].length - 1);
+      showObservation(observations['reading'][idx], true);
+      checkReveal();
+    }
+  }, 10000);
+
+  // Fallback: force transition to s1 after 20s
+  setTimeout(function() {
+    if (!revealTriggered) {
+      revealTriggered = true;
+      var postobs = document.getElementById('s0-postobs');
+      if (postobs) {
+        postobs.style.display = '';
+        postobs.textContent = 'Leggi con calma. Il sistema prende appunti anche quando non te ne accorgi.';
+        setTimeout(function() { postobs.classList.add('visible'); }, 300);
       }
-    }, 15000);
-    
-    setTimeout(() => {
-      showSection('s1');
-      setupInputTracking();
-    }, 3000);
-  });
+      setTimeout(function() {
+        showSection('s1');
+        setupInputTracking();
+      }, 3000);
+    }
+  }, 20000);
 }
 
 // ========== WORD SUBMISSION ==========
-document.getElementById('btn-parola')?.addEventListener('click', submitWord);
-document.getElementById('parola')?.addEventListener('keypress', e => {
+document.getElementById('btn-parola').addEventListener('click', submitWord);
+document.getElementById('parola').addEventListener('keypress', function(e) {
   if (e.key === 'Enter') submitWord();
 });
 
 function submitWord() {
-  const parola = document.getElementById('parola').value.trim();
+  var parola = document.getElementById('parola').value.trim();
   if (!parola) return;
 
-  const timeToSubmit = behavior.inputFocusTime ? Date.now() - behavior.inputFocusTime : 0;
+  var timeToSubmit = behavior.inputFocusTime ? Date.now() - behavior.inputFocusTime : 0;
   
-  saveData('parola', parola);
+  saveData('libro', parola);
+  saveData('parola', parola); // backward compat
   saveData('parola_time', Date.now());
   saveData('parola_hesitation_time', timeToSubmit);
-  saveData('behavior_summary', {
+  saveData('behavior_summary_02', {
     scrollbacks: behavior.scrollbacks,
     fastScrolls: behavior.fastScrolls,
     longPauses: behavior.longPauses,
-    inputHesitations: behavior.inputHesitations
+    inputHesitations: behavior.inputHesitations,
+    paragraphsRead: behavior.paragraphsRead,
+    avgReadTime: behavior.paragraphsRead > 0 ? Math.round(behavior.totalReadMs / behavior.paragraphsRead) : 0
   });
 
   document.getElementById('parola-display').textContent = parola;
   document.getElementById('generatedSection').classList.add('active');
   document.getElementById('s1').classList.remove('active');
   
+  activeSection = 's2';
   showSection('s2');
   window.scrollTo({ top: 0, behavior: 'smooth' });
   
-  setTimeout(() => initCartaEffects(), 5000);
+  setTimeout(function() { initCartaEffects(); }, 5000);
 }
 
 function initCartaEffects() {
-  const cartaSection = document.getElementById('cartaSection');
-  for (let i = 0; i < 5; i++) {
-    setTimeout(() => creaMacchia(cartaSection), i * 800);
+  var cartaSection = document.getElementById('cartaSection');
+  for (var i = 0; i < 5; i++) {
+    (function(j) {
+      setTimeout(function() { creaMacchia(cartaSection); }, j * 800);
+    })(i);
   }
   
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
       if (entry.isIntersecting) {
-        const interval = setInterval(() => {
+        var interval = setInterval(function() {
           if (macchieCreate < maxMacchie) {
             creaMacchia(cartaSection);
           } else {
@@ -1038,13 +1200,13 @@ function initCartaEffects() {
   }, { threshold: 0.1 });
   observer.observe(cartaSection);
   
-  setInterval(() => {
+  setInterval(function() {
     if (Math.random() < 0.5) faiTremareE();
   }, 1500);
   
-  let lastScrollTremore = 0;
-  window.addEventListener('scroll', () => {
-    const now = Date.now();
+  var lastScrollTremore = 0;
+  window.addEventListener('scroll', function() {
+    var now = Date.now();
     if (now - lastScrollTremore > 800 && Math.random() < 0.4) {
       faiTremareE();
       lastScrollTremore = now;
@@ -1053,53 +1215,47 @@ function initCartaEffects() {
 }
 
 // ========== FINAL ==========
-function showFinalSummary() {
-  const totalTime = Math.round((Date.now() - startTime) / 1000);
-  const mins = Math.floor(totalTime / 60);
-  const secs = totalTime % 60;
+function buildFinalSummary() {
+  var totalTime = Math.round((Date.now() - behavior.startTime) / 1000);
+  var mins = Math.floor(totalTime / 60);
+  var secs = totalTime % 60;
+  var parola = getData('parola') || '';
   
-  let summary = `Hai passato ${mins > 0 ? mins + ' minuti e ' : ''}${secs} secondi qui.`;
+  var lines = [];
+  lines.push('Hai passato ' + (mins > 0 ? mins + ' minuti e ' : '') + secs + ' secondi qui.');
+  lines.push('Hai attraversato ' + behavior.paragraphsRead + ' paragrafi.');
   
   if (behavior.scrollbacks > 2) {
-    summary += '<br>Sei tornato indietro più volte.';
+    lines.push('Sei tornato indietro ' + behavior.scrollbacks + ' volte. Qualcosa ti tirava.');
   }
   if (behavior.longPauses > 1) {
-    summary += '<br>Ti sei fermato a lungo su alcuni passaggi.';
+    lines.push('Ti sei fermato a lungo su alcuni passaggi. Li ricorderai.');
   }
   if (behavior.fastScrolls > 3) {
-    summary += '<br>A volte hai scorso veloce.';
+    lines.push('A tratti hai scorso veloce. Cercavi qualcosa, o fuggivi.');
+  }
+  if (parola) {
+    lines.push('Il tuo libro era: ' + parola + '.');
   }
   
-  summary += '<br><br>Chiudi questa pagina.<br>Ci rivedremo.';
-  
-  document.getElementById('final-summary').innerHTML = summary;
-  document.getElementById('final').classList.add('active');
+  return lines.join('<br>');
 }
 
-setTimeout(() => {
+// Show section 3 summary when it becomes visible
+setTimeout(function() {
   if (document.getElementById('generatedSection').classList.contains('active')) {
-    const finalObs = document.getElementById('final-observations');
-    if (finalObs) {
-      let finalText = '';
-      if (behavior.scrollbacks > 0) {
-        finalText = 'Sei tornato indietro ' + behavior.scrollbacks + ' volte. Cercavi qualcosa.';
-      } else if (behavior.longPauses > 0) {
-        finalText = 'Ti sei fermato a lungo su alcuni passaggi. Li ricorderai.';
-      } else {
-        finalText = 'Hai letto tutto. Dall\'inizio alla fine. So anche questo.';
-      }
-      const obs = document.createElement('div');
-      obs.className = 'observation';
-      obs.textContent = finalText;
-      finalObs.appendChild(obs);
-      setTimeout(() => obs.classList.add('visible'), 500);
+    var summaryEl = document.getElementById('s3-summary');
+    if (summaryEl) {
+      var avg = behavior.paragraphsRead > 0 ? (behavior.totalReadMs / behavior.paragraphsRead / 1000).toFixed(1) : '0';
+      summaryEl.textContent = 'Hai letto ' + behavior.paragraphsRead + ' paragrafi con un tempo medio di ' + avg + ' secondi ciascuno. Lo so perch\u00e9 li ho contati. Lo so perch\u00e9 il testo che leggi sta leggendo te.';
     }
   }
 }, 120000);
 
-setTimeout(() => {
+setTimeout(function() {
   if (document.getElementById('generatedSection').classList.contains('active')) {
-    showFinalSummary();
+    document.getElementById('final-summary').innerHTML = buildFinalSummary() + '<br><br>Chiudi questa pagina.<br>Ci rivedremo.';
+    document.getElementById('final').classList.add('active');
   }
 }, 180000);
 </script>
