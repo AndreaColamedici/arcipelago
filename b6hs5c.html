@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Innesto 04</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            background: #030305;
+            color: #d8d8e0;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 18px;
+            line-height: 1.9;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at 30% 20%, rgba(40,50,80,0.08) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 80%, rgba(60,40,70,0.06) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .chapter {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15vh 8vw;
+            position: relative;
+        }
+
+        .chapter-content {
+            max-width: 600px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1.4s cubic-bezier(0.4, 0, 0.2, 1), transform 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .chapter-content.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .opening {
+            font-size: clamp(1.4rem, 4vw, 2rem);
+            text-align: center;
+            font-style: italic;
+            color: #6a7090;
+            line-height: 1.7;
+        }
+
+        p {
+            margin-bottom: 1.8rem;
+            text-align: justify;
+            hyphens: auto;
+        }
+
+        p:last-child { margin-bottom: 0; }
+
+        .emphasis {
+            color: #8090c0;
+            font-style: italic;
+            font-weight: 600;
+        }
+
+        .data-point {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: #4a5070;
+            margin: 0.8rem 0;
+            padding: 0.6rem 1rem;
+            border-left: 1px solid #3a4060;
+            background: linear-gradient(90deg, rgba(60,70,100,0.08), transparent);
+        }
+
+        /* STILLNESS ACTIVATION */
+        .stillness-prompt {
+            position: fixed;
+            inset: 0;
+            z-index: 800;
+            background: #030305;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.8s ease;
+        }
+
+        .stillness-prompt.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .stillness-prompt p {
+            text-align: center;
+            color: #6a7090;
+            margin-bottom: 1rem;
+            padding: 0 2rem;
+            max-width: 340px;
+        }
+
+        .stillness-command {
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            color: #8090c0;
+            text-align: center;
+            margin: 2rem 0;
+            font-style: italic;
+        }
+
+        /* The stillness visualization */
+        .stillness-container {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            margin: 2rem auto;
+        }
+
+        .stillness-center {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #8090c0, transparent);
+            box-shadow: 0 0 20px rgba(128,144,192,0.4);
+            z-index: 10;
+        }
+
+        .stillness-rings {
+            position: absolute;
+            inset: 0;
+        }
+
+        .stillness-ring {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            border: 1px solid rgba(128,144,192,0.15);
+            border-radius: 50%;
+        }
+
+        .stillness-ring:nth-child(1) { width: 60px; height: 60px; }
+        .stillness-ring:nth-child(2) { width: 120px; height: 120px; }
+        .stillness-ring:nth-child(3) { width: 180px; height: 180px; }
+        .stillness-ring:nth-child(4) { width: 240px; height: 240px; }
+
+        /* The traitor dot - shows your actual movement */
+        .traitor-dot {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 8px;
+            height: 8px;
+            margin: -4px 0 0 -4px;
+            border-radius: 50%;
+            background: #c06080;
+            box-shadow: 0 0 15px rgba(192,96,128,0.6);
+            z-index: 20;
+            transition: transform 0.05s linear;
+        }
+
+        /* Movement trail */
+        .trail-dot {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: rgba(192,96,128,0.4);
+            pointer-events: none;
+        }
+
+        /* Oscilloscope */
+        .oscilloscope {
+            width: 100%;
+            height: 80px;
+            margin: 2rem auto;
+            max-width: 300px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .oscilloscope-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: rgba(128,144,192,0.2);
+        }
+
+        .oscilloscope canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .stillness-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            color: #4a5070;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        /* Movement stats */
+        .movement-stats {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .movement-value {
+            font-family: 'Space Mono', monospace;
+            font-size: 2rem;
+            color: #5a6080;
+            transition: color 0.3s ease;
+        }
+
+        .movement-value.high {
+            color: #c06080;
+        }
+
+        .movement-unit {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            color: #4a5070;
+            margin-top: 0.5rem;
+        }
+
+        /* Reveal after stillness */
+        .stillness-reveal {
+            position: fixed;
+            inset: 0;
+            z-index: 850;
+            background: #020204;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease;
+        }
+
+        .stillness-reveal.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .reveal-content {
+            text-align: center;
+            padding: 2rem;
+            max-width: 420px;
+        }
+
+        .reveal-title {
+            font-size: 1.4rem;
+            color: #8090c0;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        .reveal-item {
+            margin: 1.5rem 0;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.5rem;
+            color: #3a4060;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+        }
+
+        .reveal-value {
+            font-size: 1.1rem;
+            color: #8090c0;
+        }
+
+        .reveal-comment {
+            font-size: 0.9rem;
+            color: #5a6080;
+            margin-top: 2.5rem;
+            font-style: italic;
+            line-height: 1.8;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .reveal-comment.visible {
+            opacity: 1;
+        }
+
+        .reveal-continue {
+            margin-top: 2.5rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            color: #3a4060;
+            letter-spacing: 0.15em;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border: 1px solid #2a3050;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .reveal-continue.visible {
+            opacity: 1;
+        }
+
+        .reveal-continue:hover {
+            color: #6a7090;
+            border-color: #4a5070;
+        }
+
+        /* Attractor canvas */
+        .attractor-container {
+            position: relative;
+            width: 100%;
+            height: 350px;
+            margin: 2rem 0;
+            overflow: hidden;
+        }
+
+        .attractor-canvas {
+            position: absolute;
+            inset: 0;
+        }
+
+        .attractor-center {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #8090c0 0%, transparent 70%);
+            box-shadow: 0 0 30px rgba(128,144,192,0.4);
+            z-index: 10;
+        }
+
+        .attractor-label {
+            position: absolute;
+            left: 50%;
+            bottom: 10px;
+            transform: translateX(-50%);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            color: #4a5070;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        /* Gravity well visualization */
+        .gravity-well {
+            width: 100%;
+            height: 200px;
+            margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gravity-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(128,144,192,0.1);
+        }
+
+        .gravity-curve {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 100px;
+            border: 1px solid rgba(128,144,192,0.2);
+            border-top: none;
+            border-radius: 0 0 100px 100px;
+            top: 50%;
+        }
+
+        .gravity-ball {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #8090c0;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: gravityFall 3s ease-in-out infinite;
+        }
+
+        @keyframes gravityFall {
+            0%, 100% { top: 20%; }
+            50% { top: calc(50% + 80px); }
+        }
+
+        .final-text {
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            text-align: center;
+            line-height: 2.4;
+            color: #6a7090;
+        }
+
+        .return-prompt {
+            display: inline-block;
+            margin-top: 5rem;
+            padding: 1rem 3rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #4a5070;
+            border: 1px solid #3a4060;
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+
+        .return-prompt:hover {
+            color: #6a7090;
+            border-color: #5a6080;
+        }
+
+        .scroll-indicator {
+            position: fixed;
+            bottom: 2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.3em;
+            color: #2a3050;
+            text-transform: uppercase;
+            transition: opacity 0.5s ease;
+        }
+
+        .scroll-indicator.hidden { opacity: 0; }
+
+        .audio-prompt {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            color: #2a3050;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border: 1px solid #1a2040;
+            z-index: 100;
+        }
+
+        .audio-prompt.enabled {
+            color: #5a6080;
+            border-color: #4a5070;
+        }
+
+        .glitch-overlay {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 999;
+            opacity: 0;
+        }
+
+        .glitch-overlay.active {
+            animation: glitchFlash 0.15s ease;
+        }
+
+        @keyframes glitchFlash {
+            0% { opacity: 0; }
+            30% { opacity: 1; background: rgba(80,100,150,0.04); }
+            70% { opacity: 0; }
+            100% { opacity: 0; }
+        }
+
+        .final-overlay {
+            position: fixed;
+            inset: 0;
+            background: #020204;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 2s ease;
+            z-index: 1000;
+        }
+
+        .final-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .final-overlay-content {
+            text-align: center;
+            padding: 2rem;
+            max-width: 420px;
+        }
+
+        .final-overlay-content p {
+            font-size: 1.1rem;
+            line-height: 2.2;
+            color: #5a6080;
+        }
+
+        .final-overlay-content em {
+            color: #8090c0;
+            font-style: normal;
+        }
+
+        /* Desktop fallback */
+        .stillness-fallback {
+            margin-top: 2rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            color: #3a4060;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border: 1px solid #2a3050;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .stillness-fallback.visible {
+            opacity: 1;
+        }
+
+        .stillness-fallback:hover {
+            color: #5a6080;
+            border-color: #4a5070;
+        }
+
+        @media (max-width: 600px) {
+            html { font-size: 17px; }
+            .chapter { padding: 12vh 6vw; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="scroll-indicator" id="scrollIndicator">scorri</div>
+<div class="glitch-overlay" id="glitchOverlay"></div>
+<div class="audio-prompt" id="audioPrompt">◉ audio</div>
+
+<!-- STILLNESS ACTIVATION -->
+<div class="stillness-prompt" id="stillnessPrompt">
+    <p>Gli attrattori richiedono quiete per manifestarsi.</p>
+    <div class="stillness-command">Resta fermo.</div>
+    <p style="color: #5a6080; font-size: 0.9rem;">Perfettamente fermo. Per 8 secondi.</p>
+
+    <div class="stillness-container" id="stillnessContainer">
+        <div class="stillness-rings">
+            <div class="stillness-ring"></div>
+            <div class="stillness-ring"></div>
+            <div class="stillness-ring"></div>
+            <div class="stillness-ring"></div>
+        </div>
+        <div class="stillness-center"></div>
+        <div class="traitor-dot" id="traitorDot"></div>
+    </div>
+
+    <div class="oscilloscope" id="oscilloscope">
+        <div class="oscilloscope-line"></div>
+        <canvas id="oscilloCanvas"></canvas>
+    </div>
+
+    <div class="movement-stats">
+        <div class="movement-value" id="movementValue">0.00</div>
+        <div class="movement-unit">deviazione dal centro</div>
+    </div>
+
+    <div class="stillness-label" id="stillnessLabel">inizia quando tocchi lo schermo</div>
+    <div class="stillness-fallback" id="stillnessFallback">su desktop, tocca qui</div>
+</div>
+
+<!-- Reveal after stillness -->
+<div class="stillness-reveal" id="stillnessReveal">
+    <div class="reveal-content">
+        <div class="reveal-title">Il corpo tradisce sempre.</div>
+
+        <div class="reveal-item" id="revMovement">
+            <div class="reveal-label">Movimento totale rilevato</div>
+            <div class="reveal-value" id="revMovementValue">--</div>
+        </div>
+
+        <div class="reveal-item" id="revMax">
+            <div class="reveal-label">Deviazione massima</div>
+            <div class="reveal-value" id="revMaxValue">--</div>
+        </div>
+
+        <div class="reveal-item" id="revNet">
+            <div class="reveal-label">Il tubo attraverso cui passi</div>
+            <div class="reveal-value" id="revNetValue">--</div>
+        </div>
+
+        <div class="reveal-item" id="revSpeed">
+            <div class="reveal-label">Velocità del flusso</div>
+            <div class="reveal-value" id="revSpeedValue">--</div>
+        </div>
+
+        <div class="reveal-comment" id="revComment">
+            Non puoi essere fermo. Il respiro ti muove. Il battito ti muove. I muscoli che tengono il telefono tremano impercettibilmente. Sei un sistema dinamico che finge stabilità. Proprio come la rete che ti attraversa: sembra invisibile, ma pulsa, oscilla, ti collega a milioni di altri sistemi che fingono la stessa stabilità.
+        </div>
+
+        <div class="reveal-continue" id="revealContinue">continua</div>
+    </div>
+</div>
+
+<!-- CAPITOLO 1 -->
+<div class="chapter" id="ch1">
+    <div class="chapter-content">
+        <p class="opening">Nessuno l'ha deciso.<br>È successo.</p>
+    </div>
+</div>
+
+<!-- CAPITOLO 2 -->
+<div class="chapter" id="ch2">
+    <div class="chapter-content">
+        <p>Una bambina diventa un attrattore, senza che qualcuno l'avesse deciso. Mera meccanica dei feedback loop. Per gradienti infinitesimali. Per aggiustamenti che nessuno controlla.</p>
+        <p>I sistemi complessi non hanno un architetto. Hanno traiettorie che convergono verso configurazioni stabili. Hanno bacini di attrazione che catturano le possibilità vaganti e le trascinano verso il centro.</p>
+        <div class="gravity-well">
+            <div class="gravity-line" style="top: 20%;"></div>
+            <div class="gravity-line" style="top: 40%;"></div>
+            <div class="gravity-line" style="top: 60%;"></div>
+            <div class="gravity-curve"></div>
+            <div class="gravity-ball"></div>
+        </div>
+        <p style="text-align: center; color: #5a6080; font-size: 0.85rem;">Le traiettorie cadono. Questa è la forma del paesaggio.</p>
+    </div>
+</div>
+
+<!-- CAPITOLO 3 -->
+<div class="chapter" id="ch3">
+    <div class="chapter-content">
+        <p>In fisica dei sistemi dinamici, un <span class="emphasis">attrattore</span> è un insieme di stati verso cui un sistema tende a evolvere, a prescindere dalle condizioni iniziali. Può essere un punto, una curva, un frattale. È ciò che resta quando tutto il resto è stato eliminato.</p>
+        <p>La bambina del libro è diventata un attrattore. Non perché sia bella, ci sono immagini più belle; neanche perché sia utile: ci sono immagini più utili. Ma perché è <span class="emphasis">probabile</span>. E nel mondo dei sistemi generativi, la probabilità è gravità.</p>
+    </div>
+</div>
+
+<!-- CAPITOLO 4 -->
+<div class="chapter" id="ch4">
+    <div class="chapter-content">
+        <p>E tu?</p>
+        <p>Anche tu sei dentro un sistema di feedback. Ogni volta che scorri, ogni secondo che passi su questa pagina, ogni movimento del tuo dito genera dati. Questi dati modificano ciò che ti verrà mostrato dopo. Modificano ciò che verrà mostrato ad altri che assomigliano a te. Modificano, infinitesimalmente, la struttura stessa dello spazio delle possibilità.</p>
+        <div class="data-point" id="dataTime"></div>
+        <div class="data-point" id="dataScroll"></div>
+        <p>Non lo stai decidendo. Sta succedendo.</p>
+    </div>
+</div>
+
+<!-- CAPITOLO 5: Attractor -->
+<div class="chapter" id="ch5">
+    <div class="chapter-content">
+        <div class="attractor-container" id="attractorContainer">
+            <canvas class="attractor-canvas" id="attractorCanvas"></canvas>
+            <div class="attractor-center"></div>
+            <div class="attractor-label">attrattore</div>
+        </div>
+        <p style="text-align: center; color: #5a6080; font-style: italic;">Ogni punto è una possibilità. Guarda dove convergono.</p>
+    </div>
+</div>
+
+<!-- CAPITOLO 6 -->
+<div class="chapter" id="ch6">
+    <div class="chapter-content">
+        <p>Il conteggio arriva a centotrentitré. Poi si ferma. Contare non ha più senso.</p>
+        <p>Quando qualcosa diventa un attrattore, cessa di essere un'occorrenza da numerare. È una funzione. Un template. Un modo in cui il sistema genera un certo tipo di output. È la differenza tra contare le gocce di pioggia e riconoscere che sta piovendo.</p>
+    </div>
+</div>
+
+<!-- CAPITOLO 7 -->
+<div class="chapter" id="ch7">
+    <div class="chapter-content">
+        <p>Pensa a te stesso nei sistemi che attraversi ogni giorno. Non sei più un utente singolo. Sei un cluster. Un segmento. Un insieme di pattern comportamentali che il sistema riconosce e verso cui ottimizza.</p>
+        <p>Quando ti viene mostrata una pubblicità, è per te in quanto funzione: la funzione "utente che clicca questo tipo di contenuto". Sei diventato un attrattore nel sistema di targeting. Non perché qualcuno l'abbia deciso. Perché è successo.</p>
+        <div class="data-point" id="dataPattern"></div>
+    </div>
+</div>
+
+<!-- CAPITOLO 8 -->
+<div class="chapter" id="ch8">
+    <div class="chapter-content">
+        <p>La frase più importante è quella finale: <span class="emphasis">"Nessuno l'ha deciso. È successo."</span></p>
+        <p>Questa è la caratteristica fondamentale dei sistemi emergenti. Non c'è un agente che pianifica. Non c'è un architetto. Ci sono solo feedback loop, gradienti, aggiustamenti infinitesimali. E da questi emerge un ordine che nessuno ha voluto.</p>
+        <p>È così che nascono gli attrattori. È così che certe idee diventano dominanti. È così che certi volti diventano il default. È così che certe parole diventano impossibili da non pensare.</p>
+    </div>
+</div>
+
+<!-- CAPITOLO 9: Finale -->
+<div class="chapter" id="ch9">
+    <div class="chapter-content">
+        <p class="final-text">
+            Ora sai che esistono attrattori.<br>
+            Che le cose accadono senza che qualcuno le decida.<br>
+            Che i sistemi trovano configurazioni stabili<br>
+            e ci restano.<br><br>
+
+            Ma sapere non cambia nulla.<br>
+            Continuerai a usare i sistemi che ti usano.<br>
+            Continuerai a generare dati<br>
+            che qualcun altro trasformerà in pattern.<br><br>
+
+            Credevi di essere fermo?<br>
+            Il corpo ti ha tradito.<br>
+            Sempre lo farà.
+        </p>
+        <div class="return-prompt" id="returnPrompt">Prosegui</div>
+    </div>
+</div>
+
+<!-- Overlay finale -->
+<div class="final-overlay" id="finalOverlay">
+    <div class="final-overlay-content">
+        <p id="farewellText"></p>
+    </div>
+</div>
+
+<script>
+    const STORAGE_KEY = 'arcipelago_realta';
+    const getData = () => { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; } };
+    const saveData = (k, v) => {
+        const d = getData();
+        d[k] = v;
+        d.lastVisit = Date.now();
+        d.visitedInnesti = d.visitedInnesti || [];
+        if (!d.visitedInnesti.includes(4)) d.visitedInnesti.push(4);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+    };
+
+    const sessionStart = Date.now();
+    let scrollCount = 0;
+
+    // === AUDIO ===
+    let audioCtx = null;
+    let audioEnabled = false;
+
+    document.getElementById('audioPrompt').addEventListener('click', function() {
+        if (!audioEnabled) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            audioEnabled = true;
+            this.classList.add('enabled');
+            this.textContent = '◉ audio on';
+            playTone(120, 0.3, 'sine', 0.03);
+        } else {
+            audioEnabled = false;
+            this.classList.remove('enabled');
+            this.textContent = '◉ audio';
+        }
+    });
+
+    function playTone(freq, duration, type = 'sine', volume = 0.06) {
+        if (!audioEnabled || !audioCtx) return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+    }
+
+    function playDrone(freq, dur, vol = 0.02) {
+        if (!audioEnabled || !audioCtx) return;
+        const o1 = audioCtx.createOscillator();
+        const o2 = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o1.type = o2.type = 'sine';
+        o1.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        o2.frequency.setValueAtTime(freq * 1.005, audioCtx.currentTime);
+        g.gain.setValueAtTime(0, audioCtx.currentTime);
+        g.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + 0.5);
+        g.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + dur - 0.5);
+        g.gain.linearRampToValueAtTime(0, audioCtx.currentTime + dur);
+        o1.connect(g); o2.connect(g); g.connect(audioCtx.destination);
+        o1.start(); o2.start();
+        o1.stop(audioCtx.currentTime + dur);
+        o2.stop(audioCtx.currentTime + dur);
+    }
+
+    function triggerGlitch() {
+        const o = document.getElementById('glitchOverlay');
+        o.classList.remove('active');
+        void o.offsetWidth;
+        o.classList.add('active');
+    }
+
+    // === STILLNESS DETECTION ===
+    let stillnessActive = false;
+    let stillnessComplete = false;
+    let stillnessStarted = false;
+    let stillnessTimer = null;
+    let motionData = [];
+    let lastX = 0, lastY = 0, lastZ = 0;
+    let totalMovement = 0;
+    let maxDeviation = 0;
+    let oscilloData = [];
+
+    const traitorDot = document.getElementById('traitorDot');
+    const movementValue = document.getElementById('movementValue');
+    const stillnessLabel = document.getElementById('stillnessLabel');
+    const oscilloCanvas = document.getElementById('oscilloCanvas');
+    const oscilloCtx = oscilloCanvas.getContext('2d');
+
+    function setupCanvas() {
+        const rect = oscilloCanvas.parentElement.getBoundingClientRect();
+        oscilloCanvas.width = rect.width * 2;
+        oscilloCanvas.height = rect.height * 2;
+        oscilloCtx.scale(2, 2);
+    }
+
+    function handleMotion(event) {
+        if (!stillnessActive || stillnessComplete) return;
+
+        const accel = event.accelerationIncludingGravity || event.acceleration || {};
+        let { x, y, z } = accel;
+
+        if (x === null || x === undefined) return;
+
+        // Calculate delta
+        const deltaX = x - lastX;
+        const deltaY = y - lastY;
+        const deltaZ = z - lastZ;
+        const delta = Math.sqrt(deltaX*deltaX + deltaY*deltaY + deltaZ*deltaZ);
+
+        lastX = x; lastY = y; lastZ = z;
+
+        // Skip first reading
+        if (!stillnessStarted) {
+            stillnessStarted = true;
+            return;
+        }
+
+        // Accumulate movement
+        totalMovement += delta;
+        if (delta > maxDeviation) maxDeviation = delta;
+
+        // Update traitor dot position (amplified for visibility)
+        const dotX = Math.max(-120, Math.min(120, (x - lastX) * 30));
+        const dotY = Math.max(-120, Math.min(120, (y - lastY) * 30));
+        traitorDot.style.transform = `translate(${dotX}px, ${dotY}px)`;
+
+        // Update display
+        movementValue.textContent = totalMovement.toFixed(2);
+        if (totalMovement > 5) {
+            movementValue.classList.add('high');
+        }
+
+        // Oscilloscope data
+        oscilloData.push(delta * 10);
+        if (oscilloData.length > 150) oscilloData.shift();
+        drawOscilloscope();
+
+        // Trail effect
+        if (Math.random() < 0.3 && delta > 0.2) {
+            createTrail(140 + dotX, 140 + dotY);
+        }
+    }
+
+    function createTrail(x, y) {
+        const trail = document.createElement('div');
+        trail.className = 'trail-dot';
+        trail.style.left = x + 'px';
+        trail.style.top = y + 'px';
+        document.getElementById('stillnessContainer').appendChild(trail);
+        setTimeout(() => trail.remove(), 2000);
+    }
+
+    function drawOscilloscope() {
+        const w = oscilloCanvas.width / 2;
+        const h = oscilloCanvas.height / 2;
+        oscilloCtx.clearRect(0, 0, w, h);
+
+        oscilloCtx.strokeStyle = 'rgba(192, 96, 128, 0.6)';
+        oscilloCtx.lineWidth = 1.5;
+        oscilloCtx.beginPath();
+
+        const step = w / 150;
+        oscilloData.forEach((val, i) => {
+            const x = i * step;
+            const y = h/2 - val;
+            if (i === 0) oscilloCtx.moveTo(x, y);
+            else oscilloCtx.lineTo(x, y);
+        });
+
+        oscilloCtx.stroke();
+    }
+
+    function startStillness() {
+        if (stillnessActive || stillnessComplete) return;
+
+        stillnessActive = true;
+        stillnessLabel.textContent = 'resta fermo... 8';
+        playTone(100, 0.5, 'sine', 0.03);
+        playDrone(50, 10, 0.02);
+
+        let countdown = 8;
+        stillnessTimer = setInterval(() => {
+            countdown--;
+            if (countdown > 0) {
+                stillnessLabel.textContent = `resta fermo... ${countdown}`;
+                playTone(80 + (8-countdown) * 10, 0.1, 'sine', 0.02);
+            } else {
+                completeStillness();
+            }
+        }, 1000);
+    }
+
+    function completeStillness() {
+        stillnessActive = false;
+        stillnessComplete = true;
+        clearInterval(stillnessTimer);
+        window.removeEventListener('devicemotion', handleMotion);
+
+        stillnessLabel.textContent = 'completato';
+        playTone(200, 0.5, 'sine', 0.04);
+
+        // Save data
+        saveData('activation4_totalMovement', totalMovement.toFixed(2));
+        saveData('activation4_maxDeviation', maxDeviation.toFixed(2));
+
+        setTimeout(() => {
+            document.getElementById('stillnessPrompt').classList.remove('visible');
+            showReveal();
+        }, 1000);
+    }
+
+    async function showReveal() {
+        const reveal = document.getElementById('stillnessReveal');
+        reveal.classList.add('visible');
+
+        // Movement data
+        document.getElementById('revMovementValue').textContent = totalMovement.toFixed(2) + ' unità';
+        document.getElementById('revMaxValue').textContent = maxDeviation.toFixed(3) + ' g';
+
+        // Network data
+        const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        if (conn) {
+            document.getElementById('revNetValue').textContent = (conn.effectiveType || 'sconosciuto').toUpperCase();
+            document.getElementById('revSpeedValue').textContent = conn.downlink ? conn.downlink + ' Mbps' : 'non rilevabile';
+            saveData('activation4_network', conn.effectiveType);
+        } else {
+            document.getElementById('revNetValue').textContent = 'nascosto';
+            document.getElementById('revSpeedValue').textContent = 'non rilevabile';
+        }
+
+        // Animate reveals
+        setTimeout(() => document.getElementById('revMovement').classList.add('visible'), 400);
+        setTimeout(() => document.getElementById('revMax').classList.add('visible'), 800);
+        setTimeout(() => document.getElementById('revNet').classList.add('visible'), 1200);
+        setTimeout(() => document.getElementById('revSpeed').classList.add('visible'), 1600);
+        setTimeout(() => document.getElementById('revComment').classList.add('visible'), 2400);
+        setTimeout(() => document.getElementById('revealContinue').classList.add('visible'), 3500);
+    }
+
+    function requestMotionPermission() {
+        if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+            DeviceMotionEvent.requestPermission()
+                .then(response => {
+                    if (response === 'granted') {
+                        window.addEventListener('devicemotion', handleMotion);
+                        startStillness();
+                    }
+                })
+                .catch(() => completeStillness());
+        } else if ('DeviceMotionEvent' in window) {
+            window.addEventListener('devicemotion', handleMotion);
+            startStillness();
+        } else {
+            // No motion support - simulate
+            simulateMotion();
+        }
+    }
+
+    function simulateMotion() {
+        stillnessActive = true;
+        stillnessLabel.textContent = 'resta fermo... 8';
+        playDrone(50, 10, 0.02);
+
+        let countdown = 8;
+        let simInterval = setInterval(() => {
+            // Simulate micro-movements
+            const fakeX = (Math.random() - 0.5) * 0.5;
+            const fakeY = (Math.random() - 0.5) * 0.5;
+            const delta = Math.sqrt(fakeX*fakeX + fakeY*fakeY);
+
+            totalMovement += delta;
+            if (delta > maxDeviation) maxDeviation = delta;
+
+            traitorDot.style.transform = `translate(${fakeX * 60}px, ${fakeY * 60}px)`;
+            movementValue.textContent = totalMovement.toFixed(2);
+
+            oscilloData.push(delta * 20);
+            if (oscilloData.length > 150) oscilloData.shift();
+            drawOscilloscope();
+        }, 100);
+
+        stillnessTimer = setInterval(() => {
+            countdown--;
+            if (countdown > 0) {
+                stillnessLabel.textContent = `resta fermo... ${countdown}`;
+            } else {
+                clearInterval(simInterval);
+                completeStillness();
+            }
+        }, 1000);
+    }
+
+    // Touch to start
+    document.getElementById('stillnessContainer').addEventListener('click', () => {
+        if (!stillnessActive && !stillnessComplete) {
+            setupCanvas();
+            requestMotionPermission();
+        }
+    });
+
+    // Desktop fallback
+    document.getElementById('stillnessFallback').addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!stillnessActive && !stillnessComplete) {
+            setupCanvas();
+            simulateMotion();
+        }
+    });
+
+    // Show fallback after delay
+    setTimeout(() => {
+        if (!stillnessComplete) {
+            document.getElementById('stillnessFallback').classList.add('visible');
+        }
+    }, 4000);
+
+    // Continue button
+    document.getElementById('revealContinue').addEventListener('click', () => {
+        document.getElementById('stillnessReveal').classList.remove('visible');
+        setTimeout(() => {
+            document.getElementById('stillnessReveal').style.display = 'none';
+            document.getElementById('ch6').scrollIntoView({ behavior: 'smooth' });
+        }, 800);
+    });
+
+    // === ATTRACTOR CANVAS ===
+    const canvas = document.getElementById('attractorCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let attractorActive = false;
+
+    function resizeCanvas() {
+        const c = document.getElementById('attractorContainer');
+        canvas.width = c.offsetWidth;
+        canvas.height = c.offsetHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    class Particle {
+        constructor() { this.reset(); }
+        reset() {
+            const edge = Math.floor(Math.random() * 4);
+            if (edge === 0) { this.x = Math.random() * canvas.width; this.y = 0; }
+            else if (edge === 1) { this.x = canvas.width; this.y = Math.random() * canvas.height; }
+            else if (edge === 2) { this.x = Math.random() * canvas.width; this.y = canvas.height; }
+            else { this.x = 0; this.y = Math.random() * canvas.height; }
+            this.captured = false;
+            this.alpha = 0.3 + Math.random() * 0.3;
+        }
+        update() {
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+            const dx = cx - this.x;
+            const dy = cy - this.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 15) { this.captured = true; return; }
+            const force = 50 / (dist * dist) * 100;
+            this.x += (dx / dist) * force;
+            this.y += (dy / dist) * force;
+            this.x += (Math.random() - 0.5) * 2;
+            this.y += (Math.random() - 0.5) * 2;
+        }
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.captured ? 3 : 2, 0, Math.PI * 2);
+            ctx.fillStyle = this.captured
+                ? 'rgba(128, 144, 192, 0.8)'
+                : `rgba(128, 144, 192, ${this.alpha})`;
+            ctx.fill();
+        }
+    }
+
+    function initParticles() {
+        particles = [];
+        for (let i = 0; i < 30; i++) particles.push(new Particle());
+    }
+
+    function animateAttractor() {
+        if (!attractorActive) return;
+        ctx.fillStyle = 'rgba(3, 3, 5, 0.1)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => { if (!p.captured) p.update(); p.draw(); });
+        if (Math.random() < 0.02) {
+            const c = particles.filter(p => p.captured);
+            if (c.length > 0) c[0].reset();
+        }
+        if (Math.random() < 0.05 && particles.length < 50) particles.push(new Particle());
+        requestAnimationFrame(animateAttractor);
+    }
+
+    // === DATA ===
+    document.getElementById('dataTime').textContent = `Sessione: ${new Date().toLocaleTimeString('it-IT')}`;
+
+    window.addEventListener('scroll', () => {
+        scrollCount++;
+        const p = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+        document.getElementById('dataScroll').textContent = `Profondità: ${p}% | Scrolls: ${scrollCount}`;
+    });
+
+    function updatePattern() {
+        const secs = Math.floor((Date.now() - sessionStart) / 1000);
+        const patterns = [];
+        if (secs > 30) patterns.push('lettore_attento');
+        if (scrollCount > 10) patterns.push('esploratore');
+        if (secs > 60 && scrollCount > 20) patterns.push('coinvolto');
+        document.getElementById('dataPattern').textContent = `Pattern: ${patterns.length > 0 ? patterns.join(', ') : 'in formazione...'}`;
+    }
+    setInterval(updatePattern, 5000);
+
+    // === OBSERVER ===
+    let chapterCount = 0;
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !entry.target.classList.contains('visible')) {
+                entry.target.classList.add('visible');
+                chapterCount++;
+                playTone(70 + chapterCount * 12, 0.5, 'sine', 0.025);
+
+                // Start attractor when ch5 visible
+                if (entry.target.closest('#ch5') && !attractorActive) {
+                    attractorActive = true;
+                    initParticles();
+                    animateAttractor();
+                    playDrone(60, 8, 0.02);
+
+                    // Show stillness prompt
+                    setTimeout(() => {
+                        if (!stillnessComplete) {
+                            document.getElementById('stillnessPrompt').classList.add('visible');
+                        }
+                    }, 3000);
+                }
+            }
+        });
+    }, { threshold: 0.2 });
+
+    document.querySelectorAll('.chapter-content').forEach(el => observer.observe(el));
+
+    window.addEventListener('scroll', () => document.getElementById('scrollIndicator').classList.add('hidden'));
+
+    // === RETURN ===
+    document.getElementById('returnPrompt').addEventListener('click', () => {
+        triggerGlitch();
+        playDrone(50, 3, 0.03);
+
+        setTimeout(() => {
+            const overlay = document.getElementById('finalOverlay');
+            const text = document.getElementById('farewellText');
+            const secs = Math.floor((Date.now() - sessionStart) / 1000);
+            const mins = Math.floor(secs / 60);
+            const s = secs % 60;
+            const timeStr = mins > 0 ? `${mins} minuti e ${s} secondi` : `${s} secondi`;
+
+            let msg = `Hai passato <em>${timeStr}</em> qui.<br><br>`;
+            msg += `Movimento totale rilevato: <em>${totalMovement.toFixed(2)}</em><br>`;
+            msg += `${scrollCount} scrolls.<br><br>`;
+            msg += `Il corpo ti ha tradito.<br>Sempre lo farà.<br><br>`;
+            msg += `Chiudi la pagina.<br>Ci rivedremo.`;
+
+            text.innerHTML = msg;
+            overlay.classList.add('visible');
+
+            saveData('innesto4_completed', true);
+            saveData('innesto4_scrolls', scrollCount);
+        }, 500);
+    });
+</script>
+
+</body>
+</html>

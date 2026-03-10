@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Innesto 05</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Space+Mono:wght@400&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            background: #040306;
+            color: #c0b8c0;
+            font-family: 'IBM Plex Mono', monospace;
+            font-weight: 300;
+            font-size: 16px;
+            line-height: 2;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+            overscroll-behavior-y: none;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at 40% 20%, rgba(70,50,60,0.1) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .chapter {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15vh 8vw;
+            position: relative;
+        }
+
+        .chapter-content {
+            max-width: 540px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1.4s cubic-bezier(0.4, 0, 0.2, 1), transform 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .chapter-content.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .opening {
+            font-size: clamp(1.2rem, 3.5vw, 1.6rem);
+            text-align: center;
+            font-style: italic;
+            color: #a08090;
+            line-height: 1.7;
+            font-weight: 400;
+        }
+
+        p { margin-bottom: 1.8rem; }
+        p:last-child { margin-bottom: 0; }
+
+        .emphasis {
+            color: #c0a0b0;
+            font-weight: 500;
+        }
+
+        .data-point {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: #6a5a65;
+            margin: 0.6rem 0;
+            padding: 0.5rem 1rem;
+            border-left: 1px solid #4a3a45;
+            background: linear-gradient(90deg, rgba(80,50,70,0.08), transparent);
+        }
+
+        /* GLITCH OVERLAY */
+        .glitch-overlay {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9000;
+            opacity: 0;
+        }
+
+        .glitch-overlay.active {
+            animation: glitchFlash 0.12s ease;
+        }
+
+        @keyframes glitchFlash {
+            0% { opacity: 0; background: transparent; }
+            20% { opacity: 1; background: rgba(192,160,176,0.15); }
+            40% { opacity: 0; background: transparent; }
+            60% { opacity: 1; background: rgba(192,96,128,0.1); }
+            100% { opacity: 0; }
+        }
+
+        /* HIDEO BLACKOUT */
+        .hideo-blackout {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 10000;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-end;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.05s;
+        }
+
+        .hideo-blackout.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .hideo-text {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            color: #2a5a2a;
+            letter-spacing: 0.1em;
+        }
+
+        /* SCREEN TEAR */
+        .screen-tear {
+            position: fixed;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, rgba(192,160,176,0.8) 20%, rgba(255,255,255,0.9) 50%, rgba(192,160,176,0.8) 80%, transparent);
+            z-index: 9500;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .screen-tear.active {
+            animation: tearSweep 0.15s linear;
+        }
+
+        @keyframes tearSweep {
+            0% { top: -3px; opacity: 1; }
+            100% { top: 100%; opacity: 0.5; }
+        }
+
+        /* Voice activation */
+        .voice-prompt {
+            position: fixed;
+            inset: 0;
+            z-index: 800;
+            background: #040306;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.8s ease;
+        }
+
+        .voice-prompt.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .voice-prompt p {
+            text-align: center;
+            color: #a08090;
+            margin-bottom: 1rem;
+            padding: 0 2rem;
+            max-width: 360px;
+        }
+
+        .voice-command {
+            font-size: clamp(1.6rem, 4vw, 2.2rem);
+            color: #c0a0b0;
+            text-align: center;
+            margin: 1.5rem 0;
+            font-weight: 400;
+        }
+
+        /* Waveform visualization */
+        .waveform-container {
+            width: 100%;
+            max-width: 320px;
+            height: 120px;
+            margin: 1.5rem auto;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(192,160,176,0.2);
+        }
+
+        .waveform-canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .waveform-center-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(192,160,176,0.15);
+        }
+
+        /* Spectrum analyzer */
+        .spectrum-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 3px;
+            height: 50px;
+            margin: 1rem auto;
+            max-width: 200px;
+        }
+
+        .spectrum-bar {
+            width: 8px;
+            background: linear-gradient(to top, rgba(192,160,176,0.3), rgba(192,160,176,0.8));
+            border-radius: 2px;
+            transition: height 0.05s ease;
+            min-height: 4px;
+        }
+
+        .voice-circle {
+            width: 90px;
+            height: 90px;
+            border: 2px solid #5a4a55;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            margin: 1rem auto;
+        }
+
+        .voice-circle::before {
+            content: '';
+            position: absolute;
+            inset: -10px;
+            border: 1px solid rgba(192,160,176,0.1);
+            border-radius: 50%;
+        }
+
+        .voice-circle.listening {
+            border-color: #c0a0b0;
+            background: rgba(180,140,160,0.05);
+            box-shadow: 0 0 40px rgba(180,140,160,0.2);
+        }
+
+        .voice-circle.listening::before {
+            animation: rippleOut 1.5s ease-out infinite;
+        }
+
+        @keyframes rippleOut {
+            0% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(1.6); opacity: 0; }
+        }
+
+        .voice-circle.complete {
+            border-color: #80a080;
+            background: rgba(120,160,120,0.05);
+        }
+
+        .voice-icon {
+            font-size: 1.6rem;
+            color: #6a5a65;
+            transition: all 0.3s ease;
+        }
+
+        .voice-circle.listening .voice-icon {
+            color: #c0a0b0;
+            animation: voicePulse 0.6s ease infinite;
+        }
+
+        @keyframes voicePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .voice-label {
+            margin-top: 1rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.5rem;
+            color: #5a4a55;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        .voice-timer {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            color: #6a5a65;
+            margin-top: 0.8rem;
+        }
+
+        .voice-fallback {
+            margin-top: 1.5rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.5rem;
+            color: #4a3a45;
+            cursor: pointer;
+            padding: 0.4rem 0.8rem;
+            border: 1px solid #3a2a35;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .voice-fallback.visible {
+            opacity: 1;
+        }
+
+        /* Signature reveal */
+        .signature-reveal {
+            position: fixed;
+            inset: 0;
+            z-index: 850;
+            background: #030204;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease;
+            overflow-y: auto;
+        }
+
+        .signature-reveal.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .signature-content {
+            text-align: center;
+            padding: 2rem;
+            max-width: 380px;
+        }
+
+        .signature-title {
+            font-size: 1.1rem;
+            color: #c0a0b0;
+            margin-bottom: 1.5rem;
+            font-weight: 400;
+        }
+
+        .voice-signature {
+            width: 100%;
+            height: 80px;
+            margin: 1rem 0;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(192,160,176,0.15);
+        }
+
+        .voice-signature canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .signature-item {
+            margin: 1rem 0;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.8s ease;
+        }
+
+        .signature-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .signature-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.45rem;
+            color: #5a4a55;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 0.2rem;
+        }
+
+        .signature-value {
+            font-size: 0.95rem;
+            color: #c0a0b0;
+        }
+
+        .signature-comment {
+            font-size: 0.8rem;
+            color: #7a6a75;
+            margin-top: 1.5rem;
+            line-height: 1.9;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .signature-comment.visible {
+            opacity: 1;
+        }
+
+        .signature-continue {
+            margin-top: 1.5rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            color: #5a4a55;
+            letter-spacing: 0.15em;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border: 1px solid #4a3a45;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .signature-continue.visible {
+            opacity: 1;
+        }
+
+        .final-text {
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            text-align: center;
+            line-height: 2.2;
+            color: #8a7a85;
+        }
+
+        .return-prompt {
+            display: inline-block;
+            margin-top: 3rem;
+            padding: 0.8rem 2.5rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #5a4a55;
+            border: 1px solid #4a3a45;
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+
+        .return-prompt:hover {
+            color: #a08090;
+            border-color: #6a5a65;
+        }
+
+        .scroll-indicator {
+            position: fixed;
+            bottom: 2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            letter-spacing: 0.3em;
+            color: #3a2a35;
+            text-transform: uppercase;
+            transition: opacity 0.5s ease;
+        }
+
+        .scroll-indicator.hidden { opacity: 0; }
+
+        .audio-prompt {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.5rem;
+            color: #3a2a35;
+            cursor: pointer;
+            padding: 0.4rem 0.8rem;
+            border: 1px solid #2a1a25;
+            z-index: 100;
+        }
+
+        .audio-prompt.enabled {
+            color: #6a5a65;
+            border-color: #5a4a55;
+        }
+
+        .final-overlay {
+            position: fixed;
+            inset: 0;
+            background: #020103;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 2s ease;
+            z-index: 1000;
+        }
+
+        .final-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .final-overlay-content {
+            text-align: center;
+            padding: 2rem;
+            max-width: 380px;
+        }
+
+        .final-overlay-content p {
+            font-size: 0.9rem;
+            line-height: 2;
+            color: #6a5a65;
+        }
+
+        .final-overlay-content em {
+            color: #c0a0b0;
+            font-style: normal;
+        }
+
+        @media (max-width: 600px) {
+            html { font-size: 15px; }
+            .chapter { padding: 12vh 6vw; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="glitch-overlay" id="glitchOverlay"></div>
+<div class="screen-tear" id="screenTear"></div>
+<div class="hideo-blackout" id="hideoBlackout">
+    <span class="hideo-text">IMPRONTA</span>
+</div>
+
+<div class="scroll-indicator" id="scrollIndicator">scorri</div>
+<div class="audio-prompt" id="audioPrompt">◉ audio</div>
+
+<!-- Voice activation -->
+<div class="voice-prompt" id="voicePrompt">
+    <p>Ci sono pattern che si ereditano. Di Zoe Roth che vive in ogni bambina sorridente.</p>
+    <div class="voice-command">Lascia la tua traccia.</div>
+    <p style="color: #7a6a75; font-size: 0.85rem;">Parla. Una parola, una frase. Qualsiasi cosa.</p>
+
+    <div class="waveform-container">
+        <div class="waveform-center-line"></div>
+        <canvas id="waveformCanvas"></canvas>
+    </div>
+
+    <div class="spectrum-container" id="spectrumContainer"></div>
+
+    <div class="voice-circle" id="voiceCircle">
+        <span class="voice-icon" id="voiceIcon">🎤</span>
+    </div>
+
+    <div class="voice-label" id="voiceLabel">tocca per parlare</div>
+    <div class="voice-timer" id="voiceTimer"></div>
+    <div class="voice-fallback" id="voiceFallback">microfono non disponibile — tocca qui</div>
+</div>
+
+<!-- Signature reveal -->
+<div class="signature-reveal" id="signatureReveal">
+    <div class="signature-content">
+        <div class="signature-title">La tua impronta vocale</div>
+
+        <div class="voice-signature">
+            <canvas id="signatureCanvas"></canvas>
+        </div>
+
+        <div id="detectedDataContainer"></div>
+
+        <div class="signature-comment" id="sigComment">
+            Ogni voce ha una firma. Un pattern di frequenze che la rende riconoscibile. Le voci sintetiche non hanno questa irregolarità — sono troppo pulite, troppo perfette. Tu sei imperfetto. Per ora.
+        </div>
+
+        <div class="signature-continue" id="sigContinue">continua</div>
+    </div>
+</div>
+
+<!-- CAPITOLO 1 -->
+<div class="chapter" id="ch1">
+    <div class="chapter-content">
+        <p class="opening">Ogni voce ha una firma.</p>
+    </div>
+</div>
+
+<!-- CAPITOLO 2 -->
+<div class="chapter" id="ch2">
+    <div class="chapter-content">
+        <p>Zoe Roth, la Disaster Girl. Una bambina fotografata nel 2005 davanti a una casa in fiamme, con un sorriso enigmatico. Quella foto è diventata meme, template, archetipo. Il suo volto è stato moltiplicato milioni di volte. Ogni bambina che sorride maliziosamente porta in sé qualcosa di Zoe.</p>
+        <p>Nel 2021 Zoe ha venduto l'NFT dell'immagine originale per quasi mezzo milione di dollari. Ha monetizzato la sua ubiquità. Ma non può riaverla: il suo volto appartiene al linguaggio visivo collettivo.</p>
+    </div>
+</div>
+
+<!-- CAPITOLO 3 -->
+<div class="chapter" id="ch3">
+    <div class="chapter-content">
+        <p>La voce umana funziona allo stesso modo. Ogni volta che parli, lasci un'impronta. Le frequenze, le armoniche, il ritmo, le micro-esitazioni — tutto questo forma un pattern unico come le impronte digitali. I sistemi di riconoscimento vocale lo sanno: bastano pochi secondi per identificarti.</p>
+        <p>Ma c'è di più. Le voci sintetiche — quelle generate da AI — vengono addestrate su voci umane. La tua voce potrebbe essere stata parte di un dataset. Frammenti di te potrebbero vivere in migliaia di assistenti vocali, senza che tu lo sappia.</p>
+    </div>
+</div>
+
+<!-- CAPITOLO 4 -->
+<div class="chapter" id="ch4">
+    <div class="chapter-content">
+        <p>La voce narrante parla della <span class="emphasis">"moltiplicazione dei pattern"</span>. Non è solo che le immagini si copiano. È che ogni copia porta con sé qualcosa dell'originale, e lo trasforma. Il pattern muta, si adatta, evolve. Come un virus, come un meme, come un'idea.</p>
+        <p>La tua voce è già stata copiata. Ogni telefonata, ogni messaggio vocale, ogni video. Frammenti di te dispersi nei server del mondo. Non sai dove, non sai quanti. Ma ci sono.</p>
+    </div>
+</div>
+
+<!-- CAPITOLO 5 -->
+<div class="chapter" id="ch5">
+    <div class="chapter-content">
+        <p>Questo è il paradosso dell'era generativa: più lasci tracce, più diventi riproducibile. Più parli, più la tua voce può essere imitata. Più ti muovi nel mondo digitale, più il mondo digitale può ricreare te.</p>
+        <p>La bambina del libro è stata generata da pattern umani. Non è diversa da te — solo più esplicita nella sua artificialità.</p>
+    </div>
+</div>
+
+<!-- CAPITOLO 6 -->
+<div class="chapter" id="ch6">
+    <div class="chapter-content">
+        <p class="final-text">
+            Hai parlato.<br>
+            Cinque secondi di suono.<br>
+            Migliaia di campionamenti al secondo.<br><br>
+
+            La tua voce è stata analizzata.<br>
+            Non salvata — solo processata.<br>
+            Come ogni altra voce<br>
+            che attraversa i circuiti.<br><br>
+
+            Ora esiste un momento<br>
+            in cui hai lasciato una traccia<br>
+            e quella traccia si è dissolta.<br>
+            Come tutte le altre.
+        </p>
+        <div class="return-prompt" id="returnPrompt">Prosegui</div>
+    </div>
+</div>
+
+<!-- Overlay finale -->
+<div class="final-overlay" id="finalOverlay">
+    <div class="final-overlay-content">
+        <p id="farewellText"></p>
+    </div>
+</div>
+
+<script>
+    const STORAGE_KEY = 'arcipelago_realta';
+    const getData = () => { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; } };
+    const saveData = (k, v) => {
+        const d = getData();
+        d[k] = v;
+        d.lastVisit = Date.now();
+        d.visitedInnesti = d.visitedInnesti || [];
+        if (!d.visitedInnesti.includes(5)) d.visitedInnesti.push(5);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+    };
+
+    const sessionStart = Date.now();
+    const detectedData = {};
+
+    // === VIBRATION ===
+    function vibrate(pattern) {
+        if ('vibrate' in navigator) navigator.vibrate(pattern);
+    }
+
+    // === GLITCH EFFECTS ===
+    function triggerGlitch() {
+        const overlay = document.getElementById('glitchOverlay');
+        overlay.classList.add('active');
+        setTimeout(() => overlay.classList.remove('active'), 120);
+    }
+
+    function triggerScreenTear() {
+        const tear = document.getElementById('screenTear');
+        tear.classList.add('active');
+        setTimeout(() => tear.classList.remove('active'), 150);
+    }
+
+    function triggerHideoBlackout(duration = 600) {
+        const blackout = document.getElementById('hideoBlackout');
+        blackout.classList.add('active');
+        setTimeout(() => blackout.classList.remove('active'), duration);
+    }
+
+    // === AUDIO ===
+    let audioCtx = null;
+    let audioEnabled = false;
+
+    document.getElementById('audioPrompt').addEventListener('click', function() {
+        if (!audioEnabled) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            audioEnabled = true;
+            this.classList.add('enabled');
+            this.textContent = '◉ audio on';
+        } else {
+            audioEnabled = false;
+            this.classList.remove('enabled');
+            this.textContent = '◉ audio';
+        }
+    });
+
+    function playTone(freq, dur, type = 'sine', vol = 0.05) {
+        if (!audioEnabled || !audioCtx) return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + dur);
+    }
+
+    // === SPECTRUM BARS ===
+    const spectrumContainer = document.getElementById('spectrumContainer');
+    for (let i = 0; i < 16; i++) {
+        const bar = document.createElement('div');
+        bar.className = 'spectrum-bar';
+        spectrumContainer.appendChild(bar);
+    }
+    const spectrumBars = document.querySelectorAll('.spectrum-bar');
+
+    // === VOICE RECORDING ===
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let isRecording = false;
+    let voiceComplete = false;
+    let analyser = null;
+    let dataArray = null;
+    let recordingStartTime = 0;
+
+    const waveCanvas = document.getElementById('waveformCanvas');
+    const waveCtx = waveCanvas.getContext('2d');
+
+    function resizeCanvas() {
+        const rect = waveCanvas.parentElement.getBoundingClientRect();
+        waveCanvas.width = rect.width * 2;
+        waveCanvas.height = rect.height * 2;
+    }
+    resizeCanvas();
+
+    function drawWaveform() {
+        if (!analyser || !isRecording) return;
+
+        requestAnimationFrame(drawWaveform);
+
+        analyser.getByteTimeDomainData(dataArray);
+
+        waveCtx.fillStyle = 'rgba(4,3,6,0.2)';
+        waveCtx.fillRect(0, 0, waveCanvas.width, waveCanvas.height);
+
+        waveCtx.lineWidth = 2;
+        waveCtx.strokeStyle = 'rgba(192,160,176,0.8)';
+        waveCtx.beginPath();
+
+        const sliceWidth = waveCanvas.width / dataArray.length;
+        let x = 0;
+
+        for (let i = 0; i < dataArray.length; i++) {
+            const v = dataArray[i] / 128.0;
+            const y = v * waveCanvas.height / 2;
+
+            if (i === 0) waveCtx.moveTo(x, y);
+            else waveCtx.lineTo(x, y);
+
+            x += sliceWidth;
+        }
+
+        waveCtx.lineTo(waveCanvas.width, waveCanvas.height / 2);
+        waveCtx.stroke();
+
+        // Update spectrum bars
+        const freqData = new Uint8Array(analyser.frequencyBinCount);
+        analyser.getByteFrequencyData(freqData);
+
+        for (let i = 0; i < spectrumBars.length; i++) {
+            const idx = Math.floor(i * freqData.length / spectrumBars.length);
+            const height = Math.max(4, freqData[idx] / 255 * 50);
+            spectrumBars[i].style.height = height + 'px';
+        }
+
+        // Timer update
+        const elapsed = (Date.now() - recordingStartTime) / 1000;
+        document.getElementById('voiceTimer').textContent = elapsed.toFixed(1) + 's / 5s';
+    }
+
+    async function startRecording() {
+        if (isRecording || voiceComplete) return;
+
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const source = audioContext.createMediaStreamSource(stream);
+            analyser = audioContext.createAnalyser();
+            analyser.fftSize = 256;
+            source.connect(analyser);
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+
+            mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+
+            mediaRecorder.onstop = () => {
+                stream.getTracks().forEach(t => t.stop());
+                processVoice();
+            };
+
+            mediaRecorder.start();
+            isRecording = true;
+            recordingStartTime = Date.now();
+
+            document.getElementById('voiceCircle').classList.add('listening');
+            document.getElementById('voiceLabel').textContent = 'registrazione in corso';
+
+            vibrate(50);
+            triggerGlitch();
+
+            drawWaveform();
+
+            // Auto-stop after 5 seconds
+            setTimeout(() => {
+                if (isRecording) stopRecording();
+            }, 5000);
+
+        } catch (err) {
+            document.getElementById('voiceFallback').classList.add('visible');
+        }
+    }
+
+    function stopRecording() {
+        if (!isRecording) return;
+        isRecording = false;
+        mediaRecorder.stop();
+        document.getElementById('voiceCircle').classList.remove('listening');
+        document.getElementById('voiceCircle').classList.add('complete');
+        document.getElementById('voiceLabel').textContent = 'analisi...';
+    }
+
+    function processVoice() {
+        voiceComplete = true;
+        vibrate([50, 30, 50, 30, 100]);
+
+        triggerScreenTear();
+        setTimeout(() => triggerHideoBlackout(500), 300);
+
+        // Analyze the recorded data
+        if (analyser) {
+            const freqData = new Uint8Array(analyser.frequencyBinCount);
+            analyser.getByteFrequencyData(freqData);
+
+            // Find dominant frequency
+            let maxIdx = 0;
+            let maxVal = 0;
+            for (let i = 0; i < freqData.length; i++) {
+                if (freqData[i] > maxVal) {
+                    maxVal = freqData[i];
+                    maxIdx = i;
+                }
+            }
+
+            const sampleRate = 44100;
+            const dominantFreq = Math.round(maxIdx * sampleRate / analyser.fftSize);
+            if (dominantFreq > 50) {
+                detectedData.frequency = dominantFreq;
+                saveData('activation5_frequency', dominantFreq);
+            }
+
+            // Average energy
+            const avgEnergy = freqData.reduce((a,b) => a+b, 0) / freqData.length;
+            const dbLevel = Math.round(20 * Math.log10(avgEnergy / 255 + 0.001));
+            if (avgEnergy > 10) {
+                detectedData.energy = dbLevel;
+                saveData('activation5_energy', dbLevel);
+            }
+        }
+
+        // Battery level
+        if ('getBattery' in navigator) {
+            navigator.getBattery().then(battery => {
+                const level = Math.round(battery.level * 100);
+                detectedData.battery = level;
+                detectedData.charging = battery.charging;
+                saveData('activation5_battery', level);
+            }).catch(() => {});
+        }
+
+        saveData('activation5_voice', true);
+
+        setTimeout(() => {
+            document.getElementById('voicePrompt').classList.remove('visible');
+            showSignatureReveal();
+        }, 1200);
+    }
+
+    function showSignatureReveal() {
+        const reveal = document.getElementById('signatureReveal');
+        reveal.classList.add('visible');
+
+        triggerGlitch();
+
+        // Draw signature canvas
+        const sigCanvas = document.getElementById('signatureCanvas');
+        const sigCtx = sigCanvas.getContext('2d');
+        const rect = sigCanvas.parentElement.getBoundingClientRect();
+        sigCanvas.width = rect.width * 2;
+        sigCanvas.height = rect.height * 2;
+
+        // Generate a visual signature based on detected data
+        sigCtx.fillStyle = 'rgba(3,2,4,1)';
+        sigCtx.fillRect(0, 0, sigCanvas.width, sigCanvas.height);
+
+        const freq = detectedData.frequency || 200;
+        sigCtx.strokeStyle = 'rgba(192,160,176,0.7)';
+        sigCtx.lineWidth = 2;
+        sigCtx.beginPath();
+
+        for (let x = 0; x < sigCanvas.width; x++) {
+            const y = sigCanvas.height / 2 +
+                Math.sin(x * 0.02 * (freq / 200)) * 20 +
+                Math.sin(x * 0.05) * 15 +
+                (Math.random() - 0.5) * 5;
+            if (x === 0) sigCtx.moveTo(x, y);
+            else sigCtx.lineTo(x, y);
+        }
+        sigCtx.stroke();
+
+        // Build detected data display - ONLY show what was detected
+        const container = document.getElementById('detectedDataContainer');
+        container.innerHTML = '';
+
+        let delay = 500;
+
+        if (detectedData.frequency) {
+            const item = createDataItem('Frequenza fondamentale', detectedData.frequency + ' Hz');
+            container.appendChild(item);
+            setTimeout(() => {
+                item.classList.add('visible');
+                triggerGlitch();
+                vibrate(30);
+            }, delay);
+            delay += 600;
+        }
+
+        if (detectedData.energy) {
+            const item = createDataItem('Energia vocale', detectedData.energy + ' dB');
+            container.appendChild(item);
+            setTimeout(() => {
+                item.classList.add('visible');
+                triggerGlitch();
+            }, delay);
+            delay += 600;
+        }
+
+        if (detectedData.battery !== undefined) {
+            let batteryText = detectedData.battery + '%';
+            if (detectedData.charging) batteryText += ' (in carica)';
+            const item = createDataItem('Batteria durante la registrazione', batteryText);
+            container.appendChild(item);
+            setTimeout(() => {
+                item.classList.add('visible');
+                triggerGlitch();
+            }, delay);
+            delay += 600;
+        }
+
+        setTimeout(() => document.getElementById('sigComment').classList.add('visible'), delay);
+        setTimeout(() => document.getElementById('sigContinue').classList.add('visible'), delay + 800);
+    }
+
+    function createDataItem(label, value) {
+        const div = document.createElement('div');
+        div.className = 'signature-item';
+        div.innerHTML = `
+            <div class="signature-label">${label}</div>
+            <div class="signature-value">${value}</div>
+        `;
+        return div;
+    }
+
+    // Fallback for no microphone
+    document.getElementById('voiceFallback').addEventListener('click', () => {
+        if (voiceComplete) return;
+        voiceComplete = true;
+        vibrate([50, 30, 100]);
+        triggerGlitch();
+
+        detectedData.fallback = true;
+        saveData('activation5_voice', 'fallback');
+
+        document.getElementById('voiceCircle').classList.add('complete');
+        document.getElementById('voiceLabel').textContent = 'simulato';
+
+        setTimeout(() => {
+            document.getElementById('voicePrompt').classList.remove('visible');
+            showSignatureReveal();
+        }, 800);
+    });
+
+    document.getElementById('voiceCircle').addEventListener('click', () => {
+        if (!isRecording && !voiceComplete) {
+            startRecording();
+        } else if (isRecording) {
+            stopRecording();
+        }
+    });
+
+    document.getElementById('sigContinue').addEventListener('click', () => {
+        triggerScreenTear();
+        document.getElementById('signatureReveal').classList.remove('visible');
+        setTimeout(() => {
+            document.getElementById('signatureReveal').style.display = 'none';
+            document.getElementById('ch5').scrollIntoView({ behavior: 'smooth' });
+        }, 600);
+    });
+
+    // Show fallback after delay if microphone not available
+    setTimeout(() => {
+        if (!isRecording && !voiceComplete) {
+            document.getElementById('voiceFallback').classList.add('visible');
+        }
+    }, 4000);
+
+    // === OBSERVER ===
+    let showVoiceTriggered = false;
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !entry.target.classList.contains('visible')) {
+                entry.target.classList.add('visible');
+                playTone(100 + Math.random() * 60, 0.3, 'sine', 0.02);
+
+                if (entry.target.closest('#ch4') && !showVoiceTriggered && !voiceComplete) {
+                    showVoiceTriggered = true;
+                    setTimeout(() => {
+                        document.getElementById('voicePrompt').classList.add('visible');
+                    }, 1500);
+                }
+            }
+        });
+    }, { threshold: 0.2 });
+
+    document.querySelectorAll('.chapter-content').forEach(el => observer.observe(el));
+
+    window.addEventListener('scroll', () => document.getElementById('scrollIndicator').classList.add('hidden'));
+
+    // === RETURN ===
+    document.getElementById('returnPrompt').addEventListener('click', () => {
+        triggerHideoBlackout(400);
+        vibrate([50, 30, 50]);
+
+        setTimeout(() => {
+            const overlay = document.getElementById('finalOverlay');
+            const text = document.getElementById('farewellText');
+
+            const readingTime = Math.round((Date.now() - sessionStart) / 60000);
+            const timeStr = readingTime < 1 ? 'meno di un minuto' : `${readingTime} minuti`;
+
+            let msg = `<em>${timeStr}</em> qui.<br>`;
+            if (detectedData.frequency) msg += `Frequenza vocale: <em>${detectedData.frequency} Hz</em><br>`;
+            msg += `<br>La tua traccia sonora si è dissolta.<br>Come tutte le altre.`;
+
+            text.innerHTML = msg;
+            overlay.classList.add('visible');
+
+            saveData('innesto5_completed', true);
+        }, 500);
+    });
+</script>
+
+</body>
+</html>

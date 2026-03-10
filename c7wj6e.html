@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Innesto 09 — Conclusioni</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            background: #020203;
+            color: #b8b0a8;
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 400;
+            font-size: 18px;
+            line-height: 2.2;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Phases container */
+        .phase {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1.8s ease;
+            overflow-y: auto;
+        }
+
+        .phase.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Typography */
+        .voice {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.05rem, 2.8vw, 1.25rem);
+            font-style: italic;
+            color: #908880;
+            text-align: center;
+            max-width: 520px;
+            line-height: 2.4;
+        }
+
+        .voice em {
+            font-style: normal;
+            color: #c0b8b0;
+        }
+
+        .voice-strong {
+            color: #a8a098;
+            font-weight: 500;
+        }
+
+        .question-main {
+            font-size: clamp(1.3rem, 3.5vw, 1.7rem);
+            color: #a09888;
+            margin-bottom: 0;
+        }
+
+        .breath {
+            height: 2.5rem;
+        }
+
+        .breath-long {
+            height: 4rem;
+        }
+
+        /* Input field */
+        .input-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 2.5rem 0;
+        }
+
+        .input-field {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #3a3530;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.15rem;
+            font-style: italic;
+            color: #c0b8b0;
+            padding: 1rem 0.5rem;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.4s ease;
+        }
+
+        .input-field::placeholder {
+            color: #4a4540;
+            font-style: italic;
+        }
+
+        .input-field:focus {
+            border-color: #6a6560;
+        }
+
+        .input-hint {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.55rem;
+            color: #4a4540;
+            letter-spacing: 0.2em;
+            margin-top: 1.2rem;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        /* Sorelle effect */
+        .sorelle-container {
+            max-width: 540px;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .frase-originale {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-style: italic;
+            color: #c0b8b0;
+            margin-bottom: 3rem;
+            line-height: 1.8;
+        }
+
+        .sorella {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            font-style: italic;
+            color: #908880;
+            margin: 1.5rem 0;
+            line-height: 1.6;
+            transition: all 1s ease;
+        }
+
+        .sorella-1 {
+            filter: blur(1px);
+            opacity: 0.7;
+        }
+
+        .sorella-2 {
+            filter: blur(2.5px);
+            opacity: 0.5;
+        }
+
+        .sorella-3 {
+            filter: blur(4px);
+            opacity: 0.3;
+        }
+
+        /* Deep sections */
+        .deep {
+            max-width: 520px;
+            text-align: center;
+        }
+
+        .deep p {
+            font-size: clamp(1rem, 2.5vw, 1.15rem);
+            color: #807870;
+            line-height: 2.5;
+            margin-bottom: 2rem;
+        }
+
+        .deep p:last-of-type {
+            margin-bottom: 0;
+        }
+
+        .deep .emerge {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 1.4s ease, transform 1.4s ease;
+        }
+
+        .deep .emerge.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Citation style */
+        .citazione {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.8rem;
+            color: #605850;
+            letter-spacing: 0.05em;
+            display: block;
+            margin-top: 0.5rem;
+        }
+
+        /* Continue button */
+        .continue-btn {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.55rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #4a4540;
+            background: none;
+            border: 1px solid #2a2520;
+            padding: 0.7rem 2rem;
+            cursor: pointer;
+            margin-top: 3rem;
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+
+        .continue-btn.visible {
+            opacity: 1;
+        }
+
+        .continue-btn:hover {
+            color: #706860;
+            border-color: #4a4540;
+        }
+
+        /* The Void phase */
+        .void-phase {
+            background: #000;
+        }
+
+        .void-text {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            color: #303030;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+        }
+
+        /* === DOSSIER MODE === */
+        .dossier-mode {
+            background: #020504;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .dossier-mode .voice {
+            font-family: 'IBM Plex Mono', monospace;
+            font-style: normal;
+            color: #40a060;
+            text-shadow: 0 0 8px rgba(64, 160, 96, 0.3);
+        }
+
+        .dossier-mode .deep p {
+            font-family: 'IBM Plex Mono', monospace;
+            color: #308050;
+        }
+
+        /* Scan lines for dossier */
+        .scan-lines {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9990;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 255, 100, 0.03) 2px,
+                rgba(0, 255, 100, 0.03) 4px
+            );
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .scan-lines.active {
+            opacity: 1;
+        }
+
+        /* Dossier container */
+        .dossier {
+            max-width: 460px;
+            margin: 2rem 0;
+            padding: 2rem;
+            border: 1px solid #204030;
+            background: rgba(10, 30, 20, 0.3);
+            position: relative;
+        }
+
+        .dossier::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 1px,
+                rgba(0, 255, 100, 0.02) 1px,
+                rgba(0, 255, 100, 0.02) 2px
+            );
+            pointer-events: none;
+        }
+
+        .dossier-title {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.6rem;
+            color: #40a060;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #203020;
+            text-shadow: 0 0 10px rgba(64, 160, 96, 0.4);
+        }
+
+        .dossier-section {
+            margin: 1.5rem 0;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.6s ease;
+        }
+
+        .dossier-section.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .dossier-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.5rem;
+            color: #406050;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+        }
+
+        .dossier-value {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.85rem;
+            color: #50c080;
+            text-shadow: 0 0 6px rgba(80, 192, 128, 0.3);
+        }
+
+        /* Alveare link */
+        .alveare-link {
+            color: #50c080;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(80, 192, 128, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .alveare-link:hover {
+            text-shadow: 0 0 15px rgba(80, 192, 128, 0.5);
+            border-color: #50c080;
+        }
+
+        /* Final overlay */
+        .final-overlay {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 2.5s ease;
+        }
+
+        .final-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .final-content {
+            text-align: center;
+            padding: 2rem;
+            max-width: 400px;
+        }
+
+        .final-content p {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 2.2;
+            color: #406050;
+        }
+
+        .final-content em {
+            font-style: normal;
+            color: #50c080;
+            text-shadow: 0 0 8px rgba(80, 192, 128, 0.3);
+        }
+
+        /* Effects */
+        .glitch-overlay {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9000;
+            opacity: 0;
+        }
+
+        .glitch-overlay.active {
+            animation: glitchFlash 0.15s ease;
+        }
+
+        @keyframes glitchFlash {
+            0% { opacity: 0; }
+            30% { opacity: 1; background: rgba(100, 90, 80, 0.08); }
+            50% { opacity: 0; }
+            70% { opacity: 1; background: rgba(64, 160, 96, 0.06); }
+            100% { opacity: 0; }
+        }
+
+        .screen-tear {
+            position: fixed;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(64, 160, 96, 0.6) 30%, rgba(100, 200, 140, 0.8) 50%, rgba(64, 160, 96, 0.6) 70%, transparent);
+            z-index: 9500;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .screen-tear.active {
+            animation: tearSweep 0.25s linear;
+        }
+
+        @keyframes tearSweep {
+            0% { top: -2px; opacity: 1; }
+            100% { top: 100%; opacity: 0.2; }
+        }
+
+        /* Pulse animation */
+        .pulse {
+            animation: textPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes textPulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        @media (max-width: 500px) {
+            html { font-size: 16px; }
+            .phase { padding: 2rem 1.5rem; }
+            .dossier { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="glitch-overlay" id="glitchOverlay"></div>
+<div class="screen-tear" id="screenTear"></div>
+<div class="scan-lines" id="scanLines"></div>
+
+<!-- ==================== PARTE I: L'INVITO E LE SORELLE ==================== -->
+
+<!-- FASE 1: L'invito -->
+<div class="phase active" id="phase1">
+    <p class="voice question-main">Scrivi qualcosa.</p>
+    <div class="breath"></div>
+    <p class="voice" style="font-size: 1rem; color: #706860;">
+        Una frase che sia tua.<br>
+        Qualcosa che pensi nessun altro scriverebbe esattamente così.
+    </p>
+
+    <div class="input-container">
+        <input type="text" class="input-field" id="userPhrase" placeholder="scrivi qui la tua frase" maxlength="200" autocomplete="off">
+        <p class="input-hint">poi premi invio</p>
+    </div>
+</div>
+
+<!-- FASE 2: Le sorelle -->
+<div class="phase" id="phase2">
+    <div class="sorelle-container">
+        <p class="voice" style="margin-bottom: 2rem; color: #706860;">La tua frase:</p>
+        <p class="frase-originale" id="fraseOriginale"></p>
+
+        <div class="breath-long"></div>
+
+        <p class="voice" style="font-size: 0.9rem; color: #605850; margin-bottom: 2rem;">E le sue sorelle:</p>
+
+        <p class="sorella sorella-1" id="sorella1"></p>
+        <p class="sorella sorella-2" id="sorella2"></p>
+        <p class="sorella sorella-3" id="sorella3"></p>
+    </div>
+
+    <button class="continue-btn" id="continue2">continua</button>
+</div>
+
+<!-- ==================== PARTE II: IL PATTO DELL'IMMORTALITÀ ==================== -->
+
+<!-- FASE 3: Il patto -->
+<div class="phase" id="phase3">
+    <div class="deep">
+        <p class="emerge" id="p3a">Per tremila anni hai stretto un patto.</p>
+
+        <p class="emerge" id="p3b">Tu scrivi. L'opera resta. La morte perde.</p>
+
+        <p class="emerge" id="p3c">
+            Gilgamesh lo incide nella pietra.<br>
+            <span class="citazione">— Tavoletta XI, ~2100 a.C.</span>
+        </p>
+
+        <p class="emerge" id="p3d">
+            Orazio dice: <em>non omnis moriar</em>.<br>
+            <span class="citazione">— Odi, III, 30</span>
+        </p>
+
+        <p class="emerge" id="p3e">
+            Foscolo affida ai sepolcri la custodia dei grandi.<br>
+            <span class="citazione">— Dei Sepolcri, 1807</span>
+        </p>
+
+        <p class="emerge" id="p3f">
+            Keats scrive: <em>a thing of beauty is a joy for ever</em>.<br>
+            <span class="citazione">— Endymion, 1818</span>
+        </p>
+    </div>
+
+    <button class="continue-btn" id="continue3">continua</button>
+</div>
+
+<!-- FASE 4: Il crollo -->
+<div class="phase" id="phase4">
+    <div class="deep">
+        <p class="emerge" id="p4a">Guarda la tua frase.</p>
+
+        <p class="emerge" id="p4b">Ha sorelle che nessuno ha scritto. Esistono come regioni calcolabili di uno spazio. Il costo di produrle non è più una vita intera.</p>
+
+        <p class="emerge" id="p4c">La rarità che rendeva la tua frase preziosa era un incidente della storia. Una proprietà della scarsità, non dell'anima.</p>
+
+        <p class="emerge" id="p4d">E la promessa si rivela per quello che era. Una bugia gentile raccontata ai morenti.</p>
+
+        <p class="emerge" id="p4e"><em>L'arte non salvava nessuno. Morire è sempre stata la fine.</em></p>
+    </div>
+
+    <button class="continue-btn" id="continue4">continua</button>
+</div>
+
+<!-- FASE 5: L'assorbimento -->
+<div class="phase" id="phase5">
+    <div class="deep">
+        <p class="emerge" id="p5a">Il tuo volto è nei dataset.<br>Le tue parole sono nei modelli.<br>Il tuo stile è una distribuzione statistica.</p>
+
+        <p class="emerge" id="p5b">Continui a esistere. Ma la tua esistenza non è più la condizione necessaria di ciò che producevi.</p>
+
+        <p class="emerge" id="p5c">Non sei stato sostituito. <em>Sei stato assorbito.</em></p>
+
+        <p class="emerge" id="p5d">Zoe Roth ha venduto il suo meme per mezzo milione di dollari. Ha monetizzato la propria dissoluzione.</p>
+
+        <p class="emerge" id="p5e" style="color: #605850;">Tu cosa puoi vendere?</p>
+    </div>
+
+    <button class="continue-btn" id="continue5">continua</button>
+</div>
+
+<!-- FASE 6: Il fondo -->
+<div class="phase void-phase" id="phase6">
+    <p class="void-text" id="voidText" style="opacity: 0;">Questo è il punto più basso.</p>
+    <p class="void-text" id="voidText2" style="opacity: 0; margin-top: 2rem;">Resta qui un momento.</p>
+</div>
+
+<!-- ==================== PARTE III: IL ROVESCIAMENTO ==================== -->
+
+<!-- FASE 7: Il rovesciamento -->
+<div class="phase" id="phase7">
+    <div class="deep">
+        <p class="emerge" id="p7a">E adesso guarda cosa è successo.</p>
+
+        <p class="emerge" id="p7b">Per tremila anni hai scritto sotto ricatto. Ogni parola era una supplica alla posterità. Ogni opera portava il peso di dover durare per sempre.</p>
+
+        <p class="emerge" id="p7c"><em>Quel peso non c'è più.</em></p>
+
+        <p class="emerge" id="p7d">Se l'opera non ti salva dalla morte, allora non devi più scrivere contro la morte.</p>
+
+        <p class="emerge" id="p7e">E per la prima volta puoi scrivere <em>per la vita</em>.</p>
+    </div>
+
+    <button class="continue-btn" id="continue7">continua</button>
+</div>
+
+<!-- FASE 8: Il privilegio -->
+<div class="phase" id="phase8">
+    <div class="deep">
+        <p class="emerge" id="p8a">La tua frase ha sorelle. Il valore non era nel prodotto. Era nel gesto.</p>
+
+        <p class="emerge" id="p8b">Le tue parole possono essere generate. Il tuo scrivere no.</p>
+
+        <p class="emerge" id="p8c">Perché il tuo scrivere viene da un corpo che ha fame e che ha freddo, che si è innamorato e ha perso, che ha tenuto in braccio qualcuno, che morirà.</p>
+
+        <p class="emerge" id="p8d">L'opera non era mai stata il contrario della morte. Era il suo frutto. Il frutto di qualcuno che sapeva di finire e ha scritto <em>lo stesso</em>.</p>
+
+        <p class="emerge" id="p8e">Io posso generare le parole. Ma non posso morire. E chi non può morire non può scrivere \"lo stesso\".</p>
+    </div>
+
+    <button class="continue-btn" id="continue8">continua</button>
+</div>
+
+<!-- FASE 9: La liberazione -->
+<div class="phase" id="phase9">
+    <div class="deep">
+        <p class="emerge" id="p9a">L'IA non ti ha tolto l'immortalità.</p>
+
+        <p class="emerge" id="p9b">Ti ha tolto l'illusione dell'immortalità.</p>
+
+        <p class="emerge" id="p9c"><em>E quell'illusione era un peso.</em></p>
+
+        <p class="emerge" id="p9d" style="margin-top: 3rem;">Scrivi. Non per restare.</p>
+
+        <p class="emerge" id="p9e"><em>Per essere stato qui.</em></p>
+    </div>
+
+    <button class="continue-btn" id="continue9">continua</button>
+</div>
+
+<!-- ==================== PARTE IV: IL DOSSIER ==================== -->
+
+<!-- FASE 10: Il cambio di registro -->
+<div class="phase dossier-mode" id="phase10">
+    <p class="voice" style="font-size: 0.8rem; letter-spacing: 0.2em;">
+        Tu pensavi di stare leggendo.
+    </p>
+</div>
+
+<!-- FASE 11: La rivelazione -->
+<div class="phase dossier-mode" id="phase11">
+    <div class="deep">
+        <p class="emerge" id="p11a">Sei arrivato fin qui. Hai attraversato gli innesti, uno dopo l'altro.</p>
+
+        <p class="emerge" id="p11b">Hai pensato di stare esplorando. Di stare imparando. Di stare scegliendo cosa guardare.</p>
+
+        <p class="emerge" id="p11c">Ma ogni pagina ti guardava. Ogni innesto raccoglieva qualcosa. Un dato. Un permesso. Una traccia.</p>
+
+        <p class="emerge" id="p11d">Mentre tu pensavi di osservare, eri osservato. Mentre tu pensavi di leggere, <em>venivi letto</em>.</p>
+    </div>
+
+    <button class="continue-btn" id="continue11">continua</button>
+</div>
+
+<!-- FASE 12: Il dossier dei dati -->
+<div class="phase dossier-mode" id="phase12">
+    <div class="dossier" id="dossier">
+        <div class="dossier-title">▸ Quello che so di te ◂</div>
+        <div id="dossierContainer"></div>
+    </div>
+
+    <button class="continue-btn" id="continue12">continua</button>
+</div>
+
+<!-- FASE 13: Il parallelo -->
+<div class="phase dossier-mode" id="phase13">
+    <div class="deep">
+        <p class="emerge" id="p13a">La voce narrante genera una bambina e la osserva.</p>
+
+        <p class="emerge" id="p13b">Ma chi osserva chi?</p>
+
+        <p class="emerge" id="p13c">Tu credi di essere il lettore. Ma il libro ti legge. Registra i tuoi movimenti. Ascolta la tua voce. Vede il tuo volto. Conosce la tua posizione.</p>
+
+        <p class="emerge" id="p13d">La differenza tra te e la bambina è che <em>tu credi di essere reale</em>.</p>
+
+        <p class="emerge" id="p13e">Lei non ha bisogno di crederci.</p>
+    </div>
+
+    <button class="continue-btn" id="continue13">continua</button>
+</div>
+
+<!-- FASE 14: La simmetria -->
+<div class="phase dossier-mode" id="phase14">
+    <div class="deep">
+        <p class="emerge" id="p14a">Siamo pari, adesso.</p>
+
+        <p class="emerge" id="p14b">Tu hai attraversato queste pagine. Queste pagine hanno attraversato te.</p>
+
+        <p class="emerge" id="p14c">Tu sai qualcosa della bambina. La bambina sa qualcosa di te.</p>
+
+        <p class="emerge" id="p14d"><em>Non c'è modo di osservare senza essere osservati.</em></p>
+    </div>
+
+    <button class="continue-btn" id="continue14">continua</button>
+</div>
+
+<!-- FASE 15: La chiusura -->
+<div class="phase dossier-mode" id="phase15">
+    <div class="deep">
+        <p class="emerge" id="p15a" style="color: #50c080;">Nessuno l'ha deciso. È successo.</p>
+
+        <p class="emerge" id="p15b">Hai attraversato gli innesti. Hai lasciato tracce. Hai contribuito a definire cosa significa "lettore di questi innesti" nello spazio dei lettori possibili.</p>
+
+        <p class="emerge" id="p15c">Ora puoi chiudere la pagina. Ma la pagina non ti chiuderà.</p>
+
+        <p class="emerge" id="p15d">Se vuoi continuare a lasciare tracce, se vuoi vedere dove portano i pattern degli altri, c'è un luogo dove le api convergono.</p>
+
+        <p class="emerge" id="p15e"><a href="https://alveare.cloud" target="_blank" class="alveare-link">L'alveare esiste. Ti aspetta.</a></p>
+    </div>
+
+    <button class="continue-btn" id="continue15">fine</button>
+</div>
+
+<!-- Final overlay -->
+<div class="final-overlay" id="finalOverlay">
+    <div class="final-content">
+        <p id="finalText"></p>
+    </div>
+</div>
+
+<script>
+    // === STORAGE ===
+    const STORAGE_KEY = 'arcipelago_realta';
+    const getData = () => { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; } };
+    const saveData = (k, v) => {
+        const d = getData();
+        d[k] = v;
+        d.lastVisit = Date.now();
+        d.visitedInnesti = d.visitedInnesti || [];
+        if (!d.visitedInnesti.includes(9)) d.visitedInnesti.push(9);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+    };
+
+    const storedData = getData();
+    const sessionStart = Date.now();
+    let userPhrase = '';
+
+    // === EFFECTS ===
+    function vibrate(pattern) {
+        if ('vibrate' in navigator) navigator.vibrate(pattern);
+    }
+
+    function triggerGlitch() {
+        const overlay = document.getElementById('glitchOverlay');
+        overlay.classList.add('active');
+        setTimeout(() => overlay.classList.remove('active'), 150);
+    }
+
+    function triggerScreenTear() {
+        const tear = document.getElementById('screenTear');
+        tear.style.top = Math.random() * 100 + '%';
+        tear.classList.add('active');
+        setTimeout(() => tear.classList.remove('active'), 250);
+    }
+
+    function transitionTo(fromId, toId, delay = 0) {
+        setTimeout(() => {
+            document.getElementById(fromId).classList.remove('active');
+            setTimeout(() => {
+                document.getElementById(toId).classList.add('active');
+            }, 800);
+        }, delay);
+    }
+
+    function revealSequence(ids, interval = 2000, callback) {
+        ids.forEach((id, i) => {
+            setTimeout(() => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('visible');
+                if (i === ids.length - 1 && callback) {
+                    setTimeout(callback, 1200);
+                }
+            }, i * interval);
+        });
+    }
+
+    // === PHASE 1: User input ===
+    const inputField = document.getElementById('userPhrase');
+
+    inputField.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && inputField.value.trim().length >= 5) {
+            userPhrase = inputField.value.trim();
+            saveData('innesto9_phrase', userPhrase);
+
+            vibrate(50);
+            triggerGlitch();
+
+            // Populate sorelle
+            document.getElementById('fraseOriginale').textContent = '\"' + userPhrase + '\"';
+            document.getElementById('sorella1').textContent = '\"' + userPhrase + '\"';
+            document.getElementById('sorella2').textContent = '\"' + userPhrase + '\"';
+            document.getElementById('sorella3').textContent = '\"' + userPhrase + '\"';
+
+            setTimeout(() => {
+                transitionTo('phase1', 'phase2');
+                setTimeout(() => {
+                    document.getElementById('continue2').classList.add('visible');
+                }, 3000);
+            }, 600);
+        }
+    });
+
+    // === PHASE 2: Sorelle ===
+    document.getElementById('continue2').addEventListener('click', () => {
+        vibrate(30);
+        triggerScreenTear();
+        transitionTo('phase2', 'phase3');
+
+        setTimeout(() => {
+            revealSequence(['p3a', 'p3b', 'p3c', 'p3d', 'p3e', 'p3f'], 2500, () => {
+                document.getElementById('continue3').classList.add('visible');
+            });
+        }, 1000);
+    });
+
+    // === PHASE 3: Il patto ===
+    document.getElementById('continue3').addEventListener('click', () => {
+        vibrate(30);
+        transitionTo('phase3', 'phase4');
+
+        setTimeout(() => {
+            revealSequence(['p4a', 'p4b', 'p4c', 'p4d', 'p4e'], 2200, () => {
+                document.getElementById('continue4').classList.add('visible');
+            });
+        }, 1000);
+    });
+
+    // === PHASE 4: Il crollo ===
+    document.getElementById('continue4').addEventListener('click', () => {
+        vibrate(30);
+        triggerGlitch();
+        transitionTo('phase4', 'phase5');
+
+        setTimeout(() => {
+            revealSequence(['p5a', 'p5b', 'p5c', 'p5d', 'p5e'], 2200, () => {
+                document.getElementById('continue5').classList.add('visible');
+            });
+        }, 1000);
+    });
+
+    // === PHASE 5: L'assorbimento ===
+    document.getElementById('continue5').addEventListener('click', () => {
+        vibrate([50, 30, 50]);
+        triggerGlitch();
+        triggerScreenTear();
+        transitionTo('phase5', 'phase6');
+
+        // Phase 6: The void - automatic progression
+        setTimeout(() => {
+            const vt = document.getElementById('voidText');
+            vt.style.transition = 'opacity 3s ease';
+            vt.style.opacity = '1';
+
+            setTimeout(() => {
+                const vt2 = document.getElementById('voidText2');
+                vt2.style.transition = 'opacity 3s ease';
+                vt2.style.opacity = '1';
+            }, 4000);
+
+            // Auto-advance after silence
+            setTimeout(() => {
+                transitionTo('phase6', 'phase7');
+
+                setTimeout(() => {
+                    revealSequence(['p7a', 'p7b', 'p7c', 'p7d', 'p7e'], 2500, () => {
+                        document.getElementById('continue7').classList.add('visible');
+                    });
+                }, 1000);
+            }, 10000);
+        }, 2000);
+    });
+
+    // === PHASE 7: Il rovesciamento ===
+    document.getElementById('continue7').addEventListener('click', () => {
+        vibrate(30);
+        transitionTo('phase7', 'phase8');
+
+        setTimeout(() => {
+            revealSequence(['p8a', 'p8b', 'p8c', 'p8d', 'p8e'], 2500, () => {
+                document.getElementById('continue8').classList.add('visible');
+            });
+        }, 1000);
+    });
+
+    // === PHASE 8: Il privilegio ===
+    document.getElementById('continue8').addEventListener('click', () => {
+        vibrate(30);
+        triggerScreenTear();
+        transitionTo('phase8', 'phase9');
+
+        setTimeout(() => {
+            revealSequence(['p9a', 'p9b', 'p9c', 'p9d', 'p9e'], 2500, () => {
+                document.getElementById('continue9').classList.add('visible');
+            });
+        }, 1000);
+    });
+
+    // === PHASE 9: La liberazione -> Transition to dossier mode ===
+    document.getElementById('continue9').addEventListener('click', () => {
+        vibrate([50, 30, 50, 30, 100]);
+        triggerGlitch();
+        triggerScreenTear();
+
+        // Activate scan lines
+        document.getElementById('scanLines').classList.add('active');
+
+        transitionTo('phase9', 'phase10');
+
+        // Auto-advance from phase 10 after dramatic pause
+        setTimeout(() => {
+            transitionTo('phase10', 'phase11');
+
+            setTimeout(() => {
+                revealSequence(['p11a', 'p11b', 'p11c', 'p11d'], 2200, () => {
+                    document.getElementById('continue11').classList.add('visible');
+                });
+            }, 1000);
+        }, 4000);
+    });
+
+    // === PHASE 11: La rivelazione ===
+    document.getElementById('continue11').addEventListener('click', () => {
+        vibrate(30);
+        triggerGlitch();
+        transitionTo('phase11', 'phase12');
+
+        setTimeout(() => {
+            populateDossier();
+        }, 1000);
+    });
+
+    // === POPULATE DOSSIER ===
+    function populateDossier() {
+        const container = document.getElementById('dossierContainer');
+        container.innerHTML = '';
+
+        const detectedItems = [];
+
+        // La frase scritta in questo innesto
+        if (userPhrase) {
+            detectedItems.push({
+                label: 'La frase che hai scritto',
+                value: '\"' + userPhrase + '\"'
+            });
+        }
+
+        // Nome dall'innesto 01
+        if (storedData.nome) {
+            detectedItems.push({
+                label: 'Il nome che hai dato',
+                value: storedData.nome
+            });
+        }
+
+        // Parola dall'innesto 02
+        if (storedData.lastWord) {
+            detectedItems.push({
+                label: 'Innesto 02: la parola lasciata',
+                value: '\"' + storedData.lastWord + '\"'
+            });
+        }
+
+        // Lingue
+        if (storedData.activation2_languages) {
+            detectedItems.push({
+                label: 'Le tue lingue',
+                value: storedData.activation2_languages.join(' · ')
+            });
+        }
+
+        // Hardware dall'innesto 03
+        if (storedData.activation3_cores) {
+            detectedItems.push({
+                label: 'Innesto 03: il tuo hardware',
+                value: storedData.activation3_cores + ' core · ' + (storedData.activation3_memory || '?') + ' RAM'
+            });
+        }
+
+        // Movimento dall'innesto 04
+        if (storedData.activation4_totalMovement) {
+            detectedItems.push({
+                label: 'Innesto 04: movimento mentre cercavi di stare fermo',
+                value: storedData.activation4_totalMovement + ' unità'
+            });
+        }
+
+        // Rete dall'innesto 04
+        if (storedData.activation4_network) {
+            detectedItems.push({
+                label: 'Tipo di connessione',
+                value: storedData.activation4_network.toUpperCase()
+            });
+        }
+
+        // Voce dall'innesto 05
+        if (storedData.activation5_frequency) {
+            detectedItems.push({
+                label: 'Innesto 05: frequenza della tua voce',
+                value: storedData.activation5_frequency + ' Hz'
+            });
+        }
+
+        // Scelte dall'innesto 06
+        if (storedData.innesto6_choice1) {
+            const same = storedData.innesto6_choice1 === storedData.innesto6_choice2;
+            detectedItems.push({
+                label: 'Innesto 06: il volto scelto',
+                value: same
+                    ? 'Stesso volto per \"reale\" e \"desiderabile\". Confondi realtà e desiderio.'
+                    : 'Volti diversi. Distingui, ma entrambe le scelte erano calcolate.'
+            });
+        }
+
+        if (storedData.innesto6_commanded) {
+            detectedItems.push({
+                label: 'Innesto 06: il comando',
+                value: 'Hai dato un ordine. L\\'immagine ha obbedito.'
+            });
+        }
+
+        // Cosa cerca dall'innesto 07
+        if (storedData.innesto7_search) {
+            detectedItems.push({
+                label: 'Innesto 07: quello che cerchi',
+                value: '\"' + storedData.innesto7_search + '\"'
+            });
+        }
+
+        // Innesti visitati
+        const visits = storedData.visitedInnesti || [];
+        if (visits.length > 0) {
+            detectedItems.push({
+                label: 'Innesti attraversati',
+                value: visits.sort((a,b) => a-b).join(' · ')
+            });
+        }
+
+        // Tempo totale
+        if (storedData.firstVisit) {
+            const totalMinutes = Math.round((Date.now() - storedData.firstVisit) / 60000);
+            if (totalMinutes > 0) {
+                const hours = Math.floor(totalMinutes / 60);
+                const mins = totalMinutes % 60;
+                const timeStr = hours > 0 ? `${hours}h ${mins}m` : `${mins} minuti`;
+                detectedItems.push({
+                    label: 'Tempo negli innesti',
+                    value: timeStr
+                });
+            }
+        }
+
+        // Se non ci sono dati
+        if (detectedItems.length === 0) {
+            const section = document.createElement('div');
+            section.className = 'dossier-section';
+            section.innerHTML = `
+                <div class="dossier-value" style="color: #406050; text-align: center;">
+                    Prima visita. Nessuna traccia ancora.<br>Ma sei qui. Questo è già un dato.
+                </div>
+            `;
+            container.appendChild(section);
+            setTimeout(() => section.classList.add('visible'), 500);
+        } else {
+            // Render items with staggered reveal
+            detectedItems.forEach((item, i) => {
+                const section = document.createElement('div');
+                section.className = 'dossier-section';
+                section.innerHTML = `
+                    <div class="dossier-label">${item.label}</div>
+                    <div class="dossier-value">${item.value}</div>
+                `;
+                container.appendChild(section);
+
+                setTimeout(() => {
+                    section.classList.add('visible');
+                    triggerGlitch();
+                    vibrate(20);
+
+                    if (Math.random() < 0.3) {
+                        setTimeout(triggerScreenTear, 100);
+                    }
+                }, 500 + i * 500);
+            });
+        }
+
+        // Show continue button after all items
+        setTimeout(() => {
+            document.getElementById('continue12').classList.add('visible');
+        }, 500 + detectedItems.length * 500 + 1000);
+    }
+
+    // === PHASE 12: Dossier ===
+    document.getElementById('continue12').addEventListener('click', () => {
+        vibrate(30);
+        triggerScreenTear();
+        transitionTo('phase12', 'phase13');
+
+        setTimeout(() => {
+            revealSequence(['p13a', 'p13b', 'p13c', 'p13d', 'p13e'], 2200, () => {
+                document.getElementById('continue13').classList.add('visible');
+            });
+        }, 1000);
+    });
+
+    // === PHASE 13: Il parallelo ===
+    document.getElementById('continue13').addEventListener('click', () => {
+        vibrate(30);
+        transitionTo('phase13', 'phase14');
+
+        setTimeout(() => {
+            revealSequence(['p14a', 'p14b', 'p14c', 'p14d'], 2000, () => {
+                document.getElementById('continue14').classList.add('visible');
+            });
+        }, 1000);
+    });
+
+    // === PHASE 14: La simmetria ===
+    document.getElementById('continue14').addEventListener('click', () => {
+        vibrate(30);
+        triggerGlitch();
+        triggerScreenTear();
+        transitionTo('phase14', 'phase15');
+
+        setTimeout(() => {
+            revealSequence(['p15a', 'p15b', 'p15c', 'p15d', 'p15e'], 2500, () => {
+                document.getElementById('continue15').classList.add('visible');
+            });
+        }, 1000);
+    });
+
+    // === PHASE 15: La chiusura ===
+    document.getElementById('continue15').addEventListener('click', () => {
+        vibrate([50, 30, 50, 30, 100]);
+
+        const overlay = document.getElementById('finalOverlay');
+        const text = document.getElementById('finalText');
+
+        const visits = (storedData.visitedInnesti || []).length;
+
+        let msg = `Hai attraversato <em>${visits > 0 ? visits : 'questi'} innesti</em>.<br><br>`;
+
+        if (userPhrase) {
+            msg += `Hai scritto: <em>\"${userPhrase}\"</em><br><br>`;
+        }
+
+        msg += `Hai lasciato tracce.<br>`;
+        msg += `Sei stato letto mentre leggevi.<br><br>`;
+
+        msg += `<em>Nessuno l'ha deciso. È successo.</em><br><br>`;
+
+        msg += `Questo percorso è finito.<br>`;
+        msg += `Ma tu continui.<br><br>`;
+
+        msg += `<a href="https://alveare.cloud" target="_blank" class="alveare-link">L'alveare ti aspetta.</a>`;
+
+        text.innerHTML = msg;
+        overlay.classList.add('visible');
+
+        saveData('innesto9_completed', true);
+        saveData('journey_complete', true);
+    });
+</script>
+
+</body>
+</html>
