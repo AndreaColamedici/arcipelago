@@ -436,7 +436,6 @@ var collectedData = {
 
 // ========== DATA COLLECTION (async, silent) ==========
 function collectAllData(callback) {
-  // Sync data
   collectedData.lang = navigator.language || navigator.userLanguage || 'sconosciuta';
   collectedData.screen = window.screen.width + '\u00d7' + window.screen.height;
   collectedData.isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -444,7 +443,6 @@ function collectAllData(callback) {
   collectedData.cores = navigator.hardwareConcurrency || 0;
   collectedData.memory = navigator.deviceMemory || 0;
 
-  // GPU via WebGL
   try {
     var c = document.createElement('canvas');
     var gl = c.getContext('webgl') || c.getContext('experimental-webgl');
@@ -457,7 +455,6 @@ function collectAllData(callback) {
   } catch(e) {}
   if (!collectedData.gpu) collectedData.gpu = '';
 
-  // Connection
   if (navigator.connection) {
     collectedData.connType = navigator.connection.effectiveType || '';
     var dl = navigator.connection.downlink;
@@ -465,7 +462,6 @@ function collectAllData(callback) {
     if (dl) collectedData.conn += ' / ' + dl + ' Mbps';
   }
 
-  // Daylight calc
   var now = new Date();
   var month = now.getMonth();
   var hour = now.getHours();
@@ -476,14 +472,12 @@ function collectAllData(callback) {
   collectedData.daylight = Math.max(0, sunset - currentDecimal);
   collectedData.hour = hour;
 
-  // Async: battery + media devices
   var pending = 2;
   function done() {
     pending--;
     if (pending <= 0) callback();
   }
 
-  // Battery
   if (navigator.getBattery) {
     navigator.getBattery().then(function(b) {
       collectedData.battLevel = Math.round(b.level * 100);
@@ -496,7 +490,6 @@ function collectAllData(callback) {
     done();
   }
 
-  // Media devices (cameras/mics count)
   if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
     navigator.mediaDevices.enumerateDevices().then(function(devices) {
       devices.forEach(function(d) {
@@ -548,7 +541,6 @@ function completeTouch() {
   saveData('activation1_completed', true);
   saveData('activation1_time', Date.now());
 
-  // Collect data, then show reveal
   collectAllData(function() {
     setTimeout(showDataReveal, 600);
   });
@@ -558,15 +550,13 @@ function showDataReveal() {
   touchZone.classList.add('hidden');
   dataReveal.classList.add('visible');
 
-  // Populate data reveal
   document.getElementById('langValue').textContent = collectedData.lang;
   document.getElementById('screenValue').textContent = collectedData.screen + ' px';
-  document.getElementById('gpuValue').textContent = collectedData.gpu || '–';
-  document.getElementById('connValue').textContent = collectedData.conn || '–';
-  document.getElementById('battValue').textContent = collectedData.batt || '–';
+  document.getElementById('gpuValue').textContent = collectedData.gpu || '\u2013';
+  document.getElementById('connValue').textContent = collectedData.conn || '\u2013';
+  document.getElementById('battValue').textContent = collectedData.batt || '\u2013';
   document.getElementById('tzValue').textContent = collectedData.tz;
 
-  // Cameras + mics
   var camStr = '';
   if (collectedData.cams > 0 || collectedData.mics > 0) {
     var parts = [];
@@ -574,9 +564,8 @@ function showDataReveal() {
     if (collectedData.mics > 0) parts.push(collectedData.mics + (collectedData.mics === 1 ? ' microfono' : ' microfoni'));
     camStr = parts.join(', ');
   }
-  document.getElementById('camsValue').textContent = camStr || '–';
+  document.getElementById('camsValue').textContent = camStr || '\u2013';
 
-  // Daylight
   if (collectedData.daylight <= 0) {
     document.getElementById('daylightValue').textContent = 'nessuna';
     document.getElementById('daylightValue').classList.add('warning');
@@ -586,13 +575,11 @@ function showDataReveal() {
     document.getElementById('daylightValue').textContent = h + 'h ' + m + 'm';
   }
 
-  // Hide items that have no data
   if (!collectedData.gpu) document.getElementById('revealGpu').style.display = 'none';
   if (!collectedData.conn) document.getElementById('revealConn').style.display = 'none';
   if (!collectedData.batt) document.getElementById('revealBatt').style.display = 'none';
   if (!camStr) document.getElementById('revealCams').style.display = 'none';
 
-  // Staggered reveal
   var items = dataReveal.querySelectorAll('.data-item');
   var visibleItems = [];
   for (var i = 0; i < items.length; i++) {
@@ -625,7 +612,6 @@ document.getElementById('dataContinue').addEventListener('click', function() {
 function buildInference() {
   var lines = [];
 
-  // Inference based on battery + charging + hour + connection
   if (collectedData.battLevel >= 0) {
     if (collectedData.battLevel < 30 && !collectedData.battCharging) {
       if (collectedData.hour >= 22 || collectedData.hour < 6) {
@@ -634,49 +620,40 @@ function buildInference() {
         lines.push('La tua batteria si sta scaricando e non la stai caricando. Sei fuori casa, o non ti importa.');
       }
     } else if (collectedData.battCharging) {
-      lines.push('Il tuo dispositivo è in carica. Sei in un posto dove ti senti al sicuro.');
+      lines.push('Il tuo dispositivo \u00e8 in carica. Sei in un posto dove ti senti al sicuro.');
     }
   }
 
-  // Inference based on connection
   if (collectedData.connType === '4g' || collectedData.connType === '3g') {
     lines.push('Sei su rete mobile. Stai leggendo in movimento, o in un posto dove non hai WiFi. Qualcuno potrebbe guardarti lo schermo.');
-  } else if (collectedData.connType === 'wifi' || collectedData.connType === 'ethernet') {
-    // Already covered by battery inference if present
   }
 
-  // Inference based on GPU + cores + memory = economic bracket
   if (collectedData.gpu) {
     var gpuLower = collectedData.gpu.toLowerCase();
     if (gpuLower.indexOf('apple') >= 0 || gpuLower.indexOf('nvidia') >= 0 && (gpuLower.indexOf('rtx 40') >= 0 || gpuLower.indexOf('rtx 30') >= 0)) {
-      lines.push('Stai leggendo da un dispositivo che costa più di quanto guadagnano in sei mesi le persone che lo hanno assemblato.');
+      lines.push('Stai leggendo da un dispositivo che costa pi\u00f9 di quanto guadagnano in sei mesi le persone che lo hanno assemblato.');
     }
   }
 
-  // Inference based on cameras/mics
   if (collectedData.cams > 0) {
     lines.push('Il tuo dispositivo ha ' + collectedData.cams + (collectedData.cams === 1 ? ' fotocamera' : ' fotocamere') + ' e ' + collectedData.mics + (collectedData.mics === 1 ? ' microfono' : ' microfoni') + '. Non li sto usando. Ma potrei contarli senza chiedertelo, e l\u2019ho fatto.');
   }
 
-  // Inference based on dark mode + hour
   if (collectedData.isDark && (collectedData.hour >= 22 || collectedData.hour < 6)) {
     lines.push('Stai leggendo al buio, con lo schermo scuro. Probabilmente sei solo.');
   }
 
-  // Inference based on daylight
   if (collectedData.daylight <= 0 && collectedData.hour >= 17) {
     if (lines.length > 0 && lines[lines.length-1].indexOf('solo') < 0) {
-      lines.push('Fuori è buio. Nessuno sa che sei qui.');
+      lines.push('Fuori \u00e8 buio. Nessuno sa che sei qui.');
     }
   }
 
-  // Always end with this
   if (lines.length === 0) {
     lines.push('Sono pochi numeri. Ma bastano a disegnare un contorno. Un\'ombra nella forma di qualcuno che legge.');
   }
 
-  // Build final inference paragraph
-  var inference = lines.join(' ') + ' Nessuno di questi dati, preso da solo, dice molto. Ma il sistema non prende mai un dato da solo. Il sistema incrocia. E dall\u2019incrocio emerge un\u2019immagine di te che non hai mai autorizzato.';
+  var inference = lines.join(' ') + ' Nessuno di questi dati, preso da solo, dice molto. Ma il sistema non prende mai un dato da solo. Il sistema incrocia. E dall\'incrocio emerge un\'immagine di te che non hai mai autorizzato.';
 
   return inference;
 }
@@ -714,10 +691,81 @@ function populateSection1() {
     document.getElementById('s1-cams').style.display = 'none';
   }
 
-  // THE INFERENCE
   document.getElementById('s1-inferenza').textContent = buildInference();
 }
 
+// ========== READER-AWARE TRANSITION SYSTEM ==========
+var MIN_READ_MS = 3000;
+
+function waitForLastParagraphRead(sectionId, callback) {
+  var section = document.getElementById(sectionId);
+  if (!section) { callback(); return; }
+  var allP = section.querySelectorAll('.p');
+  var lastP = null;
+  for (var i = allP.length - 1; i >= 0; i--) {
+    if (allP[i].style.display !== 'none') {
+      lastP = allP[i];
+      break;
+    }
+  }
+  if (!lastP) { callback(); return; }
+
+  var enteredAt = 0;
+  var resolved = false;
+
+  var observer = new IntersectionObserver(function(entries) {
+    if (resolved) return;
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        if (!enteredAt) enteredAt = Date.now();
+        checkReady();
+      } else {
+        enteredAt = 0;
+      }
+    });
+  }, { threshold: 0.4 });
+
+  function checkReady() {
+    if (resolved) return;
+    if (enteredAt && (Date.now() - enteredAt) >= MIN_READ_MS) {
+      resolved = true;
+      observer.disconnect();
+      callback();
+      return;
+    }
+    if (!resolved) {
+      setTimeout(checkReady, 500);
+    }
+  }
+
+  observer.observe(lastP);
+}
+
+function showSectionWithReaderWait(sectionId, nextCallback) {
+  document.querySelectorAll('.section').forEach(function(s){ s.classList.remove('active'); });
+  var section = document.getElementById(sectionId);
+  section.classList.add('active');
+
+  var elements = section.querySelectorAll('.p, .input-area');
+  var maxDelay = 0;
+
+  elements.forEach(function(el) {
+    if (el.style.display === 'none') return;
+    var delay = parseInt(el.dataset.delay) || 0;
+    maxDelay = Math.max(maxDelay, delay);
+    setTimeout(function(){ el.classList.add('visible'); }, delay);
+  });
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  if (!nextCallback) return;
+
+  setTimeout(function() {
+    waitForLastParagraphRead(sectionId, nextCallback);
+  }, maxDelay + 1500);
+}
+
+// ========== MAIN EXPERIENCE ==========
 function startMainExperience() {
   var existingName = getData('nome');
 
@@ -739,31 +787,19 @@ function startMainExperience() {
 
     populateSection1();
 
-    showSection('s0', function() {
-      setTimeout(function() {
-        profilingEl.textContent = 'PROFILING COMPLETE';
-        profilingEl.classList.add('done');
-      }, 500);
+    showSectionWithReaderWait('s0', function() {
+      profilingEl.textContent = 'PROFILING COMPLETE';
+      profilingEl.classList.add('done');
 
       setTimeout(function() {
-        var readingTime = Math.round((Date.now() - startTime) / 1000);
-
-        showSection('s1', function() {
-          setTimeout(function() {
-            showSection('s2', function() {
-              setTimeout(function() {
-                showSection('s3', function() {
-                  setTimeout(function() {
-                    showSection('s4', function() {
-                      setTimeout(function() {
-                        showSection('s5');
-                      }, 4500);
-                    });
-                  }, 4500);
-                });
-              }, 4500);
+        showSectionWithReaderWait('s1', function() {
+          showSectionWithReaderWait('s2', function() {
+            showSectionWithReaderWait('s3', function() {
+              showSectionWithReaderWait('s4', function() {
+                showSection('s5');
+              });
             });
-          }, 4500);
+          });
         });
       }, 2000);
     });
@@ -830,7 +866,7 @@ setInterval(function() {
   msEl.textContent = (Date.now() - startTime) + ' ms';
 }, 100);
 
-// ========== FLOW ==========
+// ========== FLOW (legacy, used for s5/s6 and return visitors) ==========
 function showSection(id, callback) {
   document.querySelectorAll('.section').forEach(function(s){ s.classList.remove('active'); });
   var section = document.getElementById(id);
