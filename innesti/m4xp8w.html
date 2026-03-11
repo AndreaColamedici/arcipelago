@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>L'arcipelago delle realtà — Innesto 02</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap');
+
+    :root {
+      --bg: #08080a;
+      --text: #a8a4a0;
+      --text-bright: #d0ccc4;
+      --text-dim: #5a5a64;
+      --text-ghost: #3a3a44;
+      --accent: rgba(200, 180, 160, 0.4);
+      --warning: #c08060;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 16px;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 300;
+      line-height: 2;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #void {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    .layer {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      padding: 12vh 1.5rem 15vh 1.5rem;
+    }
+
+    .container {
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .p {
+      margin-bottom: 2.2rem;
+      opacity: 0;
+      transform: translateY(25px);
+      transition: opacity 1.4s ease, transform 1.4s ease;
+      font-size: 0.95rem;
+      letter-spacing: 0.01em;
+    }
+
+    .p.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .p.enfasi {
+      color: var(--text-bright);
+      font-style: italic;
+      padding-left: 1.2rem;
+      border-left: 1px solid var(--accent);
+    }
+
+    .p.tecnico {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      letter-spacing: 0.04em;
+    }
+
+    .p.sussurro {
+      font-size: 0.85rem;
+      color: var(--text-ghost);
+      text-align: center;
+    }
+
+    .p.centro {
+      text-align: center;
+    }
+
+    .p .dato {
+      color: var(--text-bright);
+      border-bottom: 1px solid var(--accent);
+    }
+
+    .section {
+      display: none;
+    }
+    .section.active {
+      display: block;
+    }
+
+    .input-area {
+      margin: 3rem 0;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    .input-area.visible { opacity: 1; }
+
+    input[type="text"] {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--text-ghost);
+      color: var(--text-bright);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1rem;
+      font-weight: 300;
+      padding: 0.8rem 0;
+      text-align: center;
+      outline: none;
+      letter-spacing: 0.05em;
+      transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--accent);
+    }
+
+    .btn {
+      display: block;
+      margin: 1.5rem auto 0;
+      background: transparent;
+      border: 1px solid var(--text-ghost);
+      color: var(--text-dim);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      padding: 0.8rem 2.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+    }
+
+    .btn:hover {
+      border-color: var(--text);
+      color: var(--text);
+    }
+
+    /* Touch activation */
+    .touch-zone {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      transition: opacity 1s ease;
+    }
+
+    .touch-zone.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .touch-prompt {
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .touch-prompt p {
+      font-size: 0.9rem;
+      color: var(--text-dim);
+      margin-bottom: 2rem;
+      line-height: 1.8;
+    }
+
+    .touch-circle {
+      width: 120px;
+      height: 120px;
+      border: 1px solid var(--text-ghost);
+      border-radius: 50%;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .touch-circle.holding {
+      border-color: var(--text);
+      background: rgba(200, 180, 160, 0.05);
+    }
+
+    .touch-circle.complete {
+      border-color: #6a8a7a;
+      background: rgba(100, 140, 120, 0.1);
+    }
+
+    .touch-progress {
+      position: absolute;
+      inset: -2px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      border-top-color: var(--text);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .touch-circle.holding .touch-progress {
+      opacity: 1;
+      animation: progressSpin 3s linear forwards;
+    }
+
+    @keyframes progressSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .touch-label {
+      font-size: 0.65rem;
+      color: var(--text-ghost);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .touch-circle.holding .touch-label { color: var(--text); }
+    .touch-circle.complete .touch-label { color: #6a8a7a; }
+
+    .touch-timer {
+      position: absolute;
+      bottom: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.6rem;
+      color: var(--text-ghost);
+      letter-spacing: 0.1em;
+    }
+
+    /* Generated section wrapper */
+    .generated-section {
+      display: none;
+    }
+    .generated-section.active {
+      display: block;
+    }
+
+    /* CARTA SECTION */
+    .carta-section {
+      background: #f4f1eb;
+      position: relative;
+      overflow: hidden;
+      padding: 8vh 1.5rem 12vh;
+      margin: 0 -1.5rem;
+    }
+
+    .carta-section .container {
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .carta-section .chapter-content {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      line-height: 2;
+      color: #2a2420;
+    }
+
+    .carta-section .chapter-content p {
+      margin-bottom: 1.8rem;
+      text-align: justify;
+    }
+
+    .congiunzione {
+      display: inline-block;
+      color: inherit;
+    }
+
+    .congiunzione.trema {
+      animation: tremore 0.4s ease-in-out;
+    }
+
+    @keyframes tremore {
+      0%, 100% { transform: translate(0, 0); }
+      10% { transform: translate(-1px, -1px); }
+      20% { transform: translate(1px, 0); }
+      30% { transform: translate(-1px, 1px); }
+      40% { transform: translate(1px, -1px); }
+      50% { transform: translate(-1px, 0); }
+      60% { transform: translate(1px, 1px); }
+      70% { transform: translate(0, -1px); }
+      80% { transform: translate(-1px, 1px); }
+      90% { transform: translate(1px, 0); }
+    }
+
+    /* Ephemeral phrase — the bambina's voice between the lines */
+    .voce-bambina {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: #2a2420;
+      opacity: 0;
+      text-align: center;
+      padding: 2rem 0;
+      letter-spacing: 0.18em;
+      transition: opacity 2s ease;
+      text-transform: lowercase;
+    }
+
+    .voce-bambina.audible {
+      opacity: 0.3;
+    }
+
+    .macchia {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 2s ease;
+      z-index: 1;
+    }
+
+    .macchia.visible {
+      opacity: 0.12;
+    }
+
+    .macchia svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .macchia svg path {
+      fill: #1a1815;
+    }
+
+    .gradient-transition {
+      height: 30vh;
+      background: linear-gradient(to bottom, var(--bg), #f4f1eb);
+      margin: 0 -1.5rem;
+    }
+
+    .gradient-transition-out {
+      height: 30vh;
+      background: linear-gradient(to bottom, #f4f1eb, var(--bg));
+      margin: 0 -1.5rem;
+    }
+
+    /* Dono section — Benjamin — serif in darkness */
+    .dono-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      line-height: 2.2;
+      color: var(--text-bright);
+    }
+
+    .dono-text .citazione {
+      font-style: italic;
+      display: block;
+      margin: 2rem 0;
+      padding-left: 1.2rem;
+      border-left: 1px solid var(--accent);
+    }
+
+    /* Fragment */
+    .frammento-box {
+      margin: 3rem 0;
+      padding: 1.5rem;
+      border: 1px solid var(--text-ghost);
+      text-align: center;
+    }
+
+    .frammento-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: var(--text-ghost);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .frammento-testo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      color: var(--text-bright);
+      font-style: italic;
+    }
+
+    /* Test error */
+    .test-errore {
+      color: var(--warning);
+      font-size: 0.85rem;
+      text-align: center;
+      margin-top: 2rem;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    .test-errore.visible { opacity: 1; }
+
+    /* Final screen */
+    .final-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 2s ease;
+    }
+    .final-screen.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .final-content {
+      max-width: 400px;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .final-content .p {
+      opacity: 1;
+      transform: none;
+    }
+
+    .pulse {
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="void"></canvas>
+
+<!-- TOUCH ACTIVATION -->
+<div class="touch-zone" id="touchZone">
+  <div class="touch-prompt">
+    <p>Secondo innesto.</p>
+    <p style="color: var(--text); margin-bottom: 3rem;">Tocca e tieni premuto.</p>
+    <div class="touch-circle" id="touchCircle">
+      <div class="touch-progress"></div>
+      <span class="touch-label">3 sec</span>
+      <div class="touch-timer" id="touchTimer"></div>
+    </div>
+  </div>
+</div>
+
+<div class="layer">
+  <div class="container">
+
+    <!-- S-NOME: Name recall + book title request -->
+    <div class="section" id="s-nome">
+      <p class="p enfasi" data-delay="300" id="nome-saluto">La bambina continua a giocare.</p>
+
+      <p class="p" data-delay="3000" id="nome-memoria">Il sistema ricorda.</p>
+
+      <p class="p" data-delay="6000">La prima volta ti ho chiesto il tuo nome. Adesso ti chiedo un libro.</p>
+
+      <p class="p" data-delay="9500">L'ultimo che hai finito. Quello che hai chiuso e non hai ancora sostituito.</p>
+
+      <p class="p" data-delay="13000">Dammi il titolo e te lo restituirò dentro qualcosa.</p>
+
+      <div class="input-area" data-delay="16000">
+        <input type="text" id="parola" placeholder="un titolo">
+        <button class="btn" id="btn-parola">consegna</button>
+      </div>
+    </div>
+
+    <!-- GENERATED SECTION (everything after title submission) -->
+    <div class="generated-section" id="generatedSection">
+
+      <!-- S-REAZIONE: Brief reaction -->
+      <div class="section active" id="s-reazione">
+        <p class="p centro" data-delay="500" style="font-size: 1.2rem; color: var(--text-bright);"><span id="parola-display"></span></p>
+
+        <p class="p" data-delay="4000" id="reazione-testo"></p>
+
+        <p class="p sussurro" data-delay="9000">Scorri.</p>
+      </div>
+
+      <!-- GRADIENT INTO CARTA -->
+      <div class="gradient-transition"></div>
+
+      <!-- CARTA SECTION -->
+      <div class="carta-section" id="cartaSection">
+        <div class="container">
+          <div class="chapter-content" id="cartaContent">
+            <p data-track="carta1" id="carta1">Stai leggendo un libro.</p>
+
+            <p data-track="carta1b" id="carta1b" style="display:none;"></p>
+
+            <p data-track="carta2">Il gesto ti sembra normale <span class="congiunzione">e</span> l'hai fatto centinaia di volte <span class="congiunzione">e</span> migliaia di volte <span class="congiunzione">e</span> ogni volta hai aperto una copertina <span class="congiunzione">e</span> hai seguito delle righe <span class="congiunzione">e</span> hai lasciato che le parole di qualcun altro occupassero il tempo che avevi.</p>
+
+            <p data-track="carta3">Ma questo gesto sta finendo.</p>
+
+            <p data-track="carta4">I libri continueranno a esistere <span class="congiunzione">e</span> continueranno a essere stampati <span class="congiunzione">e</span> comprati <span class="congiunzione">e</span> regalati <span class="congiunzione">e</span> accumulati sugli scaffali <span class="congiunzione">e</span> messi in libreria <span class="congiunzione">e</span> spostati da una casa all'altra. Quello che sta finendo è il rapporto. È il tempo lungo. È l'idea che per sapere qualcosa <span class="congiunzione">e</span> per capire qualcosa <span class="congiunzione">e</span> per sentire qualcosa tu debba fermarti <span class="congiunzione">e</span> attraversare duecento pagine scritte da un'altra mente.</p>
+
+            <p data-track="carta5">Per secoli il libro è stato la tecnologia privilegiata per la trasmissione del pensiero complesso. Se volevi un'idea che non poteva stare in una frase dovevi scriverla <span class="congiunzione">e</span> se volevi riceverla dovevi leggerla <span class="congiunzione">e</span> non c'era altro modo. <span class="congiunzione">E</span> la lentezza era strutturale <span class="congiunzione">e</span> quella lentezza produceva qualcosa, una forma di attenzione <span class="congiunzione">e</span> una forma di intimità con il testo <span class="congiunzione">e</span> una forma di trasformazione che richiedeva ore <span class="congiunzione">e</span> giorni <span class="congiunzione">e</span> a volte settimane.</p>
+
+            <p data-track="carta6">Internet ha cominciato a erodere quel rapporto. Ha frammentato il testo <span class="congiunzione">e</span> lo ha reso disponibile ovunque <span class="congiunzione">e</span> lo ha mescolato con immagini <span class="congiunzione">e</span> suoni <span class="congiunzione">e</span> notifiche <span class="congiunzione">e</span> ha reso il libro un'opzione tra le altre <span class="congiunzione">e</span> nemmeno la più comoda.</p>
+
+            <p data-track="carta7"><span class="congiunzione">E</span> l'intelligenza artificiale sta completando quella trasformazione. Risponde <span class="congiunzione">e</span> risponde subito <span class="congiunzione">e</span> risponde a te <span class="congiunzione">e</span> risponde a quello che chiedi nel momento in cui lo chiedi. Ti dà la frase che cercavi senza chiederti di attraversare duecento pagine per arrivarci <span class="congiunzione">e</span> se la frase non ti basta te ne dà un'altra <span class="congiunzione">e</span> poi un'altra ancora.</p>
+
+            <p data-track="carta8">Il libro chiedeva qualcosa. Chiedeva tempo <span class="congiunzione">e</span> chiedeva fiducia <span class="congiunzione">e</span> chiedeva che tu accettassi di non sapere dove stavi andando. Il libro diceva seguimi <span class="congiunzione">e</span> forse alla fine avrai qualcosa che adesso non hai. Era un patto <span class="congiunzione">e</span> quel patto richiedeva una forma di abbandono.</p>
+
+            <!-- LA VOCE DELLA BAMBINA — ephemeral phrase -->
+            <p class="voce-bambina" id="voceBambina">il gioco è già cominciato</p>
+
+            <p data-track="carta9"><span class="congiunzione">E</span> quel patto si sta rompendo.</p>
+
+            <p data-track="carta10">I lettori non sono diventati pigri <span class="congiunzione">e</span> non sono diventati stupidi <span class="congiunzione">e</span> non sono diventati distratti. È cambiato il costo. Il costo di ottenere un'informazione <span class="congiunzione">e</span> un'emozione <span class="congiunzione">e</span> una storia <span class="congiunzione">e</span> un'idea. <span class="congiunzione">E</span> quando il costo scende cambia il valore percepito <span class="congiunzione">e</span> quando puoi avere una risposta in tre secondi duecento pagine diventano un investimento che devi giustificare.</p>
+
+            <p data-track="carta11" id="carta11"><span class="congiunzione">E</span> tu adesso stai giustificando quell'investimento. Stai per leggere questo libro <span class="congiunzione">e</span> stai per fare qualcosa che tra dieci anni sarà forse un gesto di resistenza o di nostalgia o di eccentricità.</p>
+
+            <p data-track="carta12"><span class="congiunzione">E</span> il libro che stai per aprire sa di essere tra gli ultimi della sua specie. L'ultimo libro di un certo tipo. L'ultimo libro che può ancora aspettarsi di essere letto così, dall'inizio alla fine <span class="congiunzione">e</span> con pazienza <span class="congiunzione">e</span> con la disponibilità a perdersi.</p>
+
+            <p data-track="carta13"><span class="congiunzione">E</span> per questo ha degli innesti. <span class="congiunzione">E</span> per questo, prima ancora di aprirti le sue pagine, ti ha portato qui, in uno schermo. Sa che la pagina da sola non basterà a tenerti <span class="congiunzione">e</span> sa che deve ibridarsi <span class="congiunzione">e</span> contaminarsi <span class="congiunzione">e</span> diventare qualcosa che non è più solo libro per continuare a esistere come libro.</p>
+
+            <p data-track="carta14">Il mondo cambia <span class="congiunzione">e</span> le forme cambiano <span class="congiunzione">e</span> i rapporti cambiano. Il codice miniato è diventato libro stampato <span class="congiunzione">e</span> il libro stampato sta diventando qualcos'altro <span class="congiunzione">e</span> ogni trasformazione perde qualcosa <span class="congiunzione">e</span> guadagna qualcos'altro. <span class="congiunzione">E</span> tu che stai ancora leggendo puoi decidere se questo gesto ha ancora senso.</p>
+
+            <p data-track="carta15"><span class="congiunzione">E</span> se stai ancora leggendo forse ha senso.</p>
+
+            <p data-track="carta16">Almeno per te <span class="congiunzione">e</span> almeno per ora.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- GRADIENT OUT -->
+      <div class="gradient-transition-out"></div>
+
+      <!-- S-TEST: Attention test -->
+      <div class="section" id="s-test">
+        <p class="p" data-delay="2000" data-track="test1">C'era una voce tra le righe.</p>
+
+        <p class="p" data-delay="5000" data-track="test2">Qualcosa è apparso e poi è scomparso, nel mezzo della lettura. Se stavi leggendo davvero, l'hai vista.</p>
+
+        <p class="p sussurro" data-delay="8000">Cosa diceva?</p>
+
+        <div class="input-area" data-delay="10000">
+          <input type="text" id="test-input" placeholder="...">
+          <button class="btn" id="btn-test">rispondi</button>
+        </div>
+
+        <div class="test-errore" id="test-errore"></div>
+      </div>
+
+      <!-- S-DONO: Benjamin reflection (reward for attention) -->
+      <div class="section" id="s-dono">
+        <div class="dono-text">
+          <p class="p" data-delay="1000" data-track="dono1">Hai visto qualcosa che gli altri non vedranno.</p>
+
+          <p class="p" data-delay="5000" data-track="dono2">Walter Benjamin scriveva che la noia è l'uccello incantato che cova l'uovo dell'esperienza. Il minimo rumore nelle frasche lo mette in fuga. Lo scriveva nel 1936, in un saggio sul narratore, quando ancora si poteva supporre che l'arte di raccontare storie sopravvivesse alla velocità del mondo.</p>
+
+          <p class="p" data-delay="11000" data-track="dono3">Quello che hai fatto adesso, fermarti, indugiare, prestare orecchio a una voce che non gridava, è il gesto contrario al rumore nelle frasche. Hai lasciato che l'uccello restasse posato. Hai covato qualcosa.</p>
+
+          <p class="p" data-delay="17000" data-track="dono4">L'attenzione che dai a un testo non è una risorsa da ottimizzare. È un atto di cura. Chi legge con lentezza riceve qualcosa che chi scorre non riceverà mai. E quel qualcosa non è informazione. È esperienza.</p>
+
+          <p class="p enfasi" data-delay="23000" data-track="dono5">L'uovo si schiude soltanto per chi resta.</p>
+        </div>
+
+        <p class="p sussurro" data-delay="28000">Scorri.</p>
+      </div>
+
+      <!-- S-FRAMMENTO: Fragment 2/10 -->
+      <div class="section" id="s-frammento">
+        <p class="p tecnico" data-delay="1000" data-track="framm1">Hai sbloccato un frammento.</p>
+
+        <div class="frammento-box" style="opacity: 0; transition: opacity 2s ease;" id="frammento-box">
+          <div class="frammento-label">frammento 2 di 10</div>
+          <div class="frammento-testo" id="frammento-testo">chi indugia</div>
+        </div>
+
+        <p class="p sussurro" data-delay="8000" data-track="framm2">Ce ne sono altri otto. Li troverai se continuerai a prestare attenzione.</p>
+      </div>
+
+      <!-- S-FINE: Closing -->
+      <div class="section" id="s-fine">
+        <p class="p sussurro pulse" data-delay="2000">La bambina continua a giocare.</p>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ========== STORAGE ==========
+var STORAGE_KEY = 'arcipelago_realta';
+
+function saveData(key, value) {
+  var data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  data[key] = value;
+  data.lastVisit = Date.now();
+  data.visitedInnesti = data.visitedInnesti || [];
+  if (data.visitedInnesti.indexOf(2) === -1) data.visitedInnesti.push(2);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function getData(key) {
+  var data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  return data[key];
+}
+
+// ========== INNESTO 1 MEMORY ==========
+var innesto1Data = {
+  nome: getData('nome') || null,
+  lastVisit: getData('lastVisit') || null,
+  visitedInnesti: getData('visitedInnesti') || []
+};
+
+// ========== BEHAVIORAL TRACKING ==========
+var behavior = {
+  startTime: Date.now(),
+  paragraphTimes: {},
+  paragraphsRead: 0,
+  totalReadMs: 0,
+  inputFocusTime: null
+};
+
+// ========== PARAGRAPH OBSERVER ==========
+var paragraphObserver = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    var id = entry.target.dataset.track;
+    if (!id) return;
+
+    if (entry.isIntersecting) {
+      behavior.paragraphTimes[id] = { start: Date.now(), end: null };
+    } else if (behavior.paragraphTimes[id] && !behavior.paragraphTimes[id].end) {
+      behavior.paragraphTimes[id].end = Date.now();
+      var duration = behavior.paragraphTimes[id].end - behavior.paragraphTimes[id].start;
+      behavior.paragraphTimes[id].duration = duration;
+      behavior.paragraphsRead++;
+      behavior.totalReadMs += duration;
+    }
+  });
+}, { threshold: 0.5 });
+
+// ========== EPHEMERAL PHRASE (bambina's voice) ==========
+var ephemeralTriggered = false;
+var ephemeralAnswer = 'il gioco è già cominciato';
+var testAttempts = 0;
+var testRevealed = false;
+var carta16Timer = null;
+
+// Observe carta8 instead of voceBambina directly.
+// When carta8 has been read (estimated from reading pace), show the phrase.
+var carta8EnteredAt = 0;
+
+var voceObserver = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting && !ephemeralTriggered && !carta8EnteredAt) {
+      carta8EnteredAt = Date.now();
+
+      // Calculate average reading time from previous paragraphs
+      var totalMs = 0;
+      var counted = 0;
+      var checkIds = ['carta1','carta2','carta3','carta4','carta5','carta6','carta7'];
+      checkIds.forEach(function(pid) {
+        var t = behavior.paragraphTimes[pid];
+        if (t && t.start && t.end) {
+          totalMs += (t.end - t.start);
+          counted++;
+        }
+      });
+
+      // Estimate reading time for carta8 based on average, with fallback
+      var avgParaMs = counted >= 3 ? (totalMs / counted) : 6000;
+      // carta8 is a long paragraph — give it at least 1.2x average
+      var carta8ReadTime = Math.max(avgParaMs * 1.2, 4000);
+      // Cap at reasonable maximum
+      carta8ReadTime = Math.min(carta8ReadTime, 15000);
+
+      setTimeout(function() {
+        if (ephemeralTriggered) return;
+        ephemeralTriggered = true;
+        var voceEl = document.getElementById('voceBambina');
+        if (voceEl) {
+          voceEl.classList.add('audible');
+          // Visibility duration also adapts: slow readers get more time
+          var showDuration = Math.max(avgParaMs * 0.8, 4000);
+          showDuration = Math.min(showDuration, 8000);
+          setTimeout(function() {
+            voceEl.classList.remove('audible');
+          }, showDuration);
+        }
+      }, carta8ReadTime);
+
+    } else if (!entry.isIntersecting && carta8EnteredAt && !ephemeralTriggered) {
+      // carta8 left viewport before phrase triggered — they scrolled past too fast
+      // Reset so it can trigger again if they scroll back
+      carta8EnteredAt = 0;
+    }
+  });
+}, { threshold: 0.4 });
+
+// ========== TOUCH ACTIVATION ==========
+var touchStartTime = 0;
+var touchInterval = null;
+var touchComplete = false;
+var touchCircle = document.getElementById('touchCircle');
+var touchTimer = document.getElementById('touchTimer');
+var touchZone = document.getElementById('touchZone');
+
+function startTouch(e) {
+  if (touchComplete) return;
+  e.preventDefault();
+  touchStartTime = Date.now();
+  touchCircle.classList.add('holding');
+
+  touchInterval = setInterval(function() {
+    var elapsed = (Date.now() - touchStartTime) / 1000;
+    touchTimer.textContent = elapsed.toFixed(1) + 's';
+    if (elapsed >= 3) completeTouch();
+  }, 50);
+}
+
+function endTouch() {
+  if (touchComplete) return;
+  touchCircle.classList.remove('holding');
+  clearInterval(touchInterval);
+  touchTimer.textContent = '';
+}
+
+function completeTouch() {
+  touchComplete = true;
+  clearInterval(touchInterval);
+  touchCircle.classList.remove('holding');
+  touchCircle.classList.add('complete');
+  touchCircle.querySelector('.touch-label').textContent = '\u2713';
+  touchTimer.textContent = '';
+
+  saveData('activation2_completed', true);
+  saveData('activation2_time', Date.now());
+
+  setTimeout(function() {
+    touchZone.classList.add('hidden');
+    startMainExperience();
+  }, 800);
+}
+
+touchCircle.addEventListener('mousedown', startTouch);
+touchCircle.addEventListener('touchstart', startTouch);
+touchCircle.addEventListener('mouseup', endTouch);
+touchCircle.addEventListener('mouseleave', endTouch);
+touchCircle.addEventListener('touchend', endTouch);
+touchCircle.addEventListener('touchcancel', endTouch);
+
+// ========== CANVAS ==========
+var canvas = document.getElementById('void');
+var ctx = canvas.getContext('2d');
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+var particleCount = isMobile ? 30 : 60;
+var particles = [];
+for (var i = 0; i < particleCount; i++) {
+  particles.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    vx: (Math.random() - 0.5) * 0.2,
+    vy: (Math.random() - 0.5) * 0.2,
+    size: Math.random() * 1.5 + 0.5,
+    alpha: Math.random() * 0.3 + 0.1
+  });
+}
+
+function animateVoid() {
+  ctx.fillStyle = 'rgba(8, 8, 10, 0.1)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(function(p) {
+    p.x += p.vx;
+    p.y += p.vy;
+    if (p.x < 0) p.x = canvas.width;
+    if (p.x > canvas.width) p.x = 0;
+    if (p.y < 0) p.y = canvas.height;
+    if (p.y > canvas.height) p.y = 0;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(150, 145, 140, ' + p.alpha + ')';
+    ctx.fill();
+  });
+  requestAnimationFrame(animateVoid);
+}
+animateVoid();
+
+// ========== MACCHIE ==========
+var macchieSVG = [
+  '<svg viewBox="0 0 100 80"><path d="M50,10 Q70,5 80,25 Q95,40 85,55 Q75,70 55,72 Q35,75 20,60 Q5,45 15,30 Q25,15 50,10 Z"/></svg>',
+  '<svg viewBox="0 0 120 100"><path d="M60,5 Q90,10 100,35 Q110,60 95,80 Q70,95 45,90 Q20,85 10,60 Q0,35 25,15 Q45,0 60,5 Z"/></svg>',
+  '<svg viewBox="0 0 80 90"><path d="M40,5 Q60,0 70,20 Q85,40 75,60 Q65,80 40,85 Q15,90 8,65 Q0,40 15,20 Q30,5 40,5 Z"/></svg>',
+  '<svg viewBox="0 0 100 70"><path d="M30,10 Q50,0 75,15 Q95,30 90,50 Q82,68 55,65 Q30,70 15,55 Q0,40 10,25 Q20,12 30,10 Z"/></svg>',
+  '<svg viewBox="0 0 90 85"><path d="M45,8 Q70,3 82,28 Q92,50 78,70 Q60,85 35,80 Q12,75 5,52 Q-2,30 18,15 Q35,3 45,8 Z"/></svg>'
+];
+
+var macchieCreate = 0;
+var maxMacchie = 20;
+
+function creaMacchia(container) {
+  if (macchieCreate >= maxMacchie) return;
+  var macchia = document.createElement('div');
+  macchia.className = 'macchia';
+  macchia.innerHTML = macchieSVG[Math.floor(Math.random() * macchieSVG.length)];
+  var size = 40 + Math.random() * 80;
+  macchia.style.width = size + 'px';
+  macchia.style.height = size + 'px';
+  macchia.style.left = (Math.random() * 90) + '%';
+  macchia.style.top = (Math.random() * 90) + '%';
+  macchia.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
+  container.appendChild(macchia);
+  setTimeout(function() { macchia.classList.add('visible'); }, 100);
+  macchieCreate++;
+}
+
+// ========== TREMORE ==========
+function faiTremareE() {
+  var congiunzioni = document.querySelectorAll('.carta-section .congiunzione');
+  if (congiunzioni.length === 0) return;
+  var numTremare = 1 + Math.floor(Math.random() * 3);
+  var indices = [];
+  while (indices.length < numTremare && indices.length < congiunzioni.length) {
+    var idx = Math.floor(Math.random() * congiunzioni.length);
+    if (indices.indexOf(idx) === -1) indices.push(idx);
+  }
+  indices.forEach(function(idx) {
+    var el = congiunzioni[idx];
+    el.classList.add('trema');
+    setTimeout(function() { el.classList.remove('trema'); }, 400);
+  });
+}
+
+// ========== FLOW ==========
+function showSection(id, callback) {
+  var section = document.getElementById(id);
+  if (!section) return;
+
+  // Hide sibling sections
+  var parent = section.parentNode;
+  var siblings = parent.querySelectorAll(':scope > .section');
+  siblings.forEach(function(s) { s.classList.remove('active'); });
+
+  section.classList.add('active');
+
+  var elements = section.querySelectorAll('.p, .input-area');
+  var maxDelay = 0;
+  elements.forEach(function(el) {
+    if (el.style.display === 'none') return;
+    var delay = parseInt(el.dataset.delay) || 0;
+    maxDelay = Math.max(maxDelay, delay);
+    setTimeout(function() {
+      el.classList.add('visible');
+      if (el.dataset.track) {
+        paragraphObserver.observe(el);
+      }
+    }, delay);
+  });
+  if (callback) setTimeout(callback, maxDelay + 2000);
+}
+
+function startMainExperience() {
+  // Populate name recall from innesto 1
+  var salutoEl = document.getElementById('nome-saluto');
+  var memoriaEl = document.getElementById('nome-memoria');
+
+  if (innesto1Data.nome) {
+    salutoEl.innerHTML = 'La bambina continua a giocare, <span class="dato">' + innesto1Data.nome + '</span>.';
+    memoriaEl.textContent = 'Il sistema ricorda.';
+  } else {
+    salutoEl.textContent = 'La bambina continua a giocare.';
+    memoriaEl.textContent = 'Sei qui per la prima volta. Oppure hai cancellato le tracce.';
+  }
+
+  showSection('s-nome');
+  setupInputTracking();
+}
+
+// ========== INPUT TRACKING ==========
+function setupInputTracking() {
+  var input = document.getElementById('parola');
+  if (!input) return;
+
+  input.addEventListener('focus', function() {
+    behavior.inputFocusTime = Date.now();
+  });
+}
+
+// ========== BOOK TITLE SUBMISSION ==========
+document.getElementById('btn-parola').addEventListener('click', submitWord);
+document.getElementById('parola').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') submitWord();
+});
+
+function submitWord() {
+  var parola = document.getElementById('parola').value.trim();
+  if (!parola) return;
+
+  var timeToSubmit = behavior.inputFocusTime ? Date.now() - behavior.inputFocusTime : 0;
+
+  saveData('libro', parola);
+  saveData('parola', parola);
+  saveData('parola_time', Date.now());
+  saveData('parola_hesitation_time', timeToSubmit);
+
+  document.getElementById('parola-display').textContent = parola;
+
+  // Hesitation-based reaction
+  var reazione = document.getElementById('reazione-testo');
+  if (reazione) {
+    if (timeToSubmit < 3000) {
+      reazione.textContent = 'Non hai esitato. Quel titolo era pronto, in attesa che qualcuno lo chiedesse.';
+    } else if (timeToSubmit < 10000) {
+      reazione.textContent = 'Hai pensato un momento. Stavi scegliendo quale libro meritasse di essere consegnato.';
+    } else {
+      reazione.textContent = 'Hai esitato a lungo. Come se il titolo giusto non esistesse, o ne esistessero troppi.';
+    }
+  }
+
+  // Inject book title into carta
+  injectBookTitle(parola);
+
+  // Show generated section, hide nome
+  document.getElementById('s-nome').classList.remove('active');
+  document.getElementById('generatedSection').classList.add('active');
+
+  showSection('s-reazione');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Start carta effects after reaction section
+  setTimeout(function() { initCartaEffects(); }, 5000);
+}
+
+function injectBookTitle(titolo) {
+  var carta1b = document.getElementById('carta1b');
+  if (carta1b && titolo) {
+    carta1b.style.display = '';
+    carta1b.innerHTML = 'L\u2019ultimo che hai chiuso si chiamava <em>' + titolo + '</em>. Quello che stai per aprire è questo.';
+  }
+
+  var carta11 = document.getElementById('carta11');
+  if (carta11 && titolo) {
+    carta11.innerHTML = '<span class="congiunzione">E</span> tu adesso stai giustificando quell\u2019investimento. Hai chiuso <em>' + titolo + '</em> <span class="congiunzione">e</span> stai per aprire questo. Stai per fare qualcosa che tra dieci anni sarà forse un gesto di resistenza o di nostalgia o di eccentricità.';
+  }
+}
+
+// ========== CARTA EFFECTS ==========
+function initCartaEffects() {
+  var cartaSection = document.getElementById('cartaSection');
+
+  // Initial macchie
+  for (var i = 0; i < 5; i++) {
+    (function(j) {
+      setTimeout(function() { creaMacchia(cartaSection); }, j * 800);
+    })(i);
+  }
+
+  // Progressive macchie on scroll
+  var macchiaObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        var interval = setInterval(function() {
+          if (macchieCreate < maxMacchie) {
+            creaMacchia(cartaSection);
+          } else {
+            clearInterval(interval);
+          }
+        }, 1500);
+      }
+    });
+  }, { threshold: 0.1 });
+  macchiaObserver.observe(cartaSection);
+
+  // Tremore congiunzioni
+  setInterval(function() {
+    if (Math.random() < 0.5) faiTremareE();
+  }, 1500);
+
+  var lastScrollTremore = 0;
+  window.addEventListener('scroll', function() {
+    var now = Date.now();
+    if (now - lastScrollTremore > 800 && Math.random() < 0.4) {
+      faiTremareE();
+      lastScrollTremore = now;
+    }
+  });
+
+  // Observe carta8 to trigger ephemeral phrase at the right reading moment
+  var carta8El = document.querySelector('[data-track="carta8"]');
+  if (carta8El) {
+    voceObserver.observe(carta8El);
+  }
+
+  // Observe carta paragraphs for tracking
+  document.querySelectorAll('#cartaContent [data-track]').forEach(function(el) {
+    paragraphObserver.observe(el);
+  });
+
+  // Observe carta16 — when reader reaches the last paragraph, reveal the test after a pause
+  var carta16El = document.querySelector('[data-track="carta16"]');
+  if (carta16El) {
+    var endObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting && !testRevealed) {
+          // carta16 entered viewport — start a timer
+          carta16Timer = setTimeout(function() {
+            if (testRevealed) return;
+            testRevealed = true;
+            var testSection = document.getElementById('s-test');
+            testSection.classList.add('active');
+            var elements = testSection.querySelectorAll('.p, .input-area');
+            elements.forEach(function(el) {
+              var delay = parseInt(el.dataset.delay) || 0;
+              setTimeout(function() {
+                el.classList.add('visible');
+              }, delay);
+            });
+          }, 3000); // 3s after carta16 appears — enough time to read it
+        } else if (!entry.isIntersecting && carta16Timer) {
+          // Left viewport before timer — they scrolled back up, cancel
+          clearTimeout(carta16Timer);
+          carta16Timer = null;
+        }
+      });
+    }, { threshold: 0.5 });
+    endObserver.observe(carta16El);
+  }
+}
+
+// ========== ATTENTION TEST ==========
+document.getElementById('btn-test').addEventListener('click', submitTest);
+document.getElementById('test-input').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') submitTest();
+});
+
+function normalizeText(t) {
+  return t.toLowerCase()
+    .replace(/[^a-zàèéìòùç\s]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function submitTest() {
+  var risposta = document.getElementById('test-input').value.trim();
+  if (!risposta) return;
+
+  testAttempts++;
+  var normalized = normalizeText(risposta);
+
+  // Flexible matching: check for key words
+  var hasGioco = normalized.indexOf('gioco') !== -1;
+  var hasCominciato = normalized.indexOf('cominciato') !== -1;
+  var hasGia = normalized.indexOf('già') !== -1 || normalized.indexOf('gia') !== -1;
+
+  // Accept if has "gioco" AND "cominciato", or very close match
+  var correct = (hasGioco && hasCominciato) || normalized === normalizeText(ephemeralAnswer);
+
+  saveData('test_02_risposta', risposta);
+  saveData('test_02_tentativi', testAttempts);
+  saveData('test_02_superato', correct);
+
+  if (correct) {
+    // Success — show dono
+    saveData('frammento_02', true);
+    saveData('frammenti', (getData('frammenti') || []).concat([2]));
+
+    document.getElementById('s-test').classList.remove('active');
+    showSection('s-dono', function() {
+      showSection('s-frammento', function() {
+        // Animate fragment box
+        var box = document.getElementById('frammento-box');
+        if (box) {
+          setTimeout(function() { box.style.opacity = '1'; }, 500);
+        }
+        setTimeout(function() {
+          showSection('s-fine');
+        }, 12000);
+      });
+    });
+  } else {
+    // Failure — send back to carta
+    var erroreEl = document.getElementById('test-errore');
+    if (testAttempts === 1) {
+      erroreEl.textContent = 'Non l\u2019hai sentita. Torna.';
+    } else if (testAttempts === 2) {
+      erroreEl.textContent = 'Ancora no. Leggi più lentamente.';
+    } else {
+      erroreEl.textContent = 'La voce è sottile. Cerca tra il patto e la rottura.';
+    }
+    erroreEl.classList.add('visible');
+
+    // Clear input
+    document.getElementById('test-input').value = '';
+
+    // After 2.5 seconds, hide test, scroll back to carta, reset everything
+    setTimeout(function() {
+      erroreEl.classList.remove('visible');
+      ephemeralTriggered = false;
+      carta8EnteredAt = 0;
+      testRevealed = false;
+
+      // Hide test section and reset its paragraphs
+      var testSection = document.getElementById('s-test');
+      testSection.classList.remove('active');
+      testSection.querySelectorAll('.p, .input-area').forEach(function(el) {
+        el.classList.remove('visible');
+      });
+
+      // Reset carta16 tracking so endObserver can fire again
+      if (behavior.paragraphTimes['carta16']) {
+        behavior.paragraphTimes['carta16'] = { start: null, end: null };
+      }
+
+      var cartaSection = document.getElementById('cartaSection');
+      if (cartaSection) {
+        cartaSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 2500);
+  }
+}
+</script>
+
+</body>
+</html>
