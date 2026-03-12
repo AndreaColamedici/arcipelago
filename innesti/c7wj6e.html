@@ -720,6 +720,7 @@
     };
 
     const storedData = getData();
+    const collectedData = storedData.collectedData || {};
     const sessionStart = Date.now();
     let userPhrase = '';
 
@@ -940,27 +941,27 @@
             });
         }
 
-        // Parola dall'innesto 02
-        if (storedData.lastWord) {
+        // Libro dall'innesto 02 (salvato come "parola" e "libro")
+        if (storedData.parola) {
             detectedItems.push({
-                label: 'Innesto 02: la parola lasciata',
-                value: `"${storedData.lastWord}"`
+                label: 'Innesto 02: il libro consegnato',
+                value: `"${storedData.parola}"`
             });
         }
 
-        // Lingue
-        if (storedData.activation2_languages) {
+        // Lingua dal collectedData dell'innesto 01
+        if (collectedData.lang) {
             detectedItems.push({
-                label: 'Le tue lingue',
-                value: storedData.activation2_languages.join(' · ')
+                label: 'La lingua del tuo dispositivo',
+                value: collectedData.lang
             });
         }
 
-        // Hardware dall'innesto 03
-        if (storedData.activation3_cores) {
+        // Hardware dal collectedData dell'innesto 01
+        if (collectedData.cores) {
             detectedItems.push({
-                label: 'Innesto 03: il tuo hardware',
-                value: `${storedData.activation3_cores} core · ${storedData.activation3_memory || '?'} RAM`
+                label: 'Il tuo hardware',
+                value: `${collectedData.cores} core · ${collectedData.memory || '?'} GB RAM`
             });
         }
 
