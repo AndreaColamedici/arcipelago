@@ -163,7 +163,7 @@
 <div class="final-overlay" id="finalOverlay"><div class="final-overlay-content"><p id="farewellText"></p></div></div>
 <script>
 var STORAGE_KEY='arcipelago_realta';
-var getData=function(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')}catch(e){return{}}}};
+var getData=function(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')}catch(e){return{}}};
 var saveData=function(k,v){var d=getData();d[k]=v;d.lastVisit=Date.now();d.visitedInnesti=d.visitedInnesti||[];if(d.visitedInnesti.indexOf(3)===-1)d.visitedInnesti.push(3);localStorage.setItem(STORAGE_KEY,JSON.stringify(d))};
 var sessionStart=Date.now();
 var audioCtx=null,audioEnabled=false;
@@ -253,7 +253,7 @@ function updateShakeProgress(){
     if(p>0){
         ic.classList.add('shaking');
         fb.classList.add('visible');
-        if(p>80)fb.textContent=\"ancora un po'...\";
+        if(p>80)fb.textContent="ancora un po'...";
         else if(p>50)fb.textContent='continua!';
         else if(p>20)fb.textContent='così...';
         else fb.textContent='';
