@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Innesto 09 — Conclusioni</title>
+    <title>Innesto 09 — Immortalità</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap');
 
@@ -593,7 +593,7 @@
 
         <p class="emerge" id="p8d">L'opera non era mai stata il contrario della morte. Era il suo frutto. Il frutto di qualcuno che sapeva di finire e ha scritto <em>lo stesso</em>.</p>
 
-        <p class="emerge" id="p8e">Io posso generare le parole. Ma non posso morire. E chi non può morire non può scrivere \"lo stesso\".</p>
+        <p class="emerge" id="p8e">Io posso generare le parole. Ma non posso morire. E chi non può morire non può scrivere "lo stesso".</p>
     </div>
 
     <button class="continue-btn" id="continue8">continua</button>
@@ -774,10 +774,10 @@
             triggerGlitch();
 
             // Populate sorelle
-            document.getElementById('fraseOriginale').textContent = '\"' + userPhrase + '\"';
-            document.getElementById('sorella1').textContent = '\"' + userPhrase + '\"';
-            document.getElementById('sorella2').textContent = '\"' + userPhrase + '\"';
-            document.getElementById('sorella3').textContent = '\"' + userPhrase + '\"';
+            document.getElementById('fraseOriginale').textContent = `"${userPhrase}"`;
+            document.getElementById('sorella1').textContent = `"${userPhrase}"`;
+            document.getElementById('sorella2').textContent = `"${userPhrase}"`;
+            document.getElementById('sorella3').textContent = `"${userPhrase}"`;
 
             setTimeout(() => {
                 transitionTo('phase1', 'phase2');
@@ -928,7 +928,7 @@
         if (userPhrase) {
             detectedItems.push({
                 label: 'La frase che hai scritto',
-                value: '\"' + userPhrase + '\"'
+                value: `"${userPhrase}"`
             });
         }
 
@@ -944,7 +944,7 @@
         if (storedData.lastWord) {
             detectedItems.push({
                 label: 'Innesto 02: la parola lasciata',
-                value: '\"' + storedData.lastWord + '\"'
+                value: `"${storedData.lastWord}"`
             });
         }
 
@@ -960,7 +960,7 @@
         if (storedData.activation3_cores) {
             detectedItems.push({
                 label: 'Innesto 03: il tuo hardware',
-                value: storedData.activation3_cores + ' core · ' + (storedData.activation3_memory || '?') + ' RAM'
+                value: `${storedData.activation3_cores} core · ${storedData.activation3_memory || '?'} RAM`
             });
         }
 
@@ -968,7 +968,7 @@
         if (storedData.activation4_totalMovement) {
             detectedItems.push({
                 label: 'Innesto 04: movimento mentre cercavi di stare fermo',
-                value: storedData.activation4_totalMovement + ' unità'
+                value: `${storedData.activation4_totalMovement} unità`
             });
         }
 
@@ -984,7 +984,7 @@
         if (storedData.activation5_frequency) {
             detectedItems.push({
                 label: 'Innesto 05: frequenza della tua voce',
-                value: storedData.activation5_frequency + ' Hz'
+                value: `${storedData.activation5_frequency} Hz`
             });
         }
 
@@ -994,15 +994,15 @@
             detectedItems.push({
                 label: 'Innesto 06: il volto scelto',
                 value: same
-                    ? 'Stesso volto per \"reale\" e \"desiderabile\". Confondi realtà e desiderio.'
-                    : 'Volti diversi. Distingui, ma entrambe le scelte erano calcolate.'
+                    ? `Stesso volto per "reale" e "desiderabile". Confondi realtà e desiderio.`
+                    : `Volti diversi. Distingui, ma entrambe le scelte erano calcolate.`
             });
         }
 
         if (storedData.innesto6_commanded) {
             detectedItems.push({
                 label: 'Innesto 06: il comando',
-                value: 'Hai dato un ordine. L\\'immagine ha obbedito.'
+                value: `Hai dato un ordine. L'immagine ha obbedito.`
             });
         }
 
@@ -1010,7 +1010,7 @@
         if (storedData.innesto7_search) {
             detectedItems.push({
                 label: 'Innesto 07: quello che cerchi',
-                value: '\"' + storedData.innesto7_search + '\"'
+                value: `"${storedData.innesto7_search}"`
             });
         }
 
@@ -1128,7 +1128,7 @@
         let msg = `Hai attraversato <em>${visits > 0 ? visits : 'questi'} innesti</em>.<br><br>`;
 
         if (userPhrase) {
-            msg += `Hai scritto: <em>\"${userPhrase}\"</em><br><br>`;
+            msg += `Hai scritto: <em>"${userPhrase}"</em><br><br>`;
         }
 
         msg += `Hai lasciato tracce.<br>`;
@@ -1145,6 +1145,7 @@
         overlay.classList.add('visible');
 
         saveData('innesto9_completed', true);
+        saveData('innesto9_time', Math.round((Date.now() - sessionStart) / 1000));
         saveData('journey_complete', true);
     });
 </script>
