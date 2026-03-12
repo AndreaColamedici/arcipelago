@@ -854,6 +854,128 @@ function faiTremareE() {
   });
 }
 
+// ========== ADAPTIVE READING SPEED SYSTEM ==========
+var readerProfile = { wps: 2.0, samples: 0, confidence: 0 };
+
+function countWords(text) {
+  return text.trim().split(/\s+/).filter(function(w) { return w.length > 0; }).length;
+}
+
+function countSectionWords(sectionId) {
+  var section = document.getElementById(sectionId);
+  if (!section) return 50;
+  var paragraphs = section.querySelectorAll('.p, p');
+  var total = 0;
+  paragraphs.forEach(function(p) {
+    if (p.style.display !== 'none') total += countWords(p.textContent || '');
+  });
+  return Math.max(total, 10);
+}
+
+function getAdaptiveReadTime(sectionId) {
+  var words = countSectionWords(sectionId);
+  var seconds = words / readerProfile.wps;
+  var buffered = seconds * 1.4;
+  return Math.max(2000, Math.min(buffered * 1000, 25000));
+}
+
+function calibrateReader(sectionId) {
+  var times = behavior.paragraphTimes;
+  var totalMs = 0;
+  var totalWords = 0;
+  var counted = 0;
+  var section = document.getElementById(sectionId);
+  if (!section) return;
+  var tracked = section.querySelectorAll('[data-track]');
+  tracked.forEach(function(el) {
+    var id = el.dataset.track;
+    var t = times[id];
+    if (t && t.start && t.end) {
+      var duration = t.end - t.start;
+      if (duration > 500 && duration < 120000) {
+        var words = countWords(el.textContent || '');
+        if (words > 3) {
+          totalMs += duration;
+          totalWords += words;
+          counted++;
+        }
+      }
+    }
+  });
+  if (counted >= 2 && totalWords > 10) {
+    var measuredWps = totalWords / (totalMs / 1000);
+    measuredWps = Math.max(0.8, Math.min(measuredWps, 7.0));
+    readerProfile.wps = readerProfile.samples === 0 ? measuredWps : (readerProfile.wps * 0.4 + measuredWps * 0.6);
+    readerProfile.samples += counted;
+    readerProfile.confidence = Math.min(readerProfile.samples / 8, 1.0);
+  }
+}
+
+function waitForLastParagraphRead(sectionId, callback) {
+  var section = document.getElementById(sectionId);
+  if (!section) { callback(); return; }
+  var paragraphs = section.querySelectorAll('.p[data-track]');
+  if (paragraphs.length === 0) { callback(); return; }
+  var lastP = paragraphs[paragraphs.length - 1];
+  var resolved = false;
+  var fallbackTimer = setTimeout(function() {
+    if (!resolved) { resolved = true; callback(); }
+  }, 30000);
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting && !resolved) {
+        var words = countWords(lastP.textContent || '');
+        var readTime = Math.max((words / readerProfile.wps) * 1000, 1500);
+        setTimeout(function() {
+          if (!resolved) {
+            resolved = true;
+            clearTimeout(fallbackTimer);
+            obs.disconnect();
+            callback();
+          }
+        }, readTime);
+      }
+    });
+  }, { threshold: 0.4 });
+  obs.observe(lastP);
+}
+
+function showSectionWithReaderWait(id, callback) {
+  var section = document.getElementById(id);
+  if (!section) return;
+
+  // Hide sibling sections
+  var parent = section.parentNode;
+  var siblings = parent.querySelectorAll(':scope > .section');
+  siblings.forEach(function(s) { s.classList.remove('active'); });
+
+  section.classList.add('active');
+
+  var elements = section.querySelectorAll('.p, .input-area');
+  var maxDelay = 0;
+  elements.forEach(function(el) {
+    if (el.style.display === 'none') return;
+    var delay = parseInt(el.dataset.delay) || 0;
+    maxDelay = Math.max(maxDelay, delay);
+    setTimeout(function() {
+      el.classList.add('visible');
+      if (el.dataset.track) {
+        paragraphObserver.observe(el);
+      }
+    }, delay);
+  });
+
+  var adaptiveTime = getAdaptiveReadTime(id);
+  var waitTime = Math.max(maxDelay + 2000, adaptiveTime);
+
+  setTimeout(function() {
+    waitForLastParagraphRead(id, function() {
+      calibrateReader(id);
+      if (callback) callback();
+    });
+  }, waitTime);
+}
+
 // ========== FLOW ==========
 function showSection(id, callback) {
   var section = document.getElementById(id);
@@ -1088,8 +1210,8 @@ function submitTest() {
     saveData('frammenti', (getData('frammenti') || []).concat([2]));
 
     document.getElementById('s-test').classList.remove('active');
-    showSection('s-dono', function() {
-      showSection('s-frammento', function() {
+    showSectionWithReaderWait('s-dono', function() {
+      showSectionWithReaderWait('s-frammento', function() {
         // Animate fragment box
         var box = document.getElementById('frammento-box');
         if (box) {
@@ -1097,7 +1219,7 @@ function submitTest() {
         }
         setTimeout(function() {
           showSection('s-fine');
-        }, 12000);
+        }, 5000);
       });
     });
   } else {
