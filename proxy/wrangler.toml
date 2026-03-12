@@ -1,0 +1,12 @@
+name = "arcipelago-proxy"
+main = "worker.js"
+compatibility_date = "2024-09-01"
+
+# Per deploy:
+# 1. cd proxy
+# 2. npx wrangler login
+# 3. npx wrangler secret put ANTHROPIC_API_KEY
+# 4. npx wrangler deploy
+#
+# L'URL sarà: https://arcipelago-proxy.TUOSUBDOMAIN.workers.dev
+# Sostituiscilo in innesti/g1yk8d.html nella costante PROXY_URL
