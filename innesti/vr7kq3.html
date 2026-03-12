@@ -694,10 +694,97 @@ function populateSection1() {
   document.getElementById('s1-inferenza').textContent = buildInference();
 }
 
-// ========== READER-AWARE TRANSITION SYSTEM ==========
-var MIN_READ_MS = 3000;
+// ========== ADAPTIVE READER-AWARE TRANSITION SYSTEM ==========
+// Profilo lettore: si calibra automaticamente dalla velocità osservata
+var readerProfile = {
+  wps: 2.0,        // parole al secondo – default conservativo (lento)
+  samples: 0,      // quante misurazioni abbiamo
+  confidence: 0    // 0 = nessuna misura, cresce con i campioni
+};
 
-function waitForLastParagraphRead(sectionId, callback) {
+// Conta le parole visibili in un elemento
+function countWords(el) {
+  var text = el.textContent || '';
+  var words = text.trim().split(/\s+/);
+  return words.length > 0 && words[0] !== '' ? words.length : 0;
+}
+
+// Conta le parole totali visibili in una sezione
+function countSectionWords(sectionId) {
+  var section = document.getElementById(sectionId);
+  if (!section) return 0;
+  var total = 0;
+  var allP = section.querySelectorAll('.p');
+  for (var i = 0; i < allP.length; i++) {
+    if (allP[i].style.display !== 'none') {
+      total += countWords(allP[i]);
+    }
+  }
+  return total;
+}
+
+// Calcola il tempo di lettura adattivo per l'ultimo paragrafo di una sezione
+function getAdaptiveReadTime(sectionId) {
+  var section = document.getElementById(sectionId);
+  if (!section) return 3000;
+
+  // Trova l'ultimo paragrafo visibile
+  var allP = section.querySelectorAll('.p');
+  var lastP = null;
+  for (var i = allP.length - 1; i >= 0; i--) {
+    if (allP[i].style.display !== 'none') {
+      lastP = allP[i];
+      break;
+    }
+  }
+  if (!lastP) return 3000;
+
+  var wordCount = countWords(lastP);
+
+  // Tempo = parole / velocità lettore, con buffer del 40%
+  var readTimeSec = (wordCount / readerProfile.wps) * 1.4;
+
+  // Floor: 2 secondi (anche per frasi brevissime, serve tempo di assorbimento)
+  // Cap: 25 secondi (nessuna attesa infinita)
+  var readTimeMs = Math.max(2000, Math.min(25000, readTimeSec * 1000));
+
+  return Math.round(readTimeMs);
+}
+
+// Calibra la velocità del lettore dopo che ha completato una sezione
+// sectionStartTime: quando la sezione è diventata attiva
+// maxDelay: il delay dell'ultimo elemento (tempo di animazione)
+// totalReadTime: tempo totale dalla comparsa della sezione al callback
+function calibrateReader(sectionId, sectionStartTime, maxDelay) {
+  var now = Date.now();
+  var totalElapsed = now - sectionStartTime;
+
+  // Il tempo effettivo di lettura è: tempo totale - tempo di animazione degli elementi
+  // (le animazioni non contano come tempo di lettura)
+  var effectiveReadTime = totalElapsed - maxDelay;
+  if (effectiveReadTime < 1000) return; // troppo poco, non calibrare
+
+  var totalWords = countSectionWords(sectionId);
+  if (totalWords < 5) return; // sezione troppo breve per calibrare
+
+  var measuredWps = totalWords / (effectiveReadTime / 1000);
+
+  // Clamp ragionevole: tra 0.8 wps (molto lento) e 7 wps (molto veloce)
+  measuredWps = Math.max(0.8, Math.min(7, measuredWps));
+
+  // Media pesata: le nuove misure contano di più
+  readerProfile.samples++;
+  if (readerProfile.samples === 1) {
+    // Prima misura: la usiamo direttamente
+    readerProfile.wps = measuredWps;
+  } else {
+    // Media esponenziale: peso 0.6 alla nuova misura
+    readerProfile.wps = readerProfile.wps * 0.4 + measuredWps * 0.6;
+  }
+  readerProfile.confidence = Math.min(1, readerProfile.samples / 3);
+}
+
+function waitForLastParagraphRead(sectionId, readTimeMs, callback) {
   var section = document.getElementById(sectionId);
   if (!section) { callback(); return; }
   var allP = section.querySelectorAll('.p');
@@ -727,14 +814,14 @@ function waitForLastParagraphRead(sectionId, callback) {
 
   function checkReady() {
     if (resolved) return;
-    if (enteredAt && (Date.now() - enteredAt) >= MIN_READ_MS) {
+    if (enteredAt && (Date.now() - enteredAt) >= readTimeMs) {
       resolved = true;
       observer.disconnect();
       callback();
       return;
     }
     if (!resolved) {
-      setTimeout(checkReady, 500);
+      setTimeout(checkReady, 400);
     }
   }
 
@@ -746,6 +833,7 @@ function showSectionWithReaderWait(sectionId, nextCallback) {
   var section = document.getElementById(sectionId);
   section.classList.add('active');
 
+  var sectionStartTime = Date.now();
   var elements = section.querySelectorAll('.p, .input-area');
   var maxDelay = 0;
 
@@ -760,8 +848,15 @@ function showSectionWithReaderWait(sectionId, nextCallback) {
 
   if (!nextCallback) return;
 
+  // Dopo che l'ultimo elemento è apparso + 1.5s di respiro,
+  // calcoliamo il tempo adattivo e aspettiamo
   setTimeout(function() {
-    waitForLastParagraphRead(sectionId, nextCallback);
+    var adaptiveMs = getAdaptiveReadTime(sectionId);
+    waitForLastParagraphRead(sectionId, adaptiveMs, function() {
+      // Calibra il profilo lettore con i dati di questa sezione
+      calibrateReader(sectionId, sectionStartTime, maxDelay);
+      nextCallback();
+    });
   }, maxDelay + 1500);
 }
 
