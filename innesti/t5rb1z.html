@@ -494,11 +494,11 @@
         const dossier = document.getElementById('dossier');
         const items = [];
         
-        // Innesto 3: tempo di attesa
-        if (storedData.innesto3_waitTime) {
+        // Innesto 3: conteggio finale
+        if (storedData.innesto3_finalCount) {
             items.push({
-                label: 'Innesto 03: tempo prima di muoverti',
-                value: `${storedData.innesto3_waitTime} secondi di immobilità`
+                label: 'Innesto 03: quarantotto',
+                value: `Il tuo conteggio si è fermato a ${storedData.innesto3_finalCount}`
             });
         }
         
@@ -516,19 +516,19 @@
             items.push({
                 label: 'Innesto 06: il volto che hai scelto',
                 value: same 
-                    ? 'Hai scelto lo stesso volto come "più reale" e come "desiderabile". Confondi realtà e desiderio.'
-                    : 'Hai scelto volti diversi per "realtà" e "desiderio". Distingui, ma entrambe le scelte sono state calcolate.'
+                    ? `Hai scelto lo stesso volto come "più reale" e come "desiderabile". Confondi realtà e desiderio.`
+                    : `Hai scelto volti diversi per "realtà" e "desiderio". Distingui, ma entrambe le scelte sono state calcolate.`
             });
         }
         
         if (storedData.innesto6_commanded) {
             items.push({
                 label: 'Innesto 06: il comando',
-                value: 'Hai toccato "Fallo sorridere". Hai dato un ordine a un\\'immagine, e l\\'immagine ha obbedito.'
+                value: `Hai toccato "Fallo sorridere". Hai dato un ordine a un'immagine, e l'immagine ha obbedito.`
             });
         } else if (storedData.innesto6_watched) {
             items.push({
-                label: 'Innesto 06: l\\'esitazione',
+                label: `Innesto 06: l'esitazione`,
                 value: `Non hai toccato il comando. Ma hai guardato per ${storedData.innesto6_watched} secondi. Anche il rifiuto è un dato.`
             });
         }
@@ -553,7 +553,7 @@
         if (items.length === 0) {
             items.push({
                 label: 'Dati precedenti',
-                value: 'Non hai attraversato gli altri innesti, o hai cancellato le tracce. Ma sei qui. Questo è già un dato.'
+                value: `Non hai attraversato gli altri innesti, o hai cancellato le tracce. Ma sei qui. Questo è già un dato.`
             });
         }
         
