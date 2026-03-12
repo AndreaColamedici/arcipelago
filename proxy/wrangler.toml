@@ -2,11 +2,25 @@ name = "arcipelago-proxy"
 main = "worker.js"
 compatibility_date = "2024-09-01"
 
-# Per deploy:
+# KV namespace per i contatori visite
+# 1. Crea il namespace:
+#    npx wrangler kv:namespace create VISITS
+# 2. Copia l'id restituito qui sotto:
+[[kv_namespaces]]
+binding = "VISITS"
+id = "INSERISCI_ID_QUI"
+
+# Deploy completo:
 # 1. cd proxy
 # 2. npx wrangler login
-# 3. npx wrangler secret put ANTHROPIC_API_KEY
-# 4. npx wrangler deploy
+# 3. npx wrangler kv:namespace create VISITS → copia id sopra
+# 4. npx wrangler secret put ANTHROPIC_API_KEY
+# 5. npx wrangler secret put STATS_TOKEN  (un token a tua scelta per leggere le stats)
+# 6. npx wrangler deploy
 #
-# L'URL sarà: https://arcipelago-proxy.TUOSUBDOMAIN.workers.dev
-# Sostituiscilo in innesti/g1yk8d.html nella costante PROXY_URL
+# URL risultante: https://arcipelago-proxy.TUOSUBDOMAIN.workers.dev
+#
+# Endpoint:
+#   POST /        → proxy API Claude (per innesto 10 chat)
+#   POST /count   → incrementa contatore visite (usato da tracker.js)
+#   GET  /stats?token=TUOTOKEN → JSON con tutte le statistiche
