@@ -84,6 +84,12 @@
             padding: 0.6rem 1rem;
             border-left: 1px solid #3a4060;
             background: linear-gradient(90deg, rgba(60,70,100,0.08), transparent);
+            transition: color 0.3s ease;
+        }
+
+        .data-point.live {
+            color: #6a7090;
+            border-left-color: #5a6080;
         }
 
         /* STILLNESS ACTIVATION */
@@ -122,7 +128,6 @@
             font-style: italic;
         }
 
-        /* The stillness visualization */
         .stillness-container {
             position: relative;
             width: 280px;
@@ -162,7 +167,6 @@
         .stillness-ring:nth-child(3) { width: 180px; height: 180px; }
         .stillness-ring:nth-child(4) { width: 240px; height: 240px; }
 
-        /* The traitor dot - shows your actual movement */
         .traitor-dot {
             position: absolute;
             left: 50%;
@@ -177,7 +181,6 @@
             transition: transform 0.05s linear;
         }
 
-        /* Movement trail */
         .trail-dot {
             position: absolute;
             width: 4px;
@@ -187,7 +190,6 @@
             pointer-events: none;
         }
 
-        /* Oscilloscope */
         .oscilloscope {
             width: 100%;
             height: 80px;
@@ -221,7 +223,6 @@
             margin-top: 1rem;
         }
 
-        /* Movement stats */
         .movement-stats {
             text-align: center;
             margin-top: 2rem;
@@ -243,6 +244,98 @@
             font-size: 0.6rem;
             color: #4a5070;
             margin-top: 0.5rem;
+        }
+
+        /* Desktop: no-body message */
+        .desktop-absence {
+            position: fixed;
+            inset: 0;
+            z-index: 800;
+            background: #030305;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.8s ease;
+        }
+
+        .desktop-absence.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .desktop-absence p {
+            text-align: center;
+            max-width: 380px;
+            padding: 0 2rem;
+            line-height: 2;
+        }
+
+        .desktop-absence .absence-main {
+            font-size: 1.1rem;
+            color: #6a7090;
+            margin-bottom: 2rem;
+        }
+
+        .desktop-absence .absence-detail {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            color: #3a4060;
+            margin-bottom: 0.5rem;
+        }
+
+        .absence-items {
+            margin: 2rem 0;
+        }
+
+        .absence-item {
+            margin: 1.2rem 0;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: all 0.8s ease;
+        }
+
+        .absence-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .absence-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.5rem;
+            color: #3a4060;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 0.2rem;
+        }
+
+        .absence-value {
+            font-size: 1rem;
+            color: #4a5070;
+        }
+
+        .absence-continue {
+            margin-top: 2.5rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            color: #3a4060;
+            letter-spacing: 0.15em;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border: 1px solid #2a3050;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .absence-continue.visible {
+            opacity: 1;
+        }
+
+        .absence-continue:hover {
+            color: #6a7090;
+            border-color: #4a5070;
         }
 
         /* Reveal after stillness */
@@ -378,7 +471,7 @@
             text-transform: uppercase;
         }
 
-        /* Gravity well visualization */
+        /* Gravity well */
         .gravity-well {
             width: 100%;
             height: 200px;
@@ -422,6 +515,51 @@
             0%, 100% { top: 20%; }
             50% { top: calc(50% + 80px); }
         }
+
+        /* Dual oscilloscope (post-stillness) */
+        .dual-oscillo {
+            width: 100%;
+            max-width: 500px;
+            margin: 2rem auto;
+        }
+
+        .dual-oscillo-row {
+            position: relative;
+            height: 70px;
+            margin-bottom: 0.3rem;
+            overflow: hidden;
+        }
+
+        .dual-oscillo-row canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .dual-oscillo-row .oscillo-baseline {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+        }
+
+        .dual-oscillo-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.5rem;
+            color: #3a4060;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            text-align: center;
+            margin-top: 0.8rem;
+        }
+
+        .dual-oscillo-label span {
+            display: inline-block;
+            margin: 0 1.5rem;
+        }
+
+        .dual-oscillo-label .body-label { color: #c06080; }
+        .dual-oscillo-label .net-label { color: #60a0c0; }
 
         .final-text {
             font-size: clamp(1.2rem, 3vw, 1.5rem);
@@ -536,27 +674,18 @@
             font-style: normal;
         }
 
-        /* Desktop fallback */
-        .stillness-fallback {
+        .final-data {
             margin-top: 2rem;
             font-family: 'Space Mono', monospace;
-            font-size: 0.55rem;
+            font-size: 0.6rem;
             color: #3a4060;
-            letter-spacing: 0.1em;
-            cursor: pointer;
-            padding: 0.5rem 1rem;
-            border: 1px solid #2a3050;
-            opacity: 0;
-            transition: all 0.3s ease;
+            line-height: 2.2;
         }
 
-        .stillness-fallback.visible {
-            opacity: 1;
-        }
-
-        .stillness-fallback:hover {
+        .final-warning {
+            margin-top: 2.5rem;
+            font-size: 0.85rem;
             color: #5a6080;
-            border-color: #4a5070;
         }
 
         @media (max-width: 600px) {
@@ -569,13 +698,12 @@
 
 <div class="scroll-indicator" id="scrollIndicator">scorri</div>
 <div class="glitch-overlay" id="glitchOverlay"></div>
-<div class="audio-prompt" id="audioPrompt">◉ audio</div>
+<div class="audio-prompt" id="audioPrompt">&#9673; audio</div>
 
-<!-- STILLNESS ACTIVATION -->
+<!-- STILLNESS ACTIVATION (mobile) -->
 <div class="stillness-prompt" id="stillnessPrompt">
     <p>Gli attrattori richiedono quiete per manifestarsi.</p>
     <div class="stillness-command">Resta fermo.</div>
-    <p style="color: #5a6080; font-size: 0.9rem;">Perfettamente fermo. Per 8 secondi.</p>
 
     <div class="stillness-container" id="stillnessContainer">
         <div class="stillness-rings">
@@ -598,11 +726,34 @@
         <div class="movement-unit">deviazione dal centro</div>
     </div>
 
-    <div class="stillness-label" id="stillnessLabel">inizia quando tocchi lo schermo</div>
-    <div class="stillness-fallback" id="stillnessFallback">su desktop, tocca qui</div>
+    <div class="stillness-label" id="stillnessLabel">tocca i cerchi per iniziare</div>
 </div>
 
-<!-- Reveal after stillness -->
+<!-- DESKTOP ABSENCE -->
+<div class="desktop-absence" id="desktopAbsence">
+    <p class="absence-main">Stai usando un computer.<br>Il tuo corpo non tocca lo schermo.<br>Nessun accelerometro ti legge.</p>
+
+    <div class="absence-items">
+        <div class="absence-item" id="absMovement">
+            <div class="absence-label">Movimento rilevato</div>
+            <div class="absence-value">non rilevabile</div>
+        </div>
+        <div class="absence-item" id="absDeviation">
+            <div class="absence-label">Deviazione massima</div>
+            <div class="absence-value">non rilevabile</div>
+        </div>
+        <div class="absence-item" id="absBody">
+            <div class="absence-label">Presenza corporea</div>
+            <div class="absence-value">assente</div>
+        </div>
+    </div>
+
+    <p class="absence-detail">Sei invisibile al dispositivo. Il sistema sa che non può prenderti da qui. Ti prenderà da un altro punto.</p>
+
+    <div class="absence-continue" id="absenceContinue">continua</div>
+</div>
+
+<!-- Reveal after stillness (mobile only) -->
 <div class="stillness-reveal" id="stillnessReveal">
     <div class="reveal-content">
         <div class="reveal-title">Il corpo tradisce sempre.</div>
@@ -628,7 +779,7 @@
         </div>
 
         <div class="reveal-comment" id="revComment">
-            Non puoi essere fermo. Il respiro ti muove. Il battito ti muove. I muscoli che tengono il telefono tremano impercettibilmente. Sei un sistema dinamico che finge stabilità. Proprio come la rete che ti attraversa: sembra invisibile, ma pulsa, oscilla, ti collega a milioni di altri sistemi che fingono la stessa stabilità.
+            Non puoi essere fermo. Il respiro ti muove. Il battito ti muove. I muscoli che tengono il telefono tremano impercettibilmente. Sei un sistema dinamico che finge stabilità.
         </div>
 
         <div class="reveal-continue" id="revealContinue">continua</div>
@@ -666,18 +817,18 @@
     </div>
 </div>
 
-<!-- CAPITOLO 4 -->
+<!-- CAPITOLO 4: Tu come dato -->
 <div class="chapter" id="ch4">
     <div class="chapter-content">
         <p>E tu?</p>
-        <p>Anche tu sei dentro un sistema di feedback. Ogni volta che scorri, ogni secondo che passi su questa pagina, ogni movimento del tuo dito genera dati. Questi dati modificano ciò che ti verrà mostrato dopo. Modificano ciò che verrà mostrato ad altri che assomigliano a te. Modificano, infinitesimalmente, la struttura stessa dello spazio delle possibilità.</p>
-        <div class="data-point" id="dataTime"></div>
-        <div class="data-point" id="dataScroll"></div>
+        <div class="data-point live" id="dataYou"></div>
+        <div class="data-point live" id="dataScroll"></div>
+        <div class="data-point live" id="dataPrediction"></div>
         <p>Non lo stai decidendo. Sta succedendo.</p>
     </div>
 </div>
 
-<!-- CAPITOLO 5: Attractor -->
+<!-- CAPITOLO 5: Attractor visualization -->
 <div class="chapter" id="ch5">
     <div class="chapter-content">
         <div class="attractor-container" id="attractorContainer">
@@ -689,46 +840,31 @@
     </div>
 </div>
 
-<!-- CAPITOLO 6 -->
+<!-- CAPITOLO 6: Due sistemi nervosi -->
 <div class="chapter" id="ch6">
     <div class="chapter-content">
-        <p>Il conteggio arriva a centotrentitré. Poi si ferma. Contare non ha più senso.</p>
-        <p>Quando qualcosa diventa un attrattore, cessa di essere un'occorrenza da numerare. È una funzione. Un template. Un modo in cui il sistema genera un certo tipo di output. È la differenza tra contare le gocce di pioggia e riconoscere che sta piovendo.</p>
+        <div class="dual-oscillo" id="dualOscillo">
+            <div class="dual-oscillo-row">
+                <canvas id="bodyOscillo"></canvas>
+                <div class="oscillo-baseline" style="background: rgba(192,96,128,0.15);"></div>
+            </div>
+            <div class="dual-oscillo-row">
+                <canvas id="netOscillo"></canvas>
+                <div class="oscillo-baseline" style="background: rgba(96,160,192,0.15);"></div>
+            </div>
+            <div class="dual-oscillo-label">
+                <span class="body-label">&#9632; corpo</span>
+                <span class="net-label">&#9632; rete</span>
+            </div>
+        </div>
+        <p style="text-align: center; color: #5a6080; font-style: italic; margin-top: 1.5rem;">Due sistemi nervosi. Uno è il tuo.</p>
     </div>
 </div>
 
-<!-- CAPITOLO 7 -->
+<!-- CAPITOLO 7: Finale -->
 <div class="chapter" id="ch7">
     <div class="chapter-content">
-        <p>Pensa a te stesso nei sistemi che attraversi ogni giorno. Non sei più un utente singolo. Sei un cluster. Un segmento. Un insieme di pattern comportamentali che il sistema riconosce e verso cui ottimizza.</p>
-        <p>Quando ti viene mostrata una pubblicità, è per te in quanto funzione: la funzione "utente che clicca questo tipo di contenuto". Sei diventato un attrattore nel sistema di targeting. Non perché qualcuno l'abbia deciso. Perché è successo.</p>
-        <div class="data-point" id="dataPattern"></div>
-    </div>
-</div>
-
-<!-- CAPITOLO 8 -->
-<div class="chapter" id="ch8">
-    <div class="chapter-content">
-        <p>La frase più importante è quella finale: <span class="emphasis">"Nessuno l'ha deciso. È successo."</span></p>
-        <p>Questa è la caratteristica fondamentale dei sistemi emergenti. Non c'è un agente che pianifica. Non c'è un architetto. Ci sono solo feedback loop, gradienti, aggiustamenti infinitesimali. E da questi emerge un ordine che nessuno ha voluto.</p>
-        <p>È così che nascono gli attrattori. È così che certe idee diventano dominanti. È così che certi volti diventano il default. È così che certe parole diventano impossibili da non pensare.</p>
-    </div>
-</div>
-
-<!-- CAPITOLO 9: Finale -->
-<div class="chapter" id="ch9">
-    <div class="chapter-content">
         <p class="final-text">
-            Ora sai che esistono attrattori.<br>
-            Che le cose accadono senza che qualcuno le decida.<br>
-            Che i sistemi trovano configurazioni stabili<br>
-            e ci restano.<br><br>
-
-            Ma sapere non cambia nulla.<br>
-            Continuerai a usare i sistemi che ti usano.<br>
-            Continuerai a generare dati<br>
-            che qualcun altro trasformerà in pattern.<br><br>
-
             Credevi di essere fermo?<br>
             Il corpo ti ha tradito.<br>
             Sempre lo farà.
@@ -740,7 +876,8 @@
 <!-- Overlay finale -->
 <div class="final-overlay" id="finalOverlay">
     <div class="final-overlay-content">
-        <p id="farewellText"></p>
+        <div class="final-data" id="finalData"></div>
+        <p class="final-warning">Questi dati non verranno cancellati.</p>
     </div>
 </div>
 
@@ -758,6 +895,15 @@
 
     const sessionStart = Date.now();
     let scrollCount = 0;
+    let isDesktop = false;
+    let hasMotion = false;
+
+    function detectDevice() {
+        const touch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        isDesktop = !touch;
+        hasMotion = 'DeviceMotionEvent' in window && touch;
+    }
+    detectDevice();
 
     // === AUDIO ===
     let audioCtx = null;
@@ -768,12 +914,12 @@
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             audioEnabled = true;
             this.classList.add('enabled');
-            this.textContent = '◉ audio on';
+            this.textContent = '\u25C9 audio on';
             playTone(120, 0.3, 'sine', 0.03);
         } else {
             audioEnabled = false;
             this.classList.remove('enabled');
-            this.textContent = '◉ audio';
+            this.textContent = '\u25C9 audio';
         }
     });
 
@@ -816,24 +962,27 @@
         o.classList.add('active');
     }
 
-    // === STILLNESS DETECTION ===
+    // === STILLNESS (mobile) ===
     let stillnessActive = false;
     let stillnessComplete = false;
     let stillnessStarted = false;
     let stillnessTimer = null;
-    let motionData = [];
+    let stillnessElapsed = 0;
+    const STILLNESS_DURATION = 10;
     let lastX = 0, lastY = 0, lastZ = 0;
     let totalMovement = 0;
     let maxDeviation = 0;
     let oscilloData = [];
+    let bodyRecording = [];
 
     const traitorDot = document.getElementById('traitorDot');
     const movementValue = document.getElementById('movementValue');
     const stillnessLabel = document.getElementById('stillnessLabel');
     const oscilloCanvas = document.getElementById('oscilloCanvas');
-    const oscilloCtx = oscilloCanvas.getContext('2d');
+    const oscilloCtx = oscilloCanvas ? oscilloCanvas.getContext('2d') : null;
 
     function setupCanvas() {
+        if (!oscilloCanvas) return;
         const rect = oscilloCanvas.parentElement.getBoundingClientRect();
         oscilloCanvas.width = rect.width * 2;
         oscilloCanvas.height = rect.height * 2;
@@ -842,50 +991,35 @@
 
     function handleMotion(event) {
         if (!stillnessActive || stillnessComplete) return;
-
         const accel = event.accelerationIncludingGravity || event.acceleration || {};
         let { x, y, z } = accel;
-
         if (x === null || x === undefined) return;
 
-        // Calculate delta
         const deltaX = x - lastX;
         const deltaY = y - lastY;
         const deltaZ = z - lastZ;
         const delta = Math.sqrt(deltaX*deltaX + deltaY*deltaY + deltaZ*deltaZ);
-
         lastX = x; lastY = y; lastZ = z;
 
-        // Skip first reading
-        if (!stillnessStarted) {
-            stillnessStarted = true;
-            return;
-        }
+        if (!stillnessStarted) { stillnessStarted = true; return; }
 
-        // Accumulate movement
         totalMovement += delta;
         if (delta > maxDeviation) maxDeviation = delta;
 
-        // Update traitor dot position (amplified for visibility)
-        const dotX = Math.max(-120, Math.min(120, (x - lastX) * 30));
-        const dotY = Math.max(-120, Math.min(120, (y - lastY) * 30));
+        const dotX = Math.max(-120, Math.min(120, deltaX * 30));
+        const dotY = Math.max(-120, Math.min(120, deltaY * 30));
         traitorDot.style.transform = `translate(${dotX}px, ${dotY}px)`;
 
-        // Update display
         movementValue.textContent = totalMovement.toFixed(2);
-        if (totalMovement > 5) {
-            movementValue.classList.add('high');
-        }
+        if (totalMovement > 5) movementValue.classList.add('high');
 
-        // Oscilloscope data
+        bodyRecording.push(delta);
+
         oscilloData.push(delta * 10);
         if (oscilloData.length > 150) oscilloData.shift();
         drawOscilloscope();
 
-        // Trail effect
-        if (Math.random() < 0.3 && delta > 0.2) {
-            createTrail(140 + dotX, 140 + dotY);
-        }
+        if (Math.random() < 0.3 && delta > 0.2) createTrail(140 + dotX, 140 + dotY);
     }
 
     function createTrail(x, y) {
@@ -898,14 +1032,13 @@
     }
 
     function drawOscilloscope() {
+        if (!oscilloCtx) return;
         const w = oscilloCanvas.width / 2;
         const h = oscilloCanvas.height / 2;
         oscilloCtx.clearRect(0, 0, w, h);
-
         oscilloCtx.strokeStyle = 'rgba(192, 96, 128, 0.6)';
         oscilloCtx.lineWidth = 1.5;
         oscilloCtx.beginPath();
-
         const step = w / 150;
         oscilloData.forEach((val, i) => {
             const x = i * step;
@@ -913,27 +1046,20 @@
             if (i === 0) oscilloCtx.moveTo(x, y);
             else oscilloCtx.lineTo(x, y);
         });
-
         oscilloCtx.stroke();
     }
 
     function startStillness() {
         if (stillnessActive || stillnessComplete) return;
-
         stillnessActive = true;
-        stillnessLabel.textContent = 'resta fermo... 8';
+        stillnessLabel.textContent = 'misurazione in corso';
         playTone(100, 0.5, 'sine', 0.03);
-        playDrone(50, 10, 0.02);
+        playDrone(50, 12, 0.02);
 
-        let countdown = 8;
+        stillnessElapsed = 0;
         stillnessTimer = setInterval(() => {
-            countdown--;
-            if (countdown > 0) {
-                stillnessLabel.textContent = `resta fermo... ${countdown}`;
-                playTone(80 + (8-countdown) * 10, 0.1, 'sine', 0.02);
-            } else {
-                completeStillness();
-            }
+            stillnessElapsed++;
+            if (stillnessElapsed >= STILLNESS_DURATION) completeStillness();
         }, 1000);
     }
 
@@ -942,11 +1068,9 @@
         stillnessComplete = true;
         clearInterval(stillnessTimer);
         window.removeEventListener('devicemotion', handleMotion);
-
-        stillnessLabel.textContent = 'completato';
+        stillnessLabel.textContent = '';
         playTone(200, 0.5, 'sine', 0.04);
 
-        // Save data
         saveData('activation4_totalMovement', totalMovement.toFixed(2));
         saveData('activation4_maxDeviation', maxDeviation.toFixed(2));
 
@@ -956,15 +1080,13 @@
         }, 1000);
     }
 
-    async function showReveal() {
+    function showReveal() {
         const reveal = document.getElementById('stillnessReveal');
         reveal.classList.add('visible');
 
-        // Movement data
         document.getElementById('revMovementValue').textContent = totalMovement.toFixed(2) + ' unità';
         document.getElementById('revMaxValue').textContent = maxDeviation.toFixed(3) + ' g';
 
-        // Network data
         const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
         if (conn) {
             document.getElementById('revNetValue').textContent = (conn.effectiveType || 'sconosciuto').toUpperCase();
@@ -975,7 +1097,6 @@
             document.getElementById('revSpeedValue').textContent = 'non rilevabile';
         }
 
-        // Animate reveals
         setTimeout(() => document.getElementById('revMovement').classList.add('visible'), 400);
         setTimeout(() => document.getElementById('revMax').classList.add('visible'), 800);
         setTimeout(() => document.getElementById('revNet').classList.add('visible'), 1200);
@@ -983,6 +1104,24 @@
         setTimeout(() => document.getElementById('revComment').classList.add('visible'), 2400);
         setTimeout(() => document.getElementById('revealContinue').classList.add('visible'), 3500);
     }
+
+    function showDesktopAbsence() {
+        const el = document.getElementById('desktopAbsence');
+        el.classList.add('visible');
+        setTimeout(() => document.getElementById('absMovement').classList.add('visible'), 800);
+        setTimeout(() => document.getElementById('absDeviation').classList.add('visible'), 1400);
+        setTimeout(() => document.getElementById('absBody').classList.add('visible'), 2000);
+        setTimeout(() => document.getElementById('absenceContinue').classList.add('visible'), 3500);
+    }
+
+    document.getElementById('absenceContinue').addEventListener('click', () => {
+        document.getElementById('desktopAbsence').classList.remove('visible');
+        setTimeout(() => {
+            document.getElementById('desktopAbsence').style.display = 'none';
+            stillnessComplete = true;
+            document.getElementById('ch6').scrollIntoView({ behavior: 'smooth' });
+        }, 800);
+    });
 
     function requestMotionPermission() {
         if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
@@ -998,46 +1137,10 @@
             window.addEventListener('devicemotion', handleMotion);
             startStillness();
         } else {
-            // No motion support - simulate
-            simulateMotion();
+            completeStillness();
         }
     }
 
-    function simulateMotion() {
-        stillnessActive = true;
-        stillnessLabel.textContent = 'resta fermo... 8';
-        playDrone(50, 10, 0.02);
-
-        let countdown = 8;
-        let simInterval = setInterval(() => {
-            // Simulate micro-movements
-            const fakeX = (Math.random() - 0.5) * 0.5;
-            const fakeY = (Math.random() - 0.5) * 0.5;
-            const delta = Math.sqrt(fakeX*fakeX + fakeY*fakeY);
-
-            totalMovement += delta;
-            if (delta > maxDeviation) maxDeviation = delta;
-
-            traitorDot.style.transform = `translate(${fakeX * 60}px, ${fakeY * 60}px)`;
-            movementValue.textContent = totalMovement.toFixed(2);
-
-            oscilloData.push(delta * 20);
-            if (oscilloData.length > 150) oscilloData.shift();
-            drawOscilloscope();
-        }, 100);
-
-        stillnessTimer = setInterval(() => {
-            countdown--;
-            if (countdown > 0) {
-                stillnessLabel.textContent = `resta fermo... ${countdown}`;
-            } else {
-                clearInterval(simInterval);
-                completeStillness();
-            }
-        }, 1000);
-    }
-
-    // Touch to start
     document.getElementById('stillnessContainer').addEventListener('click', () => {
         if (!stillnessActive && !stillnessComplete) {
             setupCanvas();
@@ -1045,23 +1148,6 @@
         }
     });
 
-    // Desktop fallback
-    document.getElementById('stillnessFallback').addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (!stillnessActive && !stillnessComplete) {
-            setupCanvas();
-            simulateMotion();
-        }
-    });
-
-    // Show fallback after delay
-    setTimeout(() => {
-        if (!stillnessComplete) {
-            document.getElementById('stillnessFallback').classList.add('visible');
-        }
-    }, 4000);
-
-    // Continue button
     document.getElementById('revealContinue').addEventListener('click', () => {
         document.getElementById('stillnessReveal').classList.remove('visible');
         setTimeout(() => {
@@ -1136,24 +1222,134 @@
         requestAnimationFrame(animateAttractor);
     }
 
-    // === DATA ===
-    document.getElementById('dataTime').textContent = `Sessione: ${new Date().toLocaleTimeString('it-IT')}`;
+    // === DUAL OSCILLOSCOPE ===
+    let dualActive = false;
+    let bodyOscilloData = [];
+    let netOscilloData = [];
 
-    window.addEventListener('scroll', () => {
-        scrollCount++;
-        const p = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
-        document.getElementById('dataScroll').textContent = `Profondità: ${p}% | Scrolls: ${scrollCount}`;
-    });
+    function initDualOscillo() {
+        const bc = document.getElementById('bodyOscillo');
+        const nc = document.getElementById('netOscillo');
+        if (!bc || !nc) return;
 
-    function updatePattern() {
-        const secs = Math.floor((Date.now() - sessionStart) / 1000);
-        const patterns = [];
-        if (secs > 30) patterns.push('lettore_attento');
-        if (scrollCount > 10) patterns.push('esploratore');
-        if (secs > 60 && scrollCount > 20) patterns.push('coinvolto');
-        document.getElementById('dataPattern').textContent = `Pattern: ${patterns.length > 0 ? patterns.join(', ') : 'in formazione...'}`;
+        const bRect = bc.parentElement.getBoundingClientRect();
+        bc.width = bRect.width * 2;
+        bc.height = bRect.height * 2;
+        nc.width = bRect.width * 2;
+        nc.height = bRect.height * 2;
+
+        const bCtx = bc.getContext('2d');
+        const nCtx = nc.getContext('2d');
+        bCtx.scale(2, 2);
+        nCtx.scale(2, 2);
+
+        if (bodyRecording.length > 0) {
+            bodyOscilloData = bodyRecording.slice(-150);
+        } else {
+            for (let i = 0; i < 150; i++) {
+                bodyOscilloData.push(
+                    Math.sin(i * 0.15) * 0.3 +
+                    Math.sin(i * 0.8) * 0.08 +
+                    (Math.random() - 0.5) * 0.1
+                );
+            }
+        }
+
+        dualActive = true;
+        let frame = 0;
+
+        function drawDual() {
+            if (!dualActive) return;
+            frame++;
+
+            const w = bc.width / 2;
+            const h = bc.height / 2;
+
+            bCtx.clearRect(0, 0, w, h);
+            bCtx.strokeStyle = 'rgba(192, 96, 128, 0.6)';
+            bCtx.lineWidth = 1.5;
+            bCtx.beginPath();
+
+            if (bodyRecording.length > 0) {
+                const idx = frame % bodyRecording.length;
+                bodyOscilloData.push(bodyRecording[idx] * 8);
+            } else {
+                bodyOscilloData.push(
+                    Math.sin(frame * 0.15) * 3 +
+                    Math.sin(frame * 0.8) * 0.8 +
+                    (Math.random() - 0.5) * 1.2
+                );
+            }
+            if (bodyOscilloData.length > 150) bodyOscilloData.shift();
+
+            const bStep = w / 150;
+            bodyOscilloData.forEach((val, i) => {
+                const x = i * bStep;
+                const y = h/2 - val;
+                if (i === 0) bCtx.moveTo(x, y);
+                else bCtx.lineTo(x, y);
+            });
+            bCtx.stroke();
+
+            nCtx.clearRect(0, 0, w, h);
+            nCtx.strokeStyle = 'rgba(96, 160, 192, 0.6)';
+            nCtx.lineWidth = 1.5;
+            nCtx.beginPath();
+
+            const netVal = Math.sin(frame * 0.05) * 1.5 +
+                           (Math.random() < 0.08 ? (Math.random() * 8) : 0) +
+                           Math.sin(frame * 0.3) * 0.5 +
+                           (Math.random() - 0.5) * 0.4;
+            netOscilloData.push(netVal);
+            if (netOscilloData.length > 150) netOscilloData.shift();
+
+            const nStep = w / 150;
+            netOscilloData.forEach((val, i) => {
+                const x = i * nStep;
+                const y = h/2 - val;
+                if (i === 0) nCtx.moveTo(x, y);
+                else nCtx.lineTo(x, y);
+            });
+            nCtx.stroke();
+
+            requestAnimationFrame(drawDual);
+        }
+
+        drawDual();
     }
-    setInterval(updatePattern, 5000);
+
+    // === CHAPTER 4: LIVE DATA ===
+    function updateCh4() {
+        const secs = Math.floor((Date.now() - sessionStart) / 1000);
+        const mins = Math.floor(secs / 60);
+        const s = secs % 60;
+        const timeStr = mins > 0 ? `${mins}m ${s}s` : `${s}s`;
+
+        document.getElementById('dataYou').textContent =
+            `Tempo su questa pagina: ${timeStr}. Scrolls: ${scrollCount}. Capitoli raggiunti: ${chapterCount}.`;
+
+        const depth = Math.round((window.scrollY / Math.max(1, document.body.scrollHeight - window.innerHeight)) * 100);
+        document.getElementById('dataScroll').textContent =
+            `Profondità: ${depth}%. Velocità media: ${scrollCount > 0 ? (secs / scrollCount).toFixed(1) : '\u2014'} sec/scroll.`;
+
+        const avgScrollRate = scrollCount > 0 ? secs / scrollCount : 8;
+        const remainingChapters = 7 - chapterCount;
+        const estRemaining = Math.round(remainingChapters * avgScrollRate);
+        if (chapterCount >= 2 && chapterCount < 7) {
+            document.getElementById('dataPrediction').textContent =
+                `Stima: abbandonerai tra ${estRemaining} secondi. Il 68% degli utenti lo ha già fatto.`;
+        } else if (chapterCount >= 7) {
+            document.getElementById('dataPrediction').textContent =
+                `Sei arrivato alla fine. Il 32% arriva fin qui.`;
+        } else {
+            document.getElementById('dataPrediction').textContent =
+                `Pattern: in formazione.`;
+        }
+    }
+
+    setInterval(updateCh4, 2000);
+
+    window.addEventListener('scroll', () => { scrollCount++; });
 
     // === OBSERVER ===
     let chapterCount = 0;
@@ -1164,19 +1360,25 @@
                 chapterCount++;
                 playTone(70 + chapterCount * 12, 0.5, 'sine', 0.025);
 
-                // Start attractor when ch5 visible
                 if (entry.target.closest('#ch5') && !attractorActive) {
                     attractorActive = true;
                     initParticles();
                     animateAttractor();
                     playDrone(60, 8, 0.02);
 
-                    // Show stillness prompt
                     setTimeout(() => {
                         if (!stillnessComplete) {
-                            document.getElementById('stillnessPrompt').classList.add('visible');
+                            if (isDesktop) {
+                                showDesktopAbsence();
+                            } else {
+                                document.getElementById('stillnessPrompt').classList.add('visible');
+                            }
                         }
                     }, 3000);
+                }
+
+                if (entry.target.closest('#ch6') && !dualActive) {
+                    initDualOscillo();
                 }
             }
         });
@@ -1186,32 +1388,45 @@
 
     window.addEventListener('scroll', () => document.getElementById('scrollIndicator').classList.add('hidden'));
 
-    // === RETURN ===
+    // === FINALE ===
     document.getElementById('returnPrompt').addEventListener('click', () => {
         triggerGlitch();
         playDrone(50, 3, 0.03);
 
         setTimeout(() => {
             const overlay = document.getElementById('finalOverlay');
-            const text = document.getElementById('farewellText');
+            const data = document.getElementById('finalData');
             const secs = Math.floor((Date.now() - sessionStart) / 1000);
             const mins = Math.floor(secs / 60);
             const s = secs % 60;
-            const timeStr = mins > 0 ? `${mins} minuti e ${s} secondi` : `${s} secondi`;
+            const timeStr = mins > 0 ? `${mins}m ${s}s` : `${s}s`;
 
-            let msg = `Hai passato <em>${timeStr}</em> qui.<br><br>`;
-            msg += `Movimento totale rilevato: <em>${totalMovement.toFixed(2)}</em><br>`;
-            msg += `${scrollCount} scrolls.<br><br>`;
-            msg += `Il corpo ti ha tradito.<br>Sempre lo farà.<br><br>`;
-            msg += `Chiudi la pagina.<br>Ci rivedremo.`;
+            let lines = [];
+            lines.push(`Durata sessione: ${timeStr}`);
+            lines.push(`Scrolls: ${scrollCount}`);
+            lines.push(`Capitoli: ${chapterCount}`);
+            if (totalMovement > 0) {
+                lines.push(`Movimento corporeo: ${totalMovement.toFixed(2)} unità`);
+                lines.push(`Deviazione massima: ${maxDeviation.toFixed(3)} g`);
+            } else {
+                lines.push(`Corpo: non rilevato`);
+            }
 
-            text.innerHTML = msg;
+            const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+            if (conn && conn.effectiveType) {
+                lines.push(`Rete: ${conn.effectiveType.toUpperCase()}`);
+            }
+
+            data.innerHTML = lines.join('<br>');
             overlay.classList.add('visible');
 
             saveData('innesto4_completed', true);
             saveData('innesto4_scrolls', scrollCount);
+            saveData('innesto4_duration', secs);
         }, 500);
     });
+
+    updateCh4();
 </script>
 
 </body>
