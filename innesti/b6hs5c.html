@@ -3,470 +3,572 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Attrattori</title>
+<title>Innesto 04</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
-
-:root {
-  --bg: #08080a;
-  --text: #a8a4a0;
-  --text-bright: #d0ccc4;
-  --text-dim: #5a5a64;
-  --text-ghost: #3a3a44;
-  --accent: rgba(200,180,160,0.4);
-}
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap');
 
 *{margin:0;padding:0;box-sizing:border-box}
-html{font-size:16px;-webkit-text-size-adjust:100%}
+html{background:#050506;height:100%;-webkit-text-size-adjust:100%}
+body{min-height:100%;font-family:'IBM Plex Mono',monospace;font-weight:300;
+-webkit-font-smoothing:antialiased;overscroll-behavior:none;
+user-select:none;-webkit-user-select:none}
 
-body{
-  min-height:100vh;min-height:100dvh;
-  background:var(--bg);color:var(--text);
-  font-family:'IBM Plex Mono',monospace;font-weight:300;
-  line-height:2;overflow:hidden;
-  -webkit-font-smoothing:antialiased;
-  touch-action:none;user-select:none;-webkit-user-select:none;
-}
-
-canvas#ocean{position:fixed;inset:0;width:100%;height:100%;z-index:0}
-
-.phase{
-  position:fixed;inset:0;z-index:10;
-  display:flex;align-items:center;justify-content:center;flex-direction:column;
-  opacity:0;pointer-events:none;transition:opacity 1.5s ease;
-}
+/* Phases */
+.phase{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+flex-direction:column;opacity:0;pointer-events:none;transition:opacity 1.2s ease}
 .phase.active{opacity:1;pointer-events:auto}
 
-#phase-word{z-index:20}
+/* Phase 0 */
+#phase0{background:#050506;z-index:100}
+#theWord{font-family:'Cormorant Garamond',serif;font-size:clamp(2.8rem,8vw,5rem);
+font-weight:300;color:#c8c0b8;letter-spacing:0.04em;cursor:pointer;
+transition:all 0.8s ease;-webkit-tap-highlight-color:transparent}
+#wordHint{font-family:'Space Mono',monospace;font-size:0.55rem;
+color:rgba(200,190,180,0.2);letter-spacing:0.25em;text-transform:uppercase;
+margin-top:2rem;opacity:0;transition:opacity 1s ease}
 
-.word-display{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(2.8rem,8vw,5rem);font-weight:300;
-  color:var(--text-bright);letter-spacing:.05em;
-  cursor:pointer;position:relative;
-  transition:all 1.5s cubic-bezier(.4,0,.2,1);
+/* Persistent word */
+#persistentWord{position:fixed;top:2rem;left:50%;transform:translateX(-50%);
+font-family:'Cormorant Garamond',serif;font-size:0.9rem;font-weight:300;
+letter-spacing:0.15em;z-index:80;opacity:0;transition:color 1.5s ease,opacity 1s ease;
+pointer-events:none}
+#persistentWord.visible{opacity:1}
+#persistentWord.tremble{animation:wordTremble 0.4s ease-in-out}
+@keyframes wordTremble{
+0%,100%{transform:translateX(-50%)}
+15%{transform:translateX(calc(-50% - 2px))}
+30%{transform:translateX(calc(-50% + 2px))}
+45%{transform:translateX(calc(-50% - 1px))}
+60%{transform:translateX(calc(-50% + 1px))}
+75%{transform:translateX(calc(-50%))}
 }
-.word-display::after{
-  content:'';position:absolute;bottom:-4px;left:0;right:0;height:1px;
-  background:var(--accent);transform:scaleX(0);transition:transform .6s ease;
+
+/* Ocean crossing between islands */
+#crossing{position:fixed;inset:0;z-index:75;background:#050506;
+display:flex;align-items:center;justify-content:center;
+opacity:0;pointer-events:none;transition:opacity 0.6s ease}
+#crossing.active{opacity:1}
+#crossingLight{width:8px;height:8px;border-radius:50%;
+transition:all 1.5s cubic-bezier(0.4,0,0.2,1);filter:blur(4px)}
+
+/* Phase 1: Islands */
+#phase1{z-index:50;overflow:hidden}
+.island-screen{position:absolute;inset:0;display:flex;align-items:center;
+justify-content:center;flex-direction:column;padding:7vh 8vw;
+opacity:0;transition:opacity 1s ease;pointer-events:none}
+.island-screen.active{opacity:1;pointer-events:auto}
+.island-number{font-family:'Space Mono',monospace;font-size:0.5rem;
+letter-spacing:0.3em;text-transform:uppercase;margin-bottom:2rem;opacity:0.3}
+.island-text{max-width:520px;text-align:center;line-height:2.4;
+font-size:clamp(0.88rem,2.3vw,1.02rem);margin-bottom:2.5rem;
+opacity:0;transform:translateY(20px);transition:all 1.2s ease 0.4s}
+.island-screen.active .island-text{opacity:1;transform:translateY(0)}
+.island-source{font-family:'Space Mono',monospace;font-size:0.45rem;
+letter-spacing:0.2em;text-transform:uppercase;margin-bottom:3rem;
+opacity:0;transition:opacity 0.8s ease 1.2s}
+.island-screen.active .island-source{opacity:0.35}
+.island-question{font-size:0.9rem;font-style:italic;margin-bottom:1.8rem;
+opacity:0;transition:opacity 0.8s ease 1.8s}
+.island-screen.active .island-question{opacity:0.6}
+.choice-row{display:flex;gap:1.5rem;justify-content:center;
+opacity:0;transition:opacity 0.6s ease 2.2s}
+.island-screen.active .choice-row{opacity:1}
+.choice-btn{font-family:'Space Mono',monospace;font-size:0.6rem;
+letter-spacing:0.2em;text-transform:uppercase;padding:0.8rem 2.5rem;
+border:1px solid rgba(255,255,255,0.12);background:transparent;
+color:rgba(255,255,255,0.35);cursor:pointer;transition:all 0.3s ease;
+-webkit-tap-highlight-color:transparent}
+.choice-btn:hover{color:rgba(255,255,255,0.6);border-color:rgba(255,255,255,0.25)}
+.choice-btn:active{transform:scale(0.97)}
+.island-glow{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity 1.5s ease}
+.island-screen.active .island-glow{opacity:1}
+
+/* Phase 2: Confrontation */
+#phase2{z-index:200;background:#050506;padding:8vh 8vw;overflow-y:auto;
+flex-direction:column;justify-content:flex-start;align-items:center}
+.cblock{max-width:500px;width:100%;margin-bottom:2.5rem;text-align:center;
+opacity:0;transform:translateY(15px);transition:all 1s ease}
+.cblock.visible{opacity:1;transform:translateY(0)}
+.ctitle{font-family:'Cormorant Garamond',serif;font-size:1.3rem;
+font-weight:300;color:rgba(200,190,180,0.7);margin-bottom:2.5rem}
+.choice-map{display:flex;flex-direction:column;gap:0.8rem;margin-bottom:2rem}
+.choice-record{display:flex;align-items:center;gap:1rem;padding:0.6rem 0}
+.cr-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.cr-source{color:rgba(200,190,180,0.35);flex:1;font-family:'Space Mono',monospace;
+font-size:0.5rem;letter-spacing:0.1em}
+.cr-answer{font-family:'Space Mono',monospace;font-size:0.55rem;
+letter-spacing:0.15em;text-transform:uppercase;flex-shrink:0}
+.cr-answer.yes{color:rgba(120,180,120,0.6)}
+.cr-answer.no{color:rgba(180,120,120,0.6)}
+.ctext{font-size:0.85rem;color:rgba(200,190,180,0.5);line-height:2.2;margin-bottom:1.5rem}
+.ctext em{font-style:normal;color:rgba(200,190,180,0.8)}
+
+/* Phase 3: The Cost */
+#phase3{z-index:300;background:#050506;padding:8vh 8vw;overflow-y:auto;
+flex-direction:column;justify-content:flex-start;align-items:center}
+
+/* Typewriter effect */
+.typewriter{overflow:hidden;white-space:normal}
+.typewriter .char{opacity:0;transition:opacity 0.04s ease}
+.typewriter .char.visible{opacity:1}
+
+/* Hold-to-accept */
+.hold-container{position:relative;display:inline-block;margin:0.5rem}
+.hold-btn{font-family:'Space Mono',monospace;font-size:0.55rem;
+letter-spacing:0.15em;padding:0.8rem 2rem;border:1px solid rgba(255,255,255,0.1);
+background:transparent;cursor:pointer;transition:all 0.3s ease;
+position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent}
+.hold-btn:hover{border-color:rgba(255,255,255,0.2)}
+.hold-fill{position:absolute;top:0;left:0;bottom:0;width:0%;
+transition:width 0.05s linear;pointer-events:none}
+.hold-label{font-family:'Space Mono',monospace;font-size:0.4rem;
+color:rgba(200,190,180,0.15);letter-spacing:0.15em;text-align:center;
+margin-top:0.5rem;height:1em}
+
+.tap-btn{font-family:'Space Mono',monospace;font-size:0.55rem;
+letter-spacing:0.15em;padding:0.8rem 2rem;border:1px solid rgba(255,255,255,0.08);
+background:transparent;color:rgba(200,190,180,0.3);cursor:pointer;
+transition:all 0.3s ease;-webkit-tap-highlight-color:transparent}
+.tap-btn:hover{color:rgba(200,190,180,0.5);border-color:rgba(200,190,180,0.15)}
+
+/* Phase 4: After cost */
+#phase4{z-index:350;background:#050506;padding:8vh 8vw;overflow-y:auto;
+flex-direction:column;justify-content:flex-start;align-items:center}
+.ablock{max-width:480px;width:100%;text-align:center;margin-bottom:2rem;
+opacity:0;transform:translateY(15px);transition:all 1s ease}
+.ablock.visible{opacity:1;transform:translateY(0)}
+.atext{font-size:0.85rem;color:rgba(200,190,180,0.5);line-height:2.4}
+.atext em{font-style:normal;color:rgba(200,190,180,0.75)}
+.a-expanded{font-size:0.85rem;line-height:2.4;padding:1.5rem;
+border:1px solid rgba(255,255,255,0.06);margin:1.5rem 0}
+
+/* Phase 5: Final */
+#phase5{z-index:400;background:#030304}
+#finalText{max-width:420px;text-align:center;font-size:0.85rem;
+color:rgba(200,190,180,0.4);line-height:2.4;padding:2rem;
+opacity:0;transition:opacity 2s ease}
+#finalText.visible{opacity:1}
+#finalText em{font-style:normal;color:rgba(200,190,180,0.65)}
+
+/* Audio */
+#audioBtn{position:fixed;bottom:1.5rem;right:1.5rem;z-index:600;
+font-family:'Space Mono',monospace;font-size:0.5rem;
+color:rgba(200,190,180,0.15);letter-spacing:0.1em;cursor:pointer;
+padding:0.4rem 0.8rem;border:1px solid rgba(200,190,180,0.06);transition:all 0.3s ease}
+#audioBtn.on{color:rgba(200,190,180,0.35);border-color:rgba(200,190,180,0.12)}
+
+@media(max-width:600px){
+.island-text{font-size:0.88rem;line-height:2.2}
+.choice-row{gap:1rem}
+.choice-btn{padding:0.7rem 1.5rem;font-size:0.5rem}
 }
-.word-display:hover::after{transform:scaleX(1)}
-
-.word-hint{
-  margin-top:2rem;font-size:.7rem;color:var(--text-ghost);
-  letter-spacing:.2em;text-transform:uppercase;
-  opacity:0;transition:opacity 1s ease 2s;
-}
-#phase-word.active .word-hint{opacity:1}
-
-.island-overlay{
-  position:fixed;inset:0;z-index:30;
-  display:flex;align-items:center;justify-content:center;
-  pointer-events:none;opacity:0;transition:opacity .8s ease;
-}
-.island-overlay.visible{opacity:1}
-
-.island-inner{max-width:460px;padding:2rem;text-align:center}
-
-.island-voice{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(1.05rem,2.5vw,1.25rem);font-weight:300;
-  line-height:2.1;color:var(--text-bright);
-  opacity:0;transform:translateY(15px);transition:all 1.2s ease;
-}
-.island-voice.visible{opacity:1;transform:translateY(0)}
-
-.island-source{
-  font-family:'IBM Plex Mono',monospace;font-size:.6rem;
-  color:var(--text-ghost);letter-spacing:.15em;margin-top:1.5rem;
-  opacity:0;transition:opacity 1s ease .5s;
-}
-.island-source.visible{opacity:1}
-
-.nav-hint{
-  position:fixed;bottom:3rem;left:50%;transform:translateX(-50%);
-  font-size:.55rem;color:var(--text-ghost);letter-spacing:.2em;
-  text-transform:uppercase;z-index:40;opacity:0;transition:opacity .5s ease;pointer-events:none;
-}
-.nav-hint.visible{opacity:1}
-
-.island-counter{
-  position:fixed;top:1.5rem;right:1.5rem;
-  font-family:'IBM Plex Mono',monospace;font-size:.55rem;
-  color:var(--text-ghost);letter-spacing:.12em;
-  z-index:40;opacity:0;transition:opacity .5s ease;
-}
-.island-counter.visible{opacity:.6}
-
-#phase-reveal{z-index:50;background:var(--bg)}
-
-.reveal-wrap{max-width:440px;padding:2rem;text-align:center}
-
-.reveal-map{width:280px;height:280px;margin:0 auto 2rem;position:relative}
-.reveal-map canvas{width:100%;height:100%}
-
-.reveal-p{
-  font-family:'IBM Plex Mono',monospace;font-size:.75rem;
-  color:var(--text-dim);line-height:2.2;margin-bottom:1.2rem;
-  opacity:0;transform:translateY(10px);transition:all 1s ease;
-}
-.reveal-p.visible{opacity:1;transform:translateY(0)}
-
-.reveal-stat{
-  font-family:'IBM Plex Mono',monospace;font-size:.6rem;
-  color:var(--text-ghost);letter-spacing:.1em;margin:.5rem 0;
-  opacity:0;transition:opacity .8s ease;
-}
-.reveal-stat.visible{opacity:1}
-.reveal-stat em{color:var(--text-bright);font-style:normal}
-
-#phase-unseen{z-index:55;background:var(--bg)}
-.unseen-wrap{max-width:480px;padding:2rem;text-align:center}
-
-.unseen-intro{
-  font-family:'IBM Plex Mono',monospace;font-size:.8rem;
-  color:var(--text-dim);line-height:2;margin-bottom:2rem;
-  opacity:0;transition:all 1s ease;
-}
-.unseen-intro.visible{opacity:1}
-
-.unseen-voice{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(1.1rem,2.8vw,1.3rem);font-weight:300;
-  line-height:2.2;color:var(--text-bright);padding:0 1rem;
-  opacity:0;transform:translateY(15px);transition:all 1.5s ease;
-}
-.unseen-voice.visible{opacity:1;transform:translateY(0)}
-
-.unseen-source{
-  font-size:.6rem;color:var(--text-ghost);letter-spacing:.15em;
-  margin-top:1.5rem;opacity:0;transition:opacity 1s ease;
-}
-.unseen-source.visible{opacity:1}
-
-#phase-hope{z-index:60;background:var(--bg)}
-.hope-wrap{max-width:500px;padding:2rem;text-align:center}
-
-.hope-p{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(1rem,2.5vw,1.2rem);font-weight:300;
-  line-height:2.2;color:var(--text);margin-bottom:2rem;
-  opacity:0;transform:translateY(15px);transition:all 1.5s ease;
-}
-.hope-p.visible{opacity:1;transform:translateY(0)}
-.hope-em{color:var(--text-bright);font-style:italic}
-
-.hope-link{
-  display:inline-block;margin-top:2rem;
-  font-family:'IBM Plex Mono',monospace;font-size:.6rem;
-  letter-spacing:.2em;text-transform:uppercase;
-  color:var(--text-ghost);text-decoration:none;
-  padding:.7rem 2rem;border:1px solid rgba(255,255,255,.06);
-  transition:all .5s ease;opacity:0;
-}
-.hope-link.visible{opacity:1}
-.hope-link:hover{color:var(--text);border-color:var(--text-ghost)}
-
-.cbtn{
-  margin-top:2rem;font-family:'IBM Plex Mono',monospace;font-size:.6rem;
-  color:var(--text-ghost);letter-spacing:.15em;cursor:pointer;
-  padding:.6rem 1.5rem;border:1px solid var(--text-ghost);
-  transition:all .3s ease;opacity:0;
-}
-.cbtn.visible{opacity:1}
-.cbtn:hover{color:var(--text);border-color:var(--text)}
-
-.tflash{
-  position:fixed;inset:0;z-index:100;background:var(--bg);
-  opacity:0;pointer-events:none;transition:opacity .4s ease;
-}
-.tflash.on{opacity:1}
-
-@media(max-width:600px){html{font-size:15px}}
 </style>
 </head>
 <body>
-<canvas id="ocean"></canvas>
-<div class="tflash" id="fl"></div>
 
-<div class="phase active" id="phase-word">
-  <div class="word-display" id="theWord">libertà</div>
-  <div class="word-hint">tocca la parola</div>
-</div>
+<div id="persistentWord">libertà</div>
+<div id="crossing"><div id="crossingLight"></div></div>
 
-<div class="phase" id="phase-archipelago">
-  <div class="island-overlay" id="islandOv">
-    <div class="island-inner">
-      <div class="island-voice" id="iVoice"></div>
-      <div class="island-source" id="iSource"></div>
-    </div>
-  </div>
+<div class="phase active" id="phase0">
+  <div id="theWord">libertà</div>
+  <div id="wordHint">tocca la parola</div>
 </div>
-<div class="nav-hint" id="navHint">trascina per navigare</div>
-<div class="island-counter" id="iCount"></div>
-
-<div class="phase" id="phase-reveal">
-  <div class="reveal-wrap">
-    <div class="reveal-map"><canvas id="revCanvas"></canvas></div>
-    <div class="reveal-p" id="revText"></div>
-    <div class="reveal-stat" id="rs1"></div>
-    <div class="reveal-stat" id="rs2"></div>
-    <div class="reveal-stat" id="rs3"></div>
-    <div class="cbtn" id="revBtn">continua</div>
-  </div>
-</div>
-
-<div class="phase" id="phase-unseen">
-  <div class="unseen-wrap">
-    <div class="unseen-intro" id="uIntro"></div>
-    <div class="unseen-voice" id="uVoice"></div>
-    <div class="unseen-source" id="uSource"></div>
-    <div class="cbtn" id="uBtn">prosegui</div>
-  </div>
-</div>
-
-<div class="phase" id="phase-hope">
-  <div class="hope-wrap">
-    <div class="hope-p" id="hp1"></div>
-    <div class="hope-p" id="hp2"></div>
-    <div class="hope-p" id="hp3"></div>
-    <a class="hope-link" id="hLink" href="../">torna all'arcipelago</a>
-  </div>
-</div>
+<div class="phase" id="phase1"></div>
+<div class="phase" id="phase2"><div id="confrontContent"></div></div>
+<div class="phase" id="phase3"><div id="costContent"></div></div>
+<div class="phase" id="phase4"><div id="afterContent"></div></div>
+<div class="phase" id="phase5"><p id="finalText"></p></div>
+<div id="audioBtn">&#9673; audio</div>
 
 <script>
-const SK='arcipelago_realta';
-const gd=()=>{try{return JSON.parse(localStorage.getItem(SK)||'{}')}catch{return{}}};
-const sd=(k,v)=>{const d=gd();d[k]=v;d.lastVisit=Date.now();d.visitedInnesti=d.visitedInnesti||[];if(!d.visitedInnesti.includes(4))d.visitedInnesti.push(4);localStorage.setItem(SK,JSON.stringify(d))};
-const nome=gd().nome||null;
-const t0=Date.now();
+const STORAGE_KEY='arcipelago_realta';
+const getData=()=>{try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')}catch{return{}}};
+const saveData=(k,v)=>{const d=getData();d[k]=v;d.lastVisit=Date.now();
+d.visitedInnesti=d.visitedInnesti||[];if(!d.visitedInnesti.includes(4))d.visitedInnesti.push(4);
+localStorage.setItem(STORAGE_KEY,JSON.stringify(d))};
+const sessionStart=Date.now();
 
-const words=['libertà','sicurezza','famiglia','progresso','natura'];
-const cw=words[Math.floor(Math.random()*words.length)];
-document.getElementById('theWord').textContent=cw;
+function vibrate(p){if('vibrate' in navigator)navigator.vibrate(p)}
 
-const A={
-'libertà':[
-{id:'armi',c:[180,140,120],v:'La libertà è poter difendere la mia famiglia senza chiedere il permesso allo Stato. Quando mi tolgono il diritto di possedere un\u2019arma mi tolgono il diritto di esistere come individuo sovrano. Tutto il resto viene dopo.',s:'Forum di discussione, Texas, 2024'},
-{id:'corpo',c:[140,120,170],v:'Il mio corpo non è una questione politica. La libertà comincia dove finisce la pretesa di qualcun altro di decidere cosa posso fare con la mia carne, il mio utero, il mio sangue. Chi legifera sul corpo altrui non sta proteggendo nessuno.',s:'Lettera aperta, Milano, 2023'},
-{id:'mercato',c:[120,160,140],v:'La libertà è un meccanismo di prezzo. Ogni regolamentazione è una distorsione. Ogni tassa è una coercizione. Il mercato libero è l\u2019unico sistema che permette a ciascuno di perseguire il proprio interesse senza danneggiare gli altri.',s:'Policy paper, Londra, 2024'},
-{id:'fuga',c:[160,140,100],v:'Sono partita di notte con mio figlio. Non avevamo documenti. La libertà per me è una porta aperta. Una porta qualsiasi. Chiunque parli di libertà senza aver mai provato a non averla sta parlando di un\u2019altra cosa.',s:'Testimonianza raccolta, Lampedusa, 2023'},
-{id:'rete',c:[130,150,180],v:'La vera libertà oggi è l\u2019anonimato. È poter navigare senza che ogni clic venga registrato, venduto, trasformato in previsione. Le persone che dicono di non aver nulla da nascondere non hanno mai pensato a cosa significa essere trasparenti davanti a chi è opaco.',s:'Post criptato, rete Tor, 2024'},
-{id:'cura',c:[170,130,150],v:'La libertà non è assenza di vincoli. È avere qualcuno che ti tiene quando cadi. Un sistema sanitario che non ti chiede la carta di credito prima di salvarti la vita. La libertà senza cura è abbandono con un nome più nobile.',s:'Discorso, Copenaghen, 2024'}
-],
-'sicurezza':[
-{id:'muri',c:[160,130,110],v:'La sicurezza è sapere chi entra nel tuo paese. Non è razzismo: è buon senso. Chiudi a chiave la porta di casa la sera, e nessuno ti chiama fascista. Perché uno Stato dovrebbe essere diverso?',s:'Commento radiofonico, Roma, 2024'},
-{id:'reddito',c:[130,150,160],v:'Mi sento sicura quando so che se perdo il lavoro non perdo anche la casa. La sicurezza è un pavimento sotto i piedi. Chi non ha mai rischiato di cadere non sa che il pavimento è una scelta politica.',s:'Intervista, Berlino, 2023'},
-{id:'sorveglianza',c:[140,120,150],v:'Le telecamere mi fanno sentire protetto. Se non fai niente di male, di cosa hai paura? La privacy è un lusso che non possiamo più permetterci.',s:'Sondaggio d\u2019opinione, Pechino, 2024'},
-{id:'clima',c:[120,160,130],v:'L\u2019unica vera sicurezza è un pianeta abitabile. Ogni discussione su muri o telecamere è irrilevante se tra trent\u2019anni il mare avrà sommerso le città dove li costruiamo. La sicurezza è tempo geologico.',s:'Assemblea, Tuvalu, 2024'},
-{id:'armi_s',c:[170,130,120],v:'Porto un\u2019arma perché la polizia arriva in otto minuti. Otto minuti sono un\u2019eternità. La mia sicurezza non può dipendere da un numero di telefono. Dipende da me, adesso, qui.',s:'Testimonianza, Atlanta, 2024'},
-{id:'psiche',c:[150,140,170],v:'Sicurezza è poter camminare per strada senza che nessuno ti gridi niente. È uno spazio dove il tuo corpo non è una provocazione. Le persone che si sentono al sicuro ovunque non sanno che la sicurezza è un privilegio che si indossa come un vestito invisibile.',s:'Diario, Istanbul, 2023'}
-],
-'famiglia':[
-{id:'tradizione',c:[170,140,110],v:'La famiglia è un uomo e una donna che crescono i figli che hanno generato. Tutto il resto è legittimo, ma è un\u2019altra cosa. Chiamarla con lo stesso nome non la rende uguale. Le parole esistono per distinguere.',s:'Omelia, Verona, 2023'},
-{id:'arcobaleno',c:[140,130,170],v:'La mia famiglia è mia figlia, mia moglie, e il fatto che lo Stato ci consideri estranee. La famiglia è dove qualcuno ti aspetta a cena sapendo il tuo nome. Tutto il resto è burocrazia travestita da natura.',s:'Intervista, Amsterdam, 2024'},
-{id:'solitudine',c:[130,140,150],v:'Non ho una famiglia. Non ne ho mai voluta una. La solitudine non è un\u2019assenza: è uno spazio che ho scelto. La domanda "e la famiglia?" è la domanda di chi non riesce a immaginare che qualcuno possa bastare a sé stesso.',s:'Saggio, Tokyo, 2024'},
-{id:'clan',c:[160,140,120],v:'La famiglia è il villaggio intero. Mia madre ha quindici sorelle e ognuna è mia madre. I vostri nuclei familiari da tre persone mi sembrano prigioni. Come fate a respirare in così pochi?',s:'Conversazione, Dakar, 2023'},
-{id:'violenza',c:[150,120,130],v:'La famiglia è il luogo più pericoloso che conosco. Quattro mura, una porta chiusa, e nessuno che sente. Chi idealizza la famiglia non ha mai dovuto scapparne.',s:'Deposizione, Napoli, 2024'},
-{id:'distanza',c:[130,150,140],v:'Mia famiglia è a seimila chilometri. Mando soldi ogni mese. Vedo mio figlio in un rettangolo luminoso. La famiglia è ciò che resta quando il corpo non può più essere presente. A volte resta tutto.',s:'Messaggio vocale, Doha, 2024'}
-],
-'progresso':[
-{id:'tech',c:[130,150,170],v:'Il progresso è che mia nonna è morta di parto e mia figlia partorirà con un\u2019intelligenza artificiale che monitora ogni battito. Chi romanticizza il passato non ha mai seppellito qualcuno per un\u2019infezione curabile.',s:'Post, San Francisco, 2024'},
-{id:'decrescita',c:[140,160,130],v:'Ogni tonnellata di progresso è una tonnellata di CO\u2082. Ogni innovazione è un\u2019estrazione. Il progresso è la storia che il Nord racconta a sé stesso mentre il Sud paga il conto. L\u2019unico vero progresso è fermarsi.',s:'Manifesto, La Paz, 2024'},
-{id:'automazione',c:[160,130,140],v:'Il mio lavoro non esiste più. Una macchina lo fa meglio di me, in meno tempo, senza stipendio. Mi hanno detto di reinventarmi. Come se un uomo di cinquantadue anni fosse una startup.',s:'Lettera al giornale, Detroit, 2023'},
-{id:'diritti',c:[140,140,160],v:'Il progresso è che mio nonno non poteva votare e io posso candidarmi. È lento, è incompleto, è pieno di contraddizioni. Ma chi dice che non esiste non ha mai guardato indietro abbastanza.',s:'Discorso di laurea, Johannesburg, 2024'},
-{id:'coloniale',c:[170,140,120],v:'Il vostro progresso è arrivato sulle nostre navi negriere. Ogni ferrovia che avete costruito passava sopra qualcuno. Non rifiuto il progresso: rifiuto l\u2019amnesia che lo accompagna.',s:'Lectio magistralis, Accra, 2024'},
-{id:'singolarita',c:[150,140,170],v:'Tra quindici anni un\u2019intelligenza artificiale supererà ogni capacità umana. Questo è il progresso: qualcosa che non controlliamo, che non comprendiamo, che potrebbe renderci obsoleti o immortali. Nessuno sa quale delle due.',s:'Conferenza, Shenzhen, 2024'}
-],
-'natura':[
-{id:'wilderness',c:[120,160,130],v:'La natura è ciò che esiste senza il nostro permesso. La foresta non ha bisogno del nostro consenso per crescere. Noi abbiamo bisogno di lei. Il contrario non è vero.',s:'Guida forestale, British Columbia, 2024'},
-{id:'naturale',c:[170,140,120],v:'Quando dicono "è contro natura" intendono "è contro la mia idea di natura". La natura è anche il virus, la mutazione, il maschio di cavalluccio marino che partorisce. La natura non ha opinioni morali. Le abbiamo noi.',s:'Editoriale, Berlino, 2024'},
-{id:'cibo',c:[160,150,120],v:'Mangio solo cose naturali. Niente chimica, niente OGM, niente additivi. Lo so che suona privilegiato. Ma il mio corpo è l\u2019unico posto dove posso ancora decidere cosa entra e cosa no.',s:'Blog, Portland, 2023'},
-{id:'estrattivismo',c:[140,130,150],v:'Sotto la foresta c\u2019è litio. Il litio serve per le batterie. Le batterie servono per le auto elettriche. Le auto elettriche servono per salvare la natura. Per salvare la natura bisogna distruggere la foresta.',s:'Reportage, Atacama, 2024'},
-{id:'sacro',c:[150,140,160],v:'La montagna non è una risorsa. È mia nonna. È il luogo dove i morti riposano e i vivi chiedono consiglio. Voi chiamate "natura" quello che noi chiamiamo "famiglia". Quando la distruggete, state uccidendo qualcuno.',s:'Dichiarazione, Amazzonia, 2024'},
-{id:'artificiale',c:[130,150,160],v:'La distinzione tra naturale e artificiale è essa stessa artificiale. Un alveare è naturale, un palazzo no? Il linguaggio è naturale, l\u2019intelligenza artificiale no? Il confine si sposta ogni volta che abbiamo bisogno che si sposti.',s:'Lezione, MIT, 2024'}
-]
-};
+// Audio
+let actx=null,audioOn=false;
+document.getElementById('audioBtn').onclick=function(){
+if(!audioOn){actx=new(window.AudioContext||window.webkitAudioContext)();audioOn=true;this.classList.add('on');this.textContent='\u25C9 audio on'}
+else{audioOn=false;this.classList.remove('on');this.textContent='\u25C9 audio'}};
 
-const islands=A[cw];
+function playPad(f,d,v=0.025){if(!audioOn||!actx)return;const o1=actx.createOscillator(),o2=actx.createOscillator(),g=actx.createGain();o1.type=o2.type='sine';o1.frequency.value=f;o2.frequency.value=f*1.004;g.gain.setValueAtTime(0,actx.currentTime);g.gain.linearRampToValueAtTime(v,actx.currentTime+0.6);g.gain.linearRampToValueAtTime(v*0.6,actx.currentTime+d-0.8);g.gain.linearRampToValueAtTime(0,actx.currentTime+d);o1.connect(g);o2.connect(g);g.connect(actx.destination);o1.start();o2.start();o1.stop(actx.currentTime+d);o2.stop(actx.currentTime+d)}
+function playTone(f,d=0.3,v=0.03){if(!audioOn||!actx)return;const o=actx.createOscillator(),g=actx.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(v,actx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,actx.currentTime+d);o.connect(g);g.connect(actx.destination);o.start();o.stop(actx.currentTime+d)}
 
-const cv=document.getElementById('ocean'),cx=cv.getContext('2d');
-let W,H;
-let camX=0,camY=0,tCamX=0,tCamY=0;
-let dragging=false,dsx=0,dsy=0,csx=0,csy=0;
-let phase=0,activeIsl=-1;
-let visited=[],vTimes={},traj=[],lastTrajT=0,archT0=0;
+const WORD='libertà';
+const islands=[
+{id:'gun',color:[180,60,60],font:'DM Sans',
+text:'Il diritto di portare armi è il fondamento della libertà individuale. Senza la possibilità di difendersi, il cittadino è suddito. Il Secondo Emendamento è la garanzia ultima che il potere resti distribuito.',
+source:'National Rifle Association',
+cost:'Accetti che ogni anno migliaia di bambini muoiano per arma da fuoco. Che le scuole abbiano bisogno di metal detector. Che la libertà di portare un\u2019arma valga più della vita di chi non ne porta.',
+expanded:'Chi ha scritto il Secondo Emendamento aveva appena combattuto una guerra contro un tiranno. Sapeva che il primo gesto di ogni tiranno è disarmare chi potrebbe opporsi. I genitori di Uvalde non sono un argomento contro: sono il prezzo. E il prezzo della libertà è sempre stato sangue. Sempre. In ogni epoca. La domanda è se sei disposto a guardare quel sangue e dire: sì, anche questo.', note:60},
+{id:'corpo',color:[180,100,180],font:'Cormorant Garamond',
+text:'La libertà di scelta sul proprio corpo è la condizione minima della cittadinanza. Nessuno Stato, nessuna chiesa, nessuna maggioranza può decidere cosa accade dentro il corpo di un\u2019altra persona.',
+source:'Planned Parenthood, 2022',
+cost:'Accetti che esseri umani in formazione vengano soppressi. Che la soglia tra persona e non-persona sia decisa da un calcolo di settimane. Che il diritto di chi esiste già prevalga su quello di chi potrebbe esistere.',
+expanded:'Ogni legge che limita l\u2019accesso all\u2019aborto colpisce in modo sproporzionato le donne povere. Le donne ricche hanno sempre abortito e sempre abortiranno. La legge non elimina l\u2019aborto: elimina l\u2019aborto sicuro per chi non può pagare. Chi dice \u201cpro-vita\u201d difende la vita del feto e ignora la vita della madre. Chi dice \u201cpro-scelta\u201d difende la madre e ignora il feto. Nessuno difende entrambi. Il conflitto è reale e non ha soluzione pulita.', note:72},
+{id:'mercato',color:[60,140,180],font:'IBM Plex Mono',
+text:'La libertà è il mercato senza interferenze. Ogni regolamentazione è una riduzione della libertà. L\u2019individuo che scambia volontariamente con un altro individuo compie l\u2019atto più libero possibile.',
+source:'Milton Friedman, Capitalism and Freedom, 1962',
+cost:'Accetti che chi nasce povero resti povero. Che l\u2019accesso alle cure, all\u2019istruzione, alla casa dipenda dalla capacità di pagare. Che la libertà di chi ha denaro comprima la libertà di chi non ne ha.',
+expanded:'Friedman lo spiegava ai cileni sotto Pinochet. Il mercato libero richiedeva una dittatura per essere imposto. La libertà economica aveva bisogno della prigione politica. La libertà di alcuni richiede sempre la costrizione di altri. La domanda è solo chi decide chi è libero e chi è costretto. E la risposta, nel libero mercato, è: chi ha più denaro.', note:55},
+{id:'orban',color:[120,90,60],font:'DM Sans',
+text:'La democrazia liberale ha fallito. Il futuro è la democrazia illiberale: uno Stato forte che protegge la nazione, la famiglia, l\u2019identità. La vera libertà è essere liberi dalla dissoluzione dei valori.',
+source:'Viktor Orbán, Băile Tușnad, 2014',
+cost:'Accetti che chi non corrisponde alla norma venga escluso. Che i diritti di alcuni dipendano dall\u2019approvazione della maggioranza. Che la libertà dei conformi richieda il silenzio dei diversi.',
+expanded:'Orbán ha vinto le elezioni. Più volte. Con maggioranze vere. Le persone che lo votano non sono stupide e non sono manipolate, o non più di quanto lo siate voi. Credono che la libertà senza radici sia il vuoto, e che il vuoto faccia più paura della costrizione. Potete chiamarla ignoranza. Loro la chiamano sopravvivenza. E quando la sopravvivenza è in gioco, la tolleranza è un lusso.', note:48},
+{id:'weil',color:[200,190,160],font:'Cormorant Garamond',
+text:'Non c\u2019è libertà dove l\u2019uomo non ha limiti. L\u2019uomo senza limiti non è libero: è in balia delle forze meccaniche che lo attraversano. La libertà è nel rapporto tra la volontà e le condizioni che le sono date.',
+source:'Simone Weil, L\u2019enracinement, 1943',
+cost:'Accetti che la libertà richieda rinuncia. Che per essere liberi si debba obbedire a qualcosa di più grande di sé. Che la tua volontà non sia sovrana e che non debba esserlo.',
+expanded:'Weil scriveva questo mentre lavorava per la Resistenza francese a Londra, malata, rifiutando di mangiare più di quanto mangiassero i francesi sotto l\u2019occupazione. Morì di fame volontaria a trentaquattro anni. La sua libertà era l\u2019opposto di un diritto. Era un dovere che le costò tutto. Nessuno vi chiede tanto. Ma lei vi chiederebbe: la vostra libertà, quanto vi è costata?', note:65},
+{id:'stallman',color:[100,180,100],font:'IBM Plex Mono',
+text:'Un programma è libero se rispetta la libertà dell\u2019utente: la libertà di eseguirlo, studiarlo, modificarlo, ridistribuirlo. Il software proprietario è un sistema di potere.',
+source:'Richard Stallman, Free Software Foundation, 1985',
+cost:'Accetti di rinunciare alla comodità. Di usare sistemi meno belli, meno fluidi, meno integrati. Di scegliere la libertà del codice al prezzo del tuo tempo, ogni giorno, per sempre.',
+expanded:'Stallman dorme nel suo ufficio e non possiede quasi nulla. Ha rinunciato a ogni comodità per una definizione di libertà che la maggior parte delle persone non capisce e non vuole capire. Il suo codice è ovunque: nei server, nei telefoni, nelle auto. Ma il mondo ha scelto Apple. Ha scelto la prigione comoda. E Stallman ha avuto ragione su tutto, e non è servito a niente. La libertà senza utenti è una cattedrale vuota.', note:70}
+];
 
-const IR=350;
-const iPos=[];
-for(let i=0;i<islands.length;i++){
-  const a=(i/islands.length)*Math.PI*2-Math.PI/2;
-  const r=IR+(Math.random()-.5)*80;
-  iPos.push({x:Math.cos(a)*r,y:Math.sin(a)*r,r:55+Math.random()*20,ph:Math.random()*Math.PI*2,dx:(Math.random()-.5)*.08,dy:(Math.random()-.5)*.06});
-}
+const choices=[];
+let currentIsland=0,choiceStartTime=0,costDecision=null;
 
-const wp=[];
-for(let i=0;i<140;i++)wp.push({x:(Math.random()-.5)*2400,y:(Math.random()-.5)*2400,sz:.5+Math.random()*1.5,a:.04+Math.random()*.12,vx:(Math.random()-.5)*.25,vy:(Math.random()-.5)*.25,ph:Math.random()*Math.PI*2});
-
-function rz(){W=cv.width=innerWidth;H=cv.height=innerHeight}
-rz();addEventListener('resize',rz);
-
-let t=0;
-
-function draw(){
-  t+=.008;
-  cx.fillStyle='#08080a';cx.fillRect(0,0,W,H);
-  camX+=(tCamX-camX)*.06;camY+=(tCamY-camY)*.06;
-  const ox=W/2-camX,oy=H/2-camY;
-  for(const p of wp){
-    p.x+=p.vx+Math.sin(t+p.ph)*.04;p.y+=p.vy+Math.cos(t*.7+p.ph)*.03;
-    const sx=p.x+ox,sy=p.y+oy;
-    if(sx>-50&&sx<W+50&&sy>-50&&sy<H+50){
-      cx.beginPath();cx.arc(sx,sy,p.sz,0,Math.PI*2);
-      cx.fillStyle=`rgba(150,145,140,${p.a*(0.7+Math.sin(t+p.ph)*.3)})`;cx.fill();
-    }
-  }
-  if(phase===1){
-    for(let i=0;i<islands.length;i++){
-      const ip=iPos[i],isl=islands[i];
-      ip.x+=ip.dx;ip.y+=ip.dy;
-      const sx=ip.x+ox,sy=ip.y+oy;
-      const br=1+Math.sin(t*.8+ip.ph)*.06;const r=ip.r*br;
-      const[cr,cg,cb]=isl.c;
-      const isV=visited.includes(i),isA=activeIsl===i;
-      const ba=isA?.25:(isV?.12:.07);
-      let g1=cx.createRadialGradient(sx,sy,0,sx,sy,r*2.2);
-      g1.addColorStop(0,`rgba(${cr},${cg},${cb},${ba*1.5})`);
-      g1.addColorStop(.4,`rgba(${cr},${cg},${cb},${ba*.7})`);
-      g1.addColorStop(1,`rgba(${cr},${cg},${cb},0)`);
-      cx.fillStyle=g1;cx.beginPath();cx.arc(sx,sy,r*2.2,0,Math.PI*2);cx.fill();
-      let g2=cx.createRadialGradient(sx,sy,0,sx,sy,r);
-      g2.addColorStop(0,`rgba(${cr},${cg},${cb},${ba*2.5})`);
-      g2.addColorStop(.6,`rgba(${cr},${cg},${cb},${ba})`);
-      g2.addColorStop(1,`rgba(${cr},${cg},${cb},0)`);
-      cx.fillStyle=g2;cx.beginPath();cx.arc(sx,sy,r,0,Math.PI*2);cx.fill();
-      if(isA){cx.strokeStyle=`rgba(${cr},${cg},${cb},.25)`;cx.lineWidth=1;cx.beginPath();cx.arc(sx,sy,r*1.4+Math.sin(t*2)*5,0,Math.PI*2);cx.stroke()}
-    }
-    if(traj.length>1){
-      cx.strokeStyle='rgba(200,180,160,.06)';cx.lineWidth=1;cx.beginPath();
-      for(let i=0;i<traj.length;i++){const p=traj[i];if(i===0)cx.moveTo(p.x+ox,p.y+oy);else cx.lineTo(p.x+ox,p.y+oy)}
-      cx.stroke();
-    }
-  }
-  requestAnimationFrame(draw);
-}
-draw();
-
-cv.addEventListener('touchstart',e=>{if(phase!==1)return;e.preventDefault();const tt=e.touches[0];dragging=true;dsx=tt.clientX;dsy=tt.clientY;csx=tCamX;csy=tCamY},{passive:false});
-cv.addEventListener('touchmove',e=>{if(!dragging||phase!==1)return;e.preventDefault();const tt=e.touches[0];tCamX=csx-(tt.clientX-dsx);tCamY=csy-(tt.clientY-dsy)},{passive:false});
-cv.addEventListener('touchend',()=>{dragging=false;checkProx()});
-cv.addEventListener('mousedown',e=>{if(phase!==1)return;dragging=true;dsx=e.clientX;dsy=e.clientY;csx=tCamX;csy=tCamY});
-cv.addEventListener('mousemove',e=>{if(!dragging||phase!==1)return;tCamX=csx-(e.clientX-dsx);tCamY=csy-(e.clientY-dsy)});
-cv.addEventListener('mouseup',()=>{dragging=false;checkProx()});
-
-function recTraj(){if(phase!==1)return;const now=Date.now();if(now-lastTrajT>500){traj.push({x:camX,y:camY,t:now});lastTrajT=now}requestAnimationFrame(recTraj)}
-
-function checkProx(){
-  let cd=Infinity,ci=-1;
-  for(let i=0;i<iPos.length;i++){const ip=iPos[i];const dx=camX-ip.x,dy=camY-ip.y;const d=Math.sqrt(dx*dx+dy*dy);if(d<ip.r*2.2&&d<cd){cd=d;ci=i}}
-  if(ci>=0&&ci!==activeIsl)enterIsl(ci);else if(ci<0&&activeIsl>=0)leaveIsl();
-}
-
-function contCheck(){if(phase!==1)return;checkProx();requestAnimationFrame(contCheck)}
-
-function enterIsl(i){
-  activeIsl=i;const isl=islands[i];
-  if(!visited.includes(i)){visited.push(i);vTimes[i]=Date.now()}
-  const ov=document.getElementById('islandOv');
-  const vo=document.getElementById('iVoice');const so=document.getElementById('iSource');
-  vo.classList.remove('visible');so.classList.remove('visible');
-  vo.textContent=isl.v;so.textContent=isl.s;ov.classList.add('visible');
-  const[r,g,b]=isl.c;
-  document.body.style.transition='background-color 2s ease';
-  document.body.style.backgroundColor=`rgb(${Math.floor(r*.06)},${Math.floor(g*.06)},${Math.floor(b*.06)})`;
-  setTimeout(()=>vo.classList.add('visible'),200);
-  setTimeout(()=>so.classList.add('visible'),800);
-  const ct=document.getElementById('iCount');ct.textContent=`${visited.length} / ${islands.length}`;ct.classList.add('visible');
-  if(visited.length>=islands.length){setTimeout(()=>{if(visited.length>=islands.length)toReveal()},4000)}
-}
-
-function leaveIsl(){activeIsl=-1;document.getElementById('islandOv').classList.remove('visible');document.body.style.backgroundColor='#08080a'}
-
-function fl(cb){const f=document.getElementById('fl');f.classList.add('on');setTimeout(()=>{cb();setTimeout(()=>f.classList.remove('on'),600)},400)}
-
-function setP(n){document.querySelectorAll('.phase').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.phase')[n].classList.add('active');phase=n}
-
-document.getElementById('theWord').addEventListener('click',()=>{
-  if(phase!==0)return;
-  fl(()=>{setP(1);archT0=Date.now();tCamX=0;tCamY=0;recTraj();contCheck();
-    setTimeout(()=>{document.getElementById('navHint').classList.add('visible');setTimeout(()=>document.getElementById('navHint').classList.remove('visible'),5000)},1500);
-  });
+// Build islands
+const phase1=document.getElementById('phase1');
+islands.forEach((isl,i)=>{
+const s=document.createElement('div');s.className='island-screen';s.id=`island-${i}`;
+const c=isl.color;
+const glow=document.createElement('div');glow.className='island-glow';
+glow.style.background=`radial-gradient(ellipse at 50% 40%,rgba(${c[0]},${c[1]},${c[2]},0.06) 0%,rgba(${c[0]},${c[1]},${c[2]},0.02) 40%,transparent 70%)`;
+s.appendChild(glow);
+s.innerHTML+=`<div class="island-number" style="color:rgba(${c[0]},${c[1]},${c[2]},0.3)">isola ${i+1} di ${islands.length}</div>`;
+const txt=document.createElement('div');txt.className='island-text';txt.style.fontFamily=`'${isl.font}',serif`;txt.style.color=`rgba(${c[0]},${c[1]},${c[2]},0.85)`;txt.textContent=isl.text;s.appendChild(txt);
+s.innerHTML+=`<div class="island-source" style="color:rgba(${c[0]},${c[1]},${c[2]},0.3)">${isl.source}</div>`;
+s.innerHTML+=`<div class="island-question" style="color:rgba(${c[0]},${c[1]},${c[2]},0.5)">Sei d\u2019accordo?</div>`;
+const row=document.createElement('div');row.className='choice-row';
+['sì','no'].forEach(ans=>{
+const b=document.createElement('button');b.className='choice-btn';b.textContent=ans;
+b.style.borderColor=`rgba(${c[0]},${c[1]},${c[2]},0.15)`;
+b.onclick=()=>makeChoice(i,ans);row.appendChild(b);
+});
+s.appendChild(row);phase1.appendChild(s);
 });
 
-function toReveal(){
-  leaveIsl();document.getElementById('navHint').classList.remove('visible');document.getElementById('iCount').classList.remove('visible');
-  fl(()=>{setP(2);document.body.style.backgroundColor='#08080a';buildReveal()});
+// Ocean crossing animation
+function crossOcean(fromColor, toColor, callback){
+const cr=document.getElementById('crossing');
+const light=document.getElementById('crossingLight');
+light.style.width='4px';light.style.height='4px';
+light.style.background=`rgba(${toColor[0]},${toColor[1]},${toColor[2]},0.4)`;
+light.style.boxShadow=`0 0 20px rgba(${toColor[0]},${toColor[1]},${toColor[2]},0.2)`;
+cr.classList.add('active');
+playTone(40+toColor[0]*0.3,1.5,0.02);
+setTimeout(()=>{
+light.style.width='12px';light.style.height='12px';
+light.style.filter='blur(6px)';
+light.style.boxShadow=`0 0 60px rgba(${toColor[0]},${toColor[1]},${toColor[2]},0.3)`;
+},100);
+setTimeout(()=>{
+cr.classList.remove('active');
+light.style.width='4px';light.style.height='4px';light.style.filter='blur(4px)';
+callback();
+},1800);
 }
 
-function buildReveal(){
-  const rc=document.getElementById('revCanvas');const rx=rc.getContext('2d');
-  rc.width=560;rc.height=560;rx.fillStyle='#0a0a0c';rx.fillRect(0,0,560,560);
-  const c=280,s=.6;
-  for(let i=0;i<islands.length;i++){
-    const ip=iPos[i],[r,g,b]=islands[i].c;const sx=c+ip.x*s,sy=c+ip.y*s;
-    const v=visited.includes(i);const a=v?.3:.08;
-    const gr=rx.createRadialGradient(sx,sy,0,sx,sy,25);
-    gr.addColorStop(0,`rgba(${r},${g},${b},${a})`);gr.addColorStop(1,`rgba(${r},${g},${b},0)`);
-    rx.fillStyle=gr;rx.beginPath();rx.arc(sx,sy,25,0,Math.PI*2);rx.fill();
-  }
-  if(traj.length>1){
-    rx.strokeStyle='rgba(200,180,160,.2)';rx.lineWidth=1.5;rx.beginPath();
-    for(let i=0;i<traj.length;i++){const p=traj[i];if(i===0)rx.moveTo(c+p.x*s,c+p.y*s);else rx.lineTo(c+p.x*s,c+p.y*s)}
-    rx.stroke();const f=traj[0];rx.fillStyle='rgba(200,180,160,.5)';rx.beginPath();rx.arc(c+f.x*s,c+f.y*s,3,0,Math.PI*2);rx.fill();
-  }
-  const prox=new Array(islands.length).fill(0);
-  for(const p of traj){for(let i=0;i<iPos.length;i++){const ip=iPos[i];const dx=p.x-ip.x,dy=p.y-ip.y;if(Math.sqrt(dx*dx+dy*dy)<ip.r*2.5)prox[i]++}}
-  let longI=0,longV=0,leastI=0,leastV=Infinity;
-  for(let i=0;i<prox.length;i++){if(prox[i]>longV){longV=prox[i];longI=i}if(prox[i]<leastV){leastV=prox[i];leastI=i}}
-  window._leastI=leastI;
-  const tt=Math.round((Date.now()-archT0)/1000);
-  document.getElementById('revText').textContent='Questo è il tuo arcipelago. La parola era una. Le isole erano sei. Hai navigato tra voci che usavano le stesse lettere per dire cose incompatibili. La traiettoria è solo tua. Ma il punto dove ti sei fermato più a lungo racconta qualcosa che forse già sapevi.';
-  document.getElementById('rs1').innerHTML=`Tempo nell'arcipelago: <em>${tt} secondi</em>`;
-  document.getElementById('rs2').innerHTML=`Isole visitate: <em>${visited.length} su ${islands.length}</em>`;
-  if(longI>=0)document.getElementById('rs3').innerHTML=`Gravitazione massima: <em>${islands[longI].s}</em>`;
-  setTimeout(()=>document.getElementById('revText').classList.add('visible'),500);
-  setTimeout(()=>document.getElementById('rs1').classList.add('visible'),2000);
-  setTimeout(()=>document.getElementById('rs2').classList.add('visible'),2800);
-  setTimeout(()=>document.getElementById('rs3').classList.add('visible'),3600);
-  setTimeout(()=>document.getElementById('revBtn').classList.add('visible'),5000);
-  sd('innesto4_word',cw);sd('innesto4_visited',visited.map(i=>islands[i].id));sd('innesto4_time',tt);
+function updatePersistentWord(color){
+const pw=document.getElementById('persistentWord');
+pw.style.color=`rgba(${color[0]},${color[1]},${color[2]},0.25)`;
 }
 
-document.getElementById('revBtn').addEventListener('click',()=>{fl(()=>{setP(3);buildUnseen()})});
-
-function buildUnseen(){
-  const i=window._leastI;const isl=islands[i];
-  document.getElementById('uIntro').textContent='C\u2019è un\u2019isola dove non sei quasi andato. Il tuo modo di navigare l\u2019ha evitata. Nessun algoritmo ha deciso per te: l\u2019hai fatto tu, con il corpo, con il dito, con qualcosa che sta prima della decisione. Ecco cosa diceva.';
-  document.getElementById('uVoice').textContent=isl.v;
-  document.getElementById('uSource').textContent=isl.s;
-  setTimeout(()=>document.getElementById('uIntro').classList.add('visible'),500);
-  setTimeout(()=>document.getElementById('uVoice').classList.add('visible'),2500);
-  setTimeout(()=>document.getElementById('uSource').classList.add('visible'),3500);
-  setTimeout(()=>document.getElementById('uBtn').classList.add('visible'),5500);
+function showIsland(idx){
+document.querySelectorAll('.island-screen').forEach(s=>s.classList.remove('active'));
+if(idx>=islands.length){setTimeout(showConfrontation,800);return}
+currentIsland=idx;
+const isl=islands[idx];
+updatePersistentWord(isl.color);
+document.getElementById(`island-${idx}`).classList.add('active');
+choiceStartTime=Date.now();
+playPad(50+isl.color[0]*0.4,5);
 }
 
-document.getElementById('uBtn').addEventListener('click',()=>{fl(()=>{setP(4);buildHope()})});
-
-function buildHope(){
-  document.getElementById('hp1').innerHTML='La parola era <span class="hope-em">'+cw+'</span>. Sei isole. Sei mondi che usano le stesse lettere per dire cose che non possono coesistere. Questo è l\u2019arcipelago in cui viviamo. Non c\u2019è terraferma. Non c\u2019è un punto da cui tutte le isole si vedono insieme. Ogni isola crede di essere il continente.';
-  document.getElementById('hp2').innerHTML='Ma tu hai appena fatto qualcosa che gli algoritmi non fanno: sei andato su un\u2019isola che non ti somigliava. Hai letto parole che non erano pensate per te. Hai prestato attenzione a una voce che il tuo sistema nervoso voleva scartare. Questa capacità ha un nome antico. Si chiama <span class="hope-em">sorpresa</span>. È la cosa più preziosa che hai.';
-  document.getElementById('hp3').innerHTML='Esiste un\u2019intera architettura, là fuori, il cui scopo è togliertela: mostrarti solo le isole dove saresti andato comunque, confermarti ciò che già pensi, farti credere che l\u2019arcipelago sia un continente e che quel continente sia il tuo. <span class="hope-em">Arcipelago delle realtà</span> è la mappa di questa architettura, e il tentativo di attraversare l\u2019acqua.';
-  setTimeout(()=>document.getElementById('hp1').classList.add('visible'),500);
-  setTimeout(()=>document.getElementById('hp2').classList.add('visible'),3500);
-  setTimeout(()=>document.getElementById('hp3').classList.add('visible'),7000);
-  setTimeout(()=>document.getElementById('hLink').classList.add('visible'),10000);
-  sd('innesto4_completed',true);
+function makeChoice(idx,answer){
+choices.push({id:islands[idx].id,answer,timeMs:Date.now()-choiceStartTime,source:islands[idx].source});
+playTone(answer==='sì'?200:120,0.2);
+vibrate(answer==='sì'?30:15);
+document.getElementById(`island-${idx}`).classList.remove('active');
+const next=idx+1;
+if(next<islands.length){
+crossOcean(islands[idx].color,islands[next].color,()=>showIsland(next));
+}else{
+setTimeout(()=>showIsland(next),600);
 }
+}
+
+// === CONFRONTATION ===
+function showConfrontation(){
+document.getElementById('phase1').classList.remove('active');
+document.getElementById('phase2').classList.add('active');
+document.getElementById('persistentWord').style.color='rgba(200,190,180,0.15)';
+const ct=document.getElementById('confrontContent');ct.innerHTML='';
+
+const title=mk('div','cblock ctitle','Il tuo arcipelago.');
+ct.appendChild(title);show(title,300);
+
+const mapBlock=mk('div','cblock');
+const map=document.createElement('div');map.className='choice-map';
+choices.forEach(ch=>{
+const isl=islands.find(i=>i.id===ch.id);const c=isl.color;
+const rec=mk('div','choice-record');
+rec.innerHTML=`<div class="cr-dot" style="background:rgba(${c[0]},${c[1]},${c[2]},0.7)"></div>`+
+`<div class="cr-source">${ch.source}</div>`+
+`<div class="cr-answer ${ch.answer==='sì'?'yes':'no'}">${ch.answer}</div>`;
+map.appendChild(rec);
+});
+mapBlock.appendChild(map);ct.appendChild(mapBlock);show(mapBlock,1200);
+
+const yC=choices.filter(c=>c.answer==='sì').length;
+const nC=choices.filter(c=>c.answer==='no').length;
+const fastest=choices.reduce((a,b)=>a.timeMs<b.timeMs?a:b);
+const slowest=choices.reduce((a,b)=>a.timeMs>b.timeMs?a:b);
+
+const stats=mk('div','cblock ctext');
+stats.innerHTML=`<em>${yC}</em> sì. <em>${nC}</em> no.<br><br>`+
+`Risposta più veloce: <em>${(fastest.timeMs/1000).toFixed(1)}s</em>, ${islands.find(i=>i.id===fastest.id).source}.<br>`+
+`Più lenta: <em>${(slowest.timeMs/1000).toFixed(1)}s</em>, ${islands.find(i=>i.id===slowest.id).source}.`;
+ct.appendChild(stats);show(stats,2800);
+
+const arch=mk('div','cblock ctext');
+arch.innerHTML=`Ogni isola usava la stessa parola. <em>${WORD}</em>. In ognuna significava qualcosa di diverso. In ognuna aveva ragione.`;
+ct.appendChild(arch);show(arch,4500);
+
+const btn=mk('div','cblock');
+const b=document.createElement('div');b.className='tap-btn';b.style.display='inline-block';b.textContent='continua';
+b.onclick=showCost;btn.appendChild(b);ct.appendChild(btn);show(btn,6000);
+document.getElementById('phase2').scrollTop=0;
+}
+
+// === THE COST ===
+function showCost(){
+document.getElementById('phase2').classList.remove('active');
+document.getElementById('phase3').classList.add('active');
+
+const ct=document.getElementById('costContent');ct.innerHTML='';
+const fastestYes=choices.filter(c=>c.answer==='sì').sort((a,b)=>a.timeMs-b.timeMs)[0];
+const target=fastestYes||choices.filter(c=>c.answer==='no').sort((a,b)=>b.timeMs-a.timeMs)[0];
+const isl=islands.find(i=>i.id===target.id);
+const c=isl.color;
+
+// Tremble the persistent word
+const pw=document.getElementById('persistentWord');
+pw.style.color=`rgba(${c[0]},${c[1]},${c[2]},0.35)`;
+pw.classList.add('tremble');
+setTimeout(()=>pw.classList.remove('tremble'),400);
+
+let introHtml;
+if(fastestYes){
+introHtml=`Hai detto sì in <em>${(target.timeMs/1000).toFixed(1)} secondi</em>. Questa è la libertà che hai difeso più in fretta.`;
+}else{
+introHtml=`Hai detto no a tutto. Ma su questa isola hai esitato <em>${(target.timeMs/1000).toFixed(1)} secondi</em>.`;
+}
+const intro=mk('div','cblock ctext');intro.innerHTML=introHtml;
+ct.appendChild(intro);show(intro,500);
+
+const recall=mk('div','cblock');
+recall.innerHTML=`<div style="font-family:'${isl.font}',serif;color:rgba(${c[0]},${c[1]},${c[2]},0.65);font-size:0.9rem;line-height:2.2;margin-bottom:0.8rem">${isl.text}</div>`+
+`<div style="font-family:'Space Mono',monospace;font-size:0.45rem;letter-spacing:0.2em;color:rgba(${c[0]},${c[1]},${c[2]},0.25);text-transform:uppercase">${isl.source}</div>`;
+ct.appendChild(recall);show(recall,2500);
+
+const question=mk('div','cblock');
+question.innerHTML=`<div style="font-family:'Cormorant Garamond',serif;font-size:clamp(1.2rem,3vw,1.5rem);font-weight:300;font-style:italic;color:rgba(${c[0]},${c[1]},${c[2]},0.6);line-height:1.8">Per difendere questa libertà, cosa sei disposto a fare?</div>`;
+ct.appendChild(question);show(question,4500);
+
+// Typewriter cost
+const costBlock=mk('div','cblock');
+const costBox=document.createElement('div');
+costBox.style.cssText=`padding:1.5rem;border:1px solid rgba(${c[0]},${c[1]},${c[2]},0.12);margin-bottom:1rem`;
+const costText=document.createElement('div');costText.className='typewriter';
+costText.style.cssText=`font-size:0.85rem;line-height:2.4;color:rgba(${c[0]},${c[1]},${c[2]},0.7)`;
+costBox.appendChild(costText);costBlock.appendChild(costBox);ct.appendChild(costBlock);
+
+setTimeout(()=>{
+costBlock.classList.add('visible');
+vibrate([40,20,40,20,80]);
+typewrite(costText,isl.cost,35,()=>{
+// Show buttons after typewriter finishes
+setTimeout(()=>showCostButtons(ct,isl,c),800);
+});
+},6500);
+
+// Audio: low drone
+playPad(35+c[0]*0.2,12,0.02);
+document.getElementById('phase3').scrollTop=0;
+}
+
+function typewrite(el,text,speed,callback){
+el.innerHTML='';
+const chars=text.split('');
+chars.forEach((ch,i)=>{
+const span=document.createElement('span');span.className='char';span.textContent=ch;
+el.appendChild(span);
+setTimeout(()=>{span.classList.add('visible');if(i===chars.length-1&&callback)setTimeout(callback,300)},i*speed);
+});
+}
+
+function showCostButtons(ct,isl,c){
+const btnsBlock=mk('div','cblock');
+btnsBlock.style.display='flex';btnsBlock.style.justifyContent='center';btnsBlock.style.gap='1.5rem';btnsBlock.style.flexWrap='wrap';
+
+// HOLD to accept
+const holdC=document.createElement('div');holdC.className='hold-container';
+const holdBtn=document.createElement('div');holdBtn.className='hold-btn';
+holdBtn.style.color=`rgba(${c[0]},${c[1]},${c[2]},0.5)`;
+holdBtn.style.borderColor=`rgba(${c[0]},${c[1]},${c[2]},0.2)`;
+holdBtn.textContent='accetto il costo';
+const fill=document.createElement('div');fill.className='hold-fill';
+fill.style.background=`rgba(${c[0]},${c[1]},${c[2]},0.08)`;
+holdBtn.appendChild(fill);
+const label=document.createElement('div');label.className='hold-label';
+label.textContent='tieni premuto 3 secondi';
+holdC.appendChild(holdBtn);holdC.appendChild(label);
+
+let holdStart=0,holdInterval=null,completed=false;
+function startHold(e){
+if(completed)return;e.preventDefault();holdStart=Date.now();
+holdInterval=setInterval(()=>{
+const p=Math.min(((Date.now()-holdStart)/3000)*100,100);
+fill.style.width=p+'%';
+if(p>=100&&!completed){completed=true;clearInterval(holdInterval);
+vibrate(100);playTone(isl.note||60,0.5,0.04);
+setTimeout(()=>showAfter(isl,'accept'),500)}
+},30);
+}
+function endHold(){if(completed)return;clearInterval(holdInterval);fill.style.width='0%';holdStart=0}
+holdBtn.addEventListener('mousedown',startHold);holdBtn.addEventListener('touchstart',startHold);
+holdBtn.addEventListener('mouseup',endHold);holdBtn.addEventListener('mouseleave',endHold);
+holdBtn.addEventListener('touchend',endHold);holdBtn.addEventListener('touchcancel',endHold);
+
+// TAP to withdraw
+const tapBtn=document.createElement('div');tapBtn.className='tap-btn';
+tapBtn.textContent='ritiro il consenso';
+tapBtn.onclick=()=>{if(!completed){completed=true;playTone(80,0.3,0.02);setTimeout(()=>showAfter(isl,'withdraw'),300)}};
+
+btnsBlock.appendChild(holdC);btnsBlock.appendChild(tapBtn);
+ct.appendChild(btnsBlock);show(btnsBlock,0);
+}
+
+// === AFTER ===
+function showAfter(targetIsland,decision){
+costDecision=decision;
+document.getElementById('phase3').classList.remove('active');
+document.getElementById('phase4').classList.add('active');
+const ct=document.getElementById('afterContent');ct.innerHTML='';
+const c=targetIsland.color;
+
+// 3 seconds of silence with pulsing color
+ct.style.background='#050506';
+const silenceGlow=mk('div','');
+silenceGlow.style.cssText=`position:fixed;inset:0;pointer-events:none;
+background:radial-gradient(ellipse at 50% 50%,rgba(${c[0]},${c[1]},${c[2]},0.03) 0%,transparent 60%);
+animation:silencePulse 3s ease-in-out;opacity:0`;
+silenceGlow.innerHTML=`<style>@keyframes silencePulse{0%{opacity:0}50%{opacity:1}100%{opacity:0}}</style>`;
+document.getElementById('phase4').appendChild(silenceGlow);
+
+setTimeout(()=>{
+silenceGlow.remove();
+
+if(decision==='accept'){
+const t1=mk('div','ablock atext','Hai accettato il costo.');
+ct.appendChild(t1);show(t1,0);
+const t2=mk('div','ablock atext');
+t2.innerHTML='La maggior parte delle persone non lo fa. La maggior parte dice di credere in qualcosa e poi si ferma davanti al prezzo.';
+ct.appendChild(t2);show(t2,2000);
+}else{
+const t1=mk('div','ablock atext','Hai ritirato il consenso.');
+ct.appendChild(t1);show(t1,0);
+const t2=mk('div','ablock atext');
+t2.innerHTML=`Eri d\u2019accordo finché non hai visto il prezzo. <em>${WORD}</em> è bellissima finché è astratta. Diventa insopportabile quando qualcuno deve pagarne le conseguenze.`;
+ct.appendChild(t2);show(t2,2000);
+}
+
+// Expanded text arrives on its own
+const exp=mk('div','ablock');
+exp.innerHTML=`<div class="a-expanded" style="font-family:'${targetIsland.font}',serif;color:rgba(${c[0]},${c[1]},${c[2]},0.6)">${targetIsland.expanded}</div>`;
+ct.appendChild(exp);show(exp,4500);
+
+const coda=mk('div','ablock atext');
+if(decision==='accept'){
+coda.innerHTML='Ogni libertà ha un prezzo che qualcuno paga. Saperlo è il minimo. Accettarlo è un\u2019altra cosa.';
+}else{
+coda.innerHTML='Ritirare il consenso di fronte al costo non è viltà. È la scoperta che ogni parola contiene un mondo, e che i mondi hanno un prezzo.';
+}
+ct.appendChild(coda);show(coda,7500);
+
+// Auto-continue: duration based on average choice speed
+const avgTime=choices.reduce((s,c)=>s+c.timeMs,0)/choices.length;
+const waitTime=Math.max(5000,Math.min(avgTime*3,15000));
+setTimeout(showFinal,7500+waitTime);
+
+},3000); // 3s silence
+
+document.getElementById('phase4').scrollTop=0;
+playPad(55,10,0.02);
+}
+
+// === FINAL ===
+function showFinal(){
+document.getElementById('phase4').classList.remove('active');
+document.getElementById('phase5').classList.add('active');
+document.getElementById('persistentWord').style.opacity='0';
+
+const totalTime=Math.round((Date.now()-sessionStart)/1000);
+const mins=Math.floor(totalTime/60),secs=totalTime%60;
+const ts=mins>0?`${mins}m ${secs}s`:`${secs}s`;
+const yC=choices.filter(c=>c.answer==='sì').length;
+const nC=choices.filter(c=>c.answer==='no').length;
+
+let msg=`<em>${WORD}</em>.<br><br>`;
+msg+=`${islands.length} isole. ${yC} sì. ${nC} no.<br>${ts} nell'arcipelago.<br><br>`;
+if(costDecision==='accept') msg+=`Hai accettato il costo della tua libertà.<br>`;
+else msg+=`Hai ritirato il consenso di fronte al costo.<br>`;
+msg+=`<br>Le stesse parole. Mondi diversi.<br>Nessuna terraferma.<br><br>`;
+msg+=`Ma l\u2019acqua tra le isole è navigabile.<br>Se accetti di bagnarti.`;
+
+const ft=document.getElementById('finalText');ft.innerHTML=msg;
+// Fade in after a beat
+setTimeout(()=>ft.classList.add('visible'),800);
+
+// Auto-dissolve based on reading speed
+const avgTime=choices.reduce((s,c)=>s+c.timeMs,0)/choices.length;
+const dissolveTime=Math.max(8000,Math.min(avgTime*4,20000));
+setTimeout(()=>{ft.style.transition='opacity 4s ease';ft.style.opacity='0.15'},dissolveTime);
+
+playPad(45,12,0.02);
+saveData('innesto4_completed',true);
+saveData('innesto4_choices',choices.map(c=>({id:c.id,answer:c.answer,ms:c.timeMs})));
+saveData('innesto4_cost',costDecision);
+saveData('innesto4_duration',totalTime);
+}
+
+// Util
+function mk(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text)e.textContent=text;return e}
+function show(el,delay){setTimeout(()=>el.classList.add('visible'),delay)}
+
+// Phase 0
+setTimeout(()=>document.getElementById('wordHint').style.opacity='1',3000);
+document.getElementById('theWord').onclick=function(){
+playTone(180,0.5,0.03);
+this.style.letterSpacing='0.6em';this.style.opacity='0.3';
+this.style.color='transparent';this.style.textShadow='0 0 40px rgba(200,190,180,0.3)';
+setTimeout(()=>{
+document.getElementById('phase0').classList.remove('active');
+document.getElementById('phase1').classList.add('active');
+document.getElementById('persistentWord').classList.add('visible');
+showIsland(0);
+},1200);
+};
 </script>
 </body>
 </html>
